@@ -79,6 +79,7 @@ export class DriveClient {
     if (result.status === 401 && this.canRefresh) {
       await this.refreshAccessToken();
       const retry = await this.rawRequest(url, "GET");
+      if (!retry.response.ok) throw new DriveError(retry.status, `Download failed: ${retry.status}`);
       return this.extractContent(retry.response);
     }
     if (!result.response.ok) {
@@ -103,7 +104,7 @@ export class DriveClient {
 
   /** Multipart upload (metadata + content, up to 5MB). */
   async uploadFile(metadata: Record<string, unknown>, content: string, contentType: string, query?: Record<string, string | number | boolean | undefined>): Promise<unknown> {
-    const boundary = "shinkofa_mcp_boundary";
+    const boundary = `boundary_${crypto.randomUUID()}`;
     const bodyParts = [
       `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`,
       `--${boundary}\r\nContent-Type: ${contentType}\r\n\r\n${content}\r\n`,
@@ -120,18 +121,14 @@ export class DriveClient {
     if (result.status === 401 && this.canRefresh) {
       await this.refreshAccessToken();
       const retry = await this.rawRequest(url, "POST", bodyParts.join(""), `multipart/related; boundary=${boundary}`);
-      const data = await retry.response.json();
-      if (!retry.response.ok) throw new DriveError(retry.status, JSON.stringify(data));
-      return data;
+      return this.parseJsonResponse(retry);
     }
-    const data = await result.response.json();
-    if (!result.response.ok) throw new DriveError(result.status, JSON.stringify(data));
-    return data;
+    return this.parseJsonResponse(result);
   }
 
   /** Multipart update (metadata + content). */
   async updateFileContent(fileId: string, metadata: Record<string, unknown>, content: string, contentType: string): Promise<unknown> {
-    const boundary = "shinkofa_mcp_boundary";
+    const boundary = `boundary_${crypto.randomUUID()}`;
     const bodyParts = [
       `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`,
       `--${boundary}\r\nContent-Type: ${contentType}\r\n\r\n${content}\r\n`,
@@ -142,11 +139,15 @@ export class DriveClient {
     if (result.status === 401 && this.canRefresh) {
       await this.refreshAccessToken();
       const retry = await this.rawRequest(url, "PATCH", bodyParts.join(""), `multipart/related; boundary=${boundary}`);
-      const data = await retry.response.json();
-      if (!retry.response.ok) throw new DriveError(retry.status, JSON.stringify(data));
-      return data;
+      return this.parseJsonResponse(retry);
     }
-    const data = await result.response.json();
+    return this.parseJsonResponse(result);
+  }
+
+  private async parseJsonResponse(result: { response: Response; status: number }): Promise<unknown> {
+    let data: unknown;
+    try { data = await result.response.json(); }
+    catch { throw new DriveError(result.status, `Non-JSON response (${result.status})`); }
     if (!result.response.ok) throw new DriveError(result.status, JSON.stringify(data));
     return data;
   }
@@ -187,7 +188,9 @@ export class DriveClient {
     try {
       const response = await fetch(url, { method, headers, body: fetchBody, signal: controller.signal });
       if (response.status === 204) return { response, data: undefined, status: 204 };
-      const data = await response.json();
+      let data: unknown;
+      try { data = await response.json(); }
+      catch { data = { error: { code: response.status, message: `Non-JSON response (${response.status})` } }; }
       return { response, data, status: response.status };
     } finally { clearTimeout(timeout); }
   }

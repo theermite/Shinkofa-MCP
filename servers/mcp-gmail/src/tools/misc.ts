@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { GmailClient, GmailError } from "../lib/client.js";
+import { GmailClient } from "../lib/client.js";
 import { ListHistorySchema, GetProfileSchema, GetVacationSchema, UpdateVacationSchema, WatchSchema, StopWatchSchema, RawApiCallSchema } from "../lib/schemas.js";
-import { toolResult, toolError, withErrorHandler } from "../lib/utils.js";
+import { toolResult, withErrorHandler } from "../lib/utils.js";
 
 export function registerMiscTools(server: McpServer, client: GmailClient): void {
   server.tool("list_history", "List mailbox history changes since a given historyId", ListHistorySchema.shape, async (p) => {
@@ -38,11 +38,8 @@ export function registerMiscTools(server: McpServer, client: GmailClient): void 
   });
 
   server.tool("raw_api_call", "Call any Gmail API endpoint directly. Use for: settings (IMAP, POP, forwarding, language, filters, sendAs, delegates), CSE, S/MIME, and any other uncovered endpoint.", RawApiCallSchema.shape, async (params) => {
-    try {
-      return toolResult(await client.callApi(params.method, params.path, params.body ?? undefined, params.query as Record<string, string | number | boolean | undefined> | undefined));
-    } catch (error) {
-      if (error instanceof GmailError) return toolError(`Gmail error ${error.code}: ${error.description}`);
-      throw error;
-    }
+    return withErrorHandler(async () =>
+      toolResult(await client.callApi(params.method, params.path, params.body ?? undefined, params.query as Record<string, string | number | boolean | undefined> | undefined))
+    );
   });
 }

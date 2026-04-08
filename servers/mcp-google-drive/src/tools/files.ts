@@ -49,8 +49,9 @@ export function registerFileTools(server: McpServer, client: DriveClient): void 
       if (p.parents) metadata.parents = p.parents;
       if (p.description) metadata.description = p.description;
 
-      if (p.content && p.contentType) {
-        return toolResult(await client.uploadFile(metadata, p.content, p.contentType));
+      if (p.content) {
+        const ct = p.contentType ?? "text/plain";
+        return toolResult(await client.uploadFile(metadata, p.content, ct));
       }
       return toolResult(await client.callApi("POST", "/files", metadata));
     });
@@ -76,8 +77,9 @@ export function registerFileTools(server: McpServer, client: DriveClient): void 
       if (p.mimeType !== undefined) metadata.mimeType = p.mimeType;
       if (p.trashed !== undefined) metadata.trashed = p.trashed;
 
-      if (p.content && p.contentType) {
-        return toolResult(await client.updateFileContent(p.fileId, metadata, p.content, p.contentType));
+      if (p.content) {
+        const ct = p.contentType ?? "text/plain";
+        return toolResult(await client.updateFileContent(p.fileId, metadata, p.content, ct));
       }
       return toolResult(await client.callApi("PATCH", `/files/${encodeURIComponent(p.fileId)}`, metadata));
     });

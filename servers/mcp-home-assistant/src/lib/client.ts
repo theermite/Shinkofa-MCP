@@ -16,6 +16,19 @@ export class HAClient {
     this.timeoutMs = config.timeoutMs ?? 30_000;
   }
 
+  async callApiRaw(path: string): Promise<{ base64: string; mimeType: string }> {
+    const url = `${this.baseUrl}/api${path}`;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+    try {
+      const response = await fetch(url, { headers: { Authorization: `Bearer ${this.accessToken}` }, signal: controller.signal });
+      if (!response.ok) throw new HAError(response.status, `Request failed: ${response.status}`);
+      const buf = await response.arrayBuffer();
+      const mimeType = response.headers.get("content-type") ?? "image/jpeg";
+      return { base64: Buffer.from(buf).toString("base64"), mimeType };
+    } finally { clearTimeout(timeout); }
+  }
+
   async callApi<T = unknown>(method: "GET" | "POST" | "PUT" | "DELETE", path: string, body?: Record<string, unknown>, query?: Record<string, string | number | boolean | undefined>): Promise<T> {
     let url = `${this.baseUrl}/api${path}`;
     if (query) { const p = new URLSearchParams(); for (const [k, v] of Object.entries(query)) { if (v !== undefined && v !== null) p.append(k, String(v)); } const qs = p.toString(); if (qs) url += `?${qs}`; }

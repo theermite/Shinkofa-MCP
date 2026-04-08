@@ -85,7 +85,9 @@ export class GmailClient {
     try {
       const response = await fetch(url, { method, headers, body: fetchBody, signal: controller.signal });
       if (response.status === 204) return { response, data: undefined, status: 204 };
-      const data = await response.json();
+      let data: unknown;
+      try { data = await response.json(); }
+      catch { data = { error: { code: response.status, message: `Non-JSON response (${response.status})` } }; }
       return { response, data, status: response.status };
     } finally { clearTimeout(timeout); }
   }

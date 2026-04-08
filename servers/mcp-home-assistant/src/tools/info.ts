@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { HAClient, HAError } from "../lib/client.js";
-import { toolResult, toolError, withErrorHandler } from "../lib/utils.js";
+import { HAClient } from "../lib/client.js";
+import { toolResult, withErrorHandler } from "../lib/utils.js";
 import { z } from "zod";
 
 export function registerInfoTools(server: McpServer, client: HAClient): void {
@@ -56,12 +56,16 @@ export function registerInfoTools(server: McpServer, client: HAClient): void {
     });
   });
 
-  server.tool("get_camera_image", "Get current camera image", { entity_id: z.string() }, async (p) => {
-    return withErrorHandler(async () => toolResult(await client.callApi("GET", `/camera_proxy/${p.entity_id}`)));
+  server.tool("get_camera_image", "Get current camera image as base64-encoded JPEG", { entity_id: z.string() }, async (p) => {
+    return withErrorHandler(async () => {
+      const imageData = await client.callApiRaw(`/camera_proxy/${p.entity_id}`);
+      return { content: [{ type: "image" as const, data: imageData.base64, mimeType: imageData.mimeType }] };
+    });
   });
 
-  server.tool("raw_api_call", "Call any Home Assistant API endpoint directly", { method: z.enum(["GET", "POST", "PUT", "DELETE"]), path: z.string(), body: z.record(z.unknown()).optional() }, async (params) => {
-    try { return toolResult(await client.callApi(params.method, params.path, params.body ?? undefined)); }
-    catch (error) { if (error instanceof HAError) return toolError(`HA error ${error.status}: ${error.description}`); throw error; }
+  server.tool("raw_api_call", "Call any Home Assistant API endpoint directly. Warning: can trigger destructive actions (restart, etc).", { method: z.enum(["GET", "POST", "PUT", "DELETE"]), path: z.string(), body: z.record(z.unknown()).optional(), query: z.record(z.string()).optional().describe("Query parameters") }, async (params) => {
+    return withErrorHandler(async () =>
+      toolResult(await client.callApi(params.method, params.path, params.body ?? undefined, params.query as Record<string, string | number | boolean | undefined> | undefined))
+    );
   });
 }
