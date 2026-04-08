@@ -17,7 +17,7 @@ export class GmailClient {
 
   async callApi<T = unknown>(method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE", path: string, body?: Record<string, unknown>, query?: Record<string, string | number | boolean | undefined>): Promise<T> {
     let url = `${this.baseUrl}${path}`;
-    if (query) { const p = new URLSearchParams(); for (const [k, v] of Object.entries(query)) { if (v !== undefined && v !== null) p.append(k, String(v)); } const qs = p.toString(); if (qs) url += `?${qs}`; }
+    if (query) { const p = new URLSearchParams(); for (const [k, v] of Object.entries(query)) { if (v === undefined || v === null) continue; if (Array.isArray(v)) { for (const item of v) p.append(k, String(item)); } else { p.append(k, String(v)); } } const qs = p.toString(); if (qs) url += `?${qs}`; }
     const headers: Record<string, string> = { Authorization: `Bearer ${this.accessToken}` };
     let fetchBody: BodyInit | undefined;
     if (body && method !== "GET") { headers["Content-Type"] = "application/json"; fetchBody = JSON.stringify(body); }

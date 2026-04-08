@@ -1,8 +1,8 @@
 node_modules/
 dist/
 *-broken-backup/
-servers/mcp-gmail/mcp-gmail/
-servers/mcp-google-calendar/mcp-google-calendar/
+# Nested duplicate dirs from migration (to clean up physically later)
+servers/*/mcp-*/
 .env
 .env.local
 .env.prod

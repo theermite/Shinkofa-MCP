@@ -16,8 +16,9 @@ export class HAClient {
     this.timeoutMs = config.timeoutMs ?? 30_000;
   }
 
-  async callApi<T = unknown>(method: "GET" | "POST" | "PUT" | "DELETE", path: string, body?: Record<string, unknown>): Promise<T> {
-    const url = `${this.baseUrl}/api${path}`;
+  async callApi<T = unknown>(method: "GET" | "POST" | "PUT" | "DELETE", path: string, body?: Record<string, unknown>, query?: Record<string, string | number | boolean | undefined>): Promise<T> {
+    let url = `${this.baseUrl}/api${path}`;
+    if (query) { const p = new URLSearchParams(); for (const [k, v] of Object.entries(query)) { if (v !== undefined && v !== null) p.append(k, String(v)); } const qs = p.toString(); if (qs) url += `?${qs}`; }
     const headers: Record<string, string> = { Authorization: `Bearer ${this.accessToken}` };
     let fetchBody: BodyInit | undefined;
     if (body && method !== "GET") { headers["Content-Type"] = "application/json"; fetchBody = JSON.stringify(body); }
