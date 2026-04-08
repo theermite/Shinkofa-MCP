@@ -14,6 +14,7 @@ Custom MCP (Model Context Protocol) servers for the Shinkofa ecosystem.
 | mcp-youtube | YouTube Data API — videos, channels, playlists, comments, search | 10+ | Complete |
 | mcp-gmail | Gmail API — read, search, compose, labels, threads, attachments | 9+ | Complete |
 | mcp-google-calendar | Google Calendar API v3 — events, calendars, reminders, recurring | 8+ | Complete |
+| mcp-google-drive | Google Drive API v3 — files, folders, read/export, upload, share | 14 | Complete |
 | mcp-home-assistant | Home Assistant API — devices, entities, automations, scenes | 6+ | Complete |
 | mcp-docker | Docker Engine API — containers, images, volumes, networks, compose | 8+ | Complete |
 | mcp-n8n | n8n API — workflows, executions, credentials, webhooks | 6+ | Complete |
