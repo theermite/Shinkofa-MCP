@@ -24,13 +24,15 @@ export function registerInfoTools(server: McpServer, client: HAClient): void {
     return withErrorHandler(async () => toolResult(await client.callApi("POST", "/template", { template: p.template })));
   });
 
-  server.tool("get_history", "Get state history for entities", { timestamp: z.string().optional().describe("ISO 8601 start time (e.g. '2026-04-08T00:00:00Z')"), entity_id: z.string().optional().describe("Filter by entity"), end_time: z.string().optional().describe("ISO 8601 end time"), minimal_response: z.boolean().optional() }, async (p) => {
+  server.tool("get_history", "Get state history for entities", { timestamp: z.string().optional().describe("ISO 8601 start time (e.g. '2026-04-08T00:00:00Z')"), entity_id: z.string().optional().describe("Filter by entity"), end_time: z.string().optional().describe("ISO 8601 end time"), minimal_response: z.boolean().optional().describe("Omit extra attributes to reduce response size — recommended for long time ranges"), significant_changes_only: z.boolean().optional().describe("Only return significant state changes"), no_attributes: z.boolean().optional().describe("Omit entity attributes to reduce response size") }, async (p) => {
     return withErrorHandler(async () => {
       const path = p.timestamp ? `/history/period/${p.timestamp}` : "/history/period";
       const query: Record<string, string | number | boolean | undefined> = {};
       if (p.entity_id) query.filter_entity_id = p.entity_id;
       if (p.end_time) query.end_time = p.end_time;
       if (p.minimal_response) query.minimal_response = p.minimal_response;
+      if (p.significant_changes_only) query.significant_changes_only = p.significant_changes_only;
+      if (p.no_attributes) query.no_attributes = p.no_attributes;
       return toolResult(await client.callApi("GET", path, undefined, query));
     });
   });

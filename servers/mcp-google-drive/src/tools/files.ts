@@ -14,6 +14,8 @@ export function registerFileTools(server: McpServer, client: DriveClient): void 
       if (p.fields) query.fields = p.fields;
       else query.fields = "files(id,name,mimeType,modifiedTime,size,parents,webViewLink),nextPageToken";
       if (p.spaces) query.spaces = p.spaces;
+      if (p.supportsAllDrives) query.supportsAllDrives = p.supportsAllDrives;
+      if (p.includeItemsFromAllDrives) query.includeItemsFromAllDrives = p.includeItemsFromAllDrives;
       return toolResult(await client.callApi("GET", "/files", undefined, query));
     });
   });
@@ -87,7 +89,7 @@ export function registerFileTools(server: McpServer, client: DriveClient): void 
 
   server.tool("drive_move_file", "Move a file to a different folder", MoveFileSchema.shape, async (p) => {
     return withErrorHandler(async () => {
-      return toolResult(await client.callApi("PATCH", `/files/${encodeURIComponent(p.fileId)}`, {}, {
+      return toolResult(await client.callApi("PATCH", `/files/${encodeURIComponent(p.fileId)}`, undefined, {
         addParents: p.addParents,
         removeParents: p.removeParents,
       }));

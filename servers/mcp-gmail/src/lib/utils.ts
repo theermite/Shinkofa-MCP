@@ -20,8 +20,9 @@ function sanitizeHeader(value: string): string {
   return value.replace(/[\r\n]/g, " ");
 }
 
-export function buildRawEmail(p: { to: string; subject: string; body: string; cc?: string; bcc?: string; replyTo?: string; inReplyTo?: string; references?: string; isHtml?: boolean }): string {
+export function buildRawEmail(p: { to: string; subject: string; body: string; from?: string; cc?: string; bcc?: string; replyTo?: string; inReplyTo?: string; references?: string; isHtml?: boolean }): string {
   const lines: string[] = [];
+  if (p.from) lines.push(`From: ${sanitizeHeader(p.from)}`);
   lines.push(`To: ${sanitizeHeader(p.to)}`);
   if (p.cc) lines.push(`Cc: ${sanitizeHeader(p.cc)}`);
   if (p.bcc) lines.push(`Bcc: ${sanitizeHeader(p.bcc)}`);
@@ -33,5 +34,5 @@ export function buildRawEmail(p: { to: string; subject: string; body: string; cc
   lines.push("MIME-Version: 1.0");
   lines.push("");
   lines.push(p.body);
-  return btoa(unescape(encodeURIComponent(lines.join("\r\n")))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return Buffer.from(lines.join("\r\n")).toString("base64url");
 }

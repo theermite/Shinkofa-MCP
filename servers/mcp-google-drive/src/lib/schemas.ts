@@ -9,6 +9,8 @@ export const ListFilesSchema = z.object({
   orderBy: z.string().optional().describe("Sort order (e.g. 'modifiedTime desc', 'name')"),
   fields: z.string().optional().describe("Fields to include (e.g. 'files(id,name,mimeType,modifiedTime,size)')"),
   spaces: z.string().optional().describe("Spaces to search: 'drive', 'appDataFolder' (default: 'drive')"),
+  supportsAllDrives: z.boolean().optional().describe("Include items from shared/team drives"),
+  includeItemsFromAllDrives: z.boolean().optional().describe("Include items from all drives the user has access to"),
 });
 
 export const GetFileSchema = z.object({
@@ -27,20 +29,20 @@ export const CreateFileSchema = z.object({
   parents: z.array(z.string()).optional().describe("Parent folder IDs (default: root)"),
   content: z.string().optional().describe("File content (text). For binary, use base64. Omit for empty files or Google Workspace types."),
   contentType: z.string().optional().describe("MIME type of the content being uploaded (e.g. 'text/plain', 'text/csv')"),
-  description: z.string().optional(),
+  description: z.string().optional().describe("File description"),
 });
 
 export const CreateFolderSchema = z.object({
   name: z.string().describe("Folder name"),
   parents: z.array(z.string()).optional().describe("Parent folder IDs (default: root)"),
-  description: z.string().optional(),
+  description: z.string().optional().describe("Folder description"),
 });
 
 export const UpdateFileSchema = z.object({
   fileId: FileId,
   name: z.string().optional().describe("New file name"),
-  description: z.string().optional(),
-  mimeType: z.string().optional(),
+  description: z.string().optional().describe("File description"),
+  mimeType: z.string().optional().describe("New MIME type for the file"),
   trashed: z.boolean().optional().describe("Set true to move to trash, false to restore"),
   content: z.string().optional().describe("New file content (replaces existing)"),
   contentType: z.string().optional().describe("MIME type of the new content"),
@@ -88,8 +90,8 @@ export const DeletePermissionSchema = z.object({
 });
 
 export const RawApiCallSchema = z.object({
-  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
+  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]).describe("HTTP method"),
   path: z.string().describe("API path (e.g. '/files' or '/files/{fileId}/revisions')"),
-  body: z.record(z.unknown()).optional(),
-  query: z.record(z.string()).optional(),
+  body: z.record(z.unknown()).optional().describe("Request body (JSON)"),
+  query: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe("Query string parameters"),
 });

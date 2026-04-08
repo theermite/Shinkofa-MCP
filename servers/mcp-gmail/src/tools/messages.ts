@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { GmailClient } from "../lib/client.js";
-import { ListMessagesSchema, GetMessageSchema, SendMessageSchema, DeleteMessageSchema, TrashMessageSchema, UntrashMessageSchema, ModifyMessageSchema, BatchModifyMessagesSchema, BatchDeleteMessagesSchema } from "../lib/schemas.js";
+import { ListMessagesSchema, GetMessageSchema, SendMessageSchema, DeleteMessageSchema, TrashMessageSchema, UntrashMessageSchema, ModifyMessageSchema, BatchModifyMessagesSchema, BatchDeleteMessagesSchema, GetAttachmentSchema } from "../lib/schemas.js";
 import { toolResult, withErrorHandler, buildRawEmail } from "../lib/utils.js";
 
 export function registerMessageTools(server: McpServer, client: GmailClient): void {
@@ -58,5 +58,11 @@ export function registerMessageTools(server: McpServer, client: GmailClient): vo
       const { userId, ...body } = p;
       return toolResult(await client.callApi("POST", `/users/${userId}/messages/batchDelete`, body));
     });
+  });
+
+  server.tool("get_attachment", "Download a message attachment by ID. Returns base64-encoded data and size.", GetAttachmentSchema.shape, async (p) => {
+    return withErrorHandler(async () =>
+      toolResult(await client.callApi("GET", `/users/${p.userId}/messages/${encodeURIComponent(p.messageId)}/attachments/${encodeURIComponent(p.attachmentId)}`))
+    );
   });
 }

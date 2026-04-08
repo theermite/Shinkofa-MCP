@@ -25,7 +25,7 @@ export const ListEventsSchema = z.object({
 export const GetEventSchema = z.object({
   calendarId: CalendarId,
   eventId: EventId,
-  timeZone: z.string().optional(),
+  timeZone: z.string().optional().describe("IANA timezone for start/end times in the response"),
 });
 
 export const CreateEventSchema = z.object({
@@ -104,6 +104,7 @@ export const GetEventInstancesSchema = z.object({
   maxResults: z.number().min(1).max(2500).optional(),
   pageToken: z.string().optional(),
   timeZone: z.string().optional(),
+  showDeleted: z.boolean().optional().describe("Show deleted instances of recurring events"),
 });
 
 export const ImportEventSchema = z.object({
@@ -202,6 +203,8 @@ export const FreeBusyQuerySchema = z.object({
   timeMax: z.string().describe("RFC3339"),
   timeZone: z.string().optional(),
   items: z.array(z.object({ id: z.string() })).describe("Calendar IDs to query"),
+  groupExpansionMax: z.number().int().optional().describe("Max group members to expand (1-100)"),
+  calendarExpansionMax: z.number().int().optional().describe("Max calendars to expand (1-50)"),
 });
 
 // ── Settings ──

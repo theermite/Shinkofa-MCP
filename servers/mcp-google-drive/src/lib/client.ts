@@ -105,11 +105,17 @@ export class DriveClient {
   /** Multipart upload (metadata + content, up to 5MB). */
   async uploadFile(metadata: Record<string, unknown>, content: string, contentType: string, query?: Record<string, string | number | boolean | undefined>): Promise<unknown> {
     const boundary = `boundary_${crypto.randomUUID()}`;
-    const bodyParts = [
-      `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`,
-      `--${boundary}\r\nContent-Type: ${contentType}\r\n\r\n${content}\r\n`,
-      `--${boundary}--`,
-    ];
+    const isBinary = !contentType.startsWith("text/") && !contentType.includes("json") && !contentType.includes("xml") && !contentType.includes("csv");
+    const contentPart = isBinary
+      ? Buffer.concat([
+          Buffer.from(`--${boundary}\r\nContent-Type: ${contentType}\r\nContent-Transfer-Encoding: base64\r\n\r\n`),
+          Buffer.from(content, "base64"),
+          Buffer.from("\r\n"),
+        ])
+      : Buffer.from(`--${boundary}\r\nContent-Type: ${contentType}\r\n\r\n${content}\r\n`);
+    const metadataPart = Buffer.from(`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`);
+    const endPart = Buffer.from(`--${boundary}--`);
+    const body = Buffer.concat([metadataPart, contentPart, endPart]);
     let url = `${UPLOAD_BASE}/files?uploadType=multipart`;
     if (query) {
       const p = new URLSearchParams();
@@ -117,10 +123,10 @@ export class DriveClient {
       const qs = p.toString();
       if (qs) url += `&${qs}`;
     }
-    const result = await this.rawRequest(url, "POST", bodyParts.join(""), `multipart/related; boundary=${boundary}`);
+    const result = await this.rawRequest(url, "POST", body, `multipart/related; boundary=${boundary}`);
     if (result.status === 401 && this.canRefresh) {
       await this.refreshAccessToken();
-      const retry = await this.rawRequest(url, "POST", bodyParts.join(""), `multipart/related; boundary=${boundary}`);
+      const retry = await this.rawRequest(url, "POST", body, `multipart/related; boundary=${boundary}`);
       return this.parseJsonResponse(retry);
     }
     return this.parseJsonResponse(result);
@@ -129,16 +135,22 @@ export class DriveClient {
   /** Multipart update (metadata + content). */
   async updateFileContent(fileId: string, metadata: Record<string, unknown>, content: string, contentType: string): Promise<unknown> {
     const boundary = `boundary_${crypto.randomUUID()}`;
-    const bodyParts = [
-      `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`,
-      `--${boundary}\r\nContent-Type: ${contentType}\r\n\r\n${content}\r\n`,
-      `--${boundary}--`,
-    ];
+    const isBinary = !contentType.startsWith("text/") && !contentType.includes("json") && !contentType.includes("xml") && !contentType.includes("csv");
+    const contentPart = isBinary
+      ? Buffer.concat([
+          Buffer.from(`--${boundary}\r\nContent-Type: ${contentType}\r\nContent-Transfer-Encoding: base64\r\n\r\n`),
+          Buffer.from(content, "base64"),
+          Buffer.from("\r\n"),
+        ])
+      : Buffer.from(`--${boundary}\r\nContent-Type: ${contentType}\r\n\r\n${content}\r\n`);
+    const metadataPart = Buffer.from(`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`);
+    const endPart = Buffer.from(`--${boundary}--`);
+    const body = Buffer.concat([metadataPart, contentPart, endPart]);
     const url = `${UPLOAD_BASE}/files/${encodeURIComponent(fileId)}?uploadType=multipart`;
-    const result = await this.rawRequest(url, "PATCH", bodyParts.join(""), `multipart/related; boundary=${boundary}`);
+    const result = await this.rawRequest(url, "PATCH", body, `multipart/related; boundary=${boundary}`);
     if (result.status === 401 && this.canRefresh) {
       await this.refreshAccessToken();
-      const retry = await this.rawRequest(url, "PATCH", bodyParts.join(""), `multipart/related; boundary=${boundary}`);
+      const retry = await this.rawRequest(url, "PATCH", body, `multipart/related; boundary=${boundary}`);
       return this.parseJsonResponse(retry);
     }
     return this.parseJsonResponse(result);
@@ -152,7 +164,7 @@ export class DriveClient {
     return data;
   }
 
-  private async rawRequest(url: string, method: string, body?: string, contentType?: string): Promise<{ response: Response; status: number }> {
+  private async rawRequest(url: string, method: string, body?: string | Buffer, contentType?: string): Promise<{ response: Response; status: number }> {
     const headers: Record<string, string> = { Authorization: `Bearer ${this.accessToken}` };
     if (contentType) headers["Content-Type"] = contentType;
     const controller = new AbortController();

@@ -6,8 +6,15 @@ import { z } from "zod";
 const EntityId = z.string().describe("Entity ID (e.g. 'light.living_room')");
 
 export function registerEntityTools(server: McpServer, client: HAClient): void {
-  server.tool("list_states", "List all entity states (can be 300+ items)", {}, async () => {
-    return withErrorHandler(async () => toolResult(await client.callApi("GET", "/states")));
+  server.tool("list_states", "List all entity states (can be 300+ items)", { domain: z.string().optional().describe("Filter by domain (e.g. 'light', 'switch', 'sensor')") }, async (p) => {
+    return withErrorHandler(async () => {
+      const states = await client.callApi<Array<{ entity_id: string }>>("GET", "/states");
+      if (p.domain) {
+        const prefix = p.domain + ".";
+        return toolResult(states.filter((s: { entity_id: string }) => s.entity_id.startsWith(prefix)));
+      }
+      return toolResult(states);
+    });
   });
 
   server.tool("get_state", "Get state of a specific entity", { entity_id: EntityId }, async (p) => {
@@ -22,7 +29,7 @@ export function registerEntityTools(server: McpServer, client: HAClient): void {
     return withErrorHandler(async () => toolResult(await client.callApi("GET", "/services")));
   });
 
-  server.tool("call_service", "Call a Home Assistant service (e.g. turn on light, toggle switch) — this is the correct way to control physical devices", { domain: z.string().describe("Service domain (light, switch, scene, etc.)"), service: z.string().describe("Service name (turn_on, turn_off, toggle, etc.)"), entity_id: EntityId.optional(), data: z.record(z.unknown()).optional().describe("Additional service data (brightness, color_temp, etc.)") }, async (p) => {
+  server.tool("call_service", "Call a Home Assistant service. Common: domain='light' service='turn_on', domain='scene' service='turn_on', domain='automation' service='trigger', domain='script' service='turn_on', domain='climate' service='set_temperature'", { domain: z.string().describe("Service domain (light, switch, scene, etc.)"), service: z.string().describe("Service name (turn_on, turn_off, toggle, etc.)"), entity_id: EntityId.optional().describe("Entity to target (e.g. 'light.living_room')"), data: z.record(z.unknown()).optional().describe("Service call data payload") }, async (p) => {
     return withErrorHandler(async () => {
       const body: Record<string, unknown> = { ...p.data };
       if (p.entity_id) body.entity_id = p.entity_id;
@@ -34,7 +41,7 @@ export function registerEntityTools(server: McpServer, client: HAClient): void {
     return withErrorHandler(async () => toolResult(await client.callApi("GET", "/events")));
   });
 
-  server.tool("fire_event", "Fire a custom event", { event_type: z.string(), event_data: z.record(z.unknown()).optional() }, async (p) => {
+  server.tool("fire_event", "Fire a custom event", { event_type: z.string().describe("Event type to fire (e.g. 'custom_event')"), event_data: z.record(z.unknown()).optional().describe("Event payload data") }, async (p) => {
     return withErrorHandler(async () => toolResult(await client.callApi("POST", `/events/${p.event_type}`, p.event_data)));
   });
 }

@@ -81,6 +81,12 @@ export const BatchDeleteMessagesSchema = z.object({
   ids: z.array(MessageId).min(1).max(1000).describe("Message IDs to permanently delete (max 1000)"),
 });
 
+export const GetAttachmentSchema = z.object({
+  userId: UserId,
+  messageId: MessageId.describe("Message ID containing the attachment"),
+  attachmentId: z.string().describe("Attachment ID from the message parts"),
+});
+
 // ── Drafts ──
 
 export const ListDraftsSchema = z.object({
@@ -117,13 +123,13 @@ export const UpdateDraftSchema = z.object({
   to: z.string().describe("Recipient email address(es), comma-separated"),
   subject: z.string().describe("Email subject"),
   body: z.string().describe("Email body (plain text or HTML)"),
-  cc: z.string().optional(),
-  bcc: z.string().optional(),
-  replyTo: z.string().optional(),
-  inReplyTo: z.string().optional(),
-  references: z.string().optional(),
-  isHtml: z.boolean().optional().default(false),
-  threadId: ThreadId.optional(),
+  cc: z.string().optional().describe("CC recipients (comma-separated emails)"),
+  bcc: z.string().optional().describe("BCC recipients (comma-separated emails)"),
+  replyTo: z.string().optional().describe("Reply-To email address"),
+  inReplyTo: z.string().optional().describe("Message-ID being replied to"),
+  references: z.string().optional().describe("References header for threading"),
+  isHtml: z.boolean().optional().default(false).describe("Set true if body contains HTML"),
+  threadId: ThreadId.optional().describe("Thread ID to associate draft with"),
 });
 
 export const DeleteDraftSchema = z.object({
@@ -173,14 +179,16 @@ export const UpdateLabelSchema = z.object({
   name: z.string().optional().describe("New label display name"),
   labelListVisibility: z
     .enum(["labelShow", "labelShowIfUnread", "labelHide"])
-    .optional(),
-  messageListVisibility: z.enum(["show", "hide"]).optional(),
+    .optional()
+    .describe("Visibility in label list: labelShow, labelShowIfUnread, or labelHide"),
+  messageListVisibility: z.enum(["show", "hide"]).optional().describe("Visibility in message list: show or hide"),
   color: z
     .object({
-      textColor: z.string(),
-      backgroundColor: z.string(),
+      textColor: z.string().describe("Hex color for label text (e.g. '#000000')"),
+      backgroundColor: z.string().describe("Hex color for label background (e.g. '#ffffff')"),
     })
-    .optional(),
+    .optional()
+    .describe("Label color with textColor and backgroundColor"),
 });
 
 export const DeleteLabelSchema = z.object({
