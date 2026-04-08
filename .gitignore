@@ -1,5 +1,8 @@
 node_modules/
 dist/
+*-broken-backup/
+servers/mcp-gmail/mcp-gmail/
+servers/mcp-google-calendar/mcp-google-calendar/
 .env
 .env.local
 .env.prod
