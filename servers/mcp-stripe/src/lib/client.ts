@@ -30,7 +30,7 @@ export class StripeClient {
    * Flatten nested objects into Stripe's form-encoded format.
    * e.g., { metadata: { key: "val" } } → "metadata[key]=val"
    */
-  private flattenParams(
+  flattenParams(
     obj: Record<string, unknown>,
     prefix = "",
   ): [string, string][] {
@@ -44,13 +44,23 @@ export class StripeClient {
       if (Array.isArray(value)) {
         for (let i = 0; i < value.length; i++) {
           if (typeof value[i] === "object" && value[i] !== null) {
-            pairs.push(...this.flattenParams(value[i] as Record<string, unknown>, `${fullKey}[${i}]`));
+            pairs.push(
+              ...this.flattenParams(
+                value[i] as Record<string, unknown>,
+                `${fullKey}[${i}]`,
+              ),
+            );
           } else {
             pairs.push([`${fullKey}[${i}]`, String(value[i])]);
           }
         }
       } else if (typeof value === "object") {
-        pairs.push(...this.flattenParams(value as Record<string, unknown>, fullKey));
+        pairs.push(
+          ...this.flattenParams(
+            value as Record<string, unknown>,
+            fullKey,
+          ),
+        );
       } else {
         pairs.push([fullKey, String(value)]);
       }
@@ -60,16 +70,14 @@ export class StripeClient {
   }
 
   /**
-   * Call any Stripe API endpoint.
-   * @param method HTTP method
-   * @param path API path (e.g. "/customers")
-   * @param params Parameters (form-encoded for POST/PATCH, query for GET)
+   * Execute a request and return raw response + parsed data.
+   * Guards against non-JSON responses (502/503 proxy errors).
    */
-  async callApi<T = unknown>(
+  private async executeRequest(
     method: "GET" | "POST" | "DELETE",
     path: string,
     params?: Record<string, unknown>,
-  ): Promise<T> {
+  ): Promise<{ response: Response; data: unknown; status: number }> {
     let url = `${this.apiBaseUrl}${path}`;
 
     const headers: Record<string, string> = {
@@ -81,7 +89,9 @@ export class StripeClient {
 
     if (params) {
       const cleaned = Object.fromEntries(
-        Object.entries(params).filter(([, v]) => v !== undefined && v !== null),
+        Object.entries(params).filter(
+          ([, v]) => v !== undefined && v !== null,
+        ),
       );
 
       if (method === "GET") {
@@ -112,22 +122,68 @@ export class StripeClient {
         signal: controller.signal,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        const err = (data as { error?: { type?: string; code?: string; message?: string } }).error;
-        throw new StripeError(
-          response.status,
-          err?.type ?? "api_error",
-          err?.code,
-          err?.message ?? response.statusText,
-        );
+      if (response.status === 204) {
+        return { response, data: undefined, status: 204 };
       }
 
-      return data as T;
+      let data: unknown;
+      try {
+        data = await response.json();
+      } catch {
+        data = {
+          error: {
+            type: "api_error",
+            message: `Non-JSON response (${response.status})`,
+          },
+        };
+      }
+
+      return { response, data, status: response.status };
     } finally {
       clearTimeout(timeout);
     }
+  }
+
+  /**
+   * Process the response — throw StripeError on non-2xx.
+   */
+  private handleResponse<T>(response: Response, data: unknown): T {
+    if (response.status === 204) return undefined as T;
+
+    if (!response.ok) {
+      const err = (
+        data as {
+          error?: { type?: string; code?: string; message?: string };
+        }
+      ).error;
+      throw new StripeError(
+        response.status,
+        err?.type ?? "api_error",
+        err?.code,
+        err?.message ?? response.statusText,
+      );
+    }
+
+    return data as T;
+  }
+
+  /**
+   * Call any Stripe API endpoint.
+   * @param method HTTP method
+   * @param path API path (e.g. "/customers")
+   * @param params Parameters (form-encoded for POST/PATCH, query for GET)
+   */
+  async callApi<T = unknown>(
+    method: "GET" | "POST" | "DELETE",
+    path: string,
+    params?: Record<string, unknown>,
+  ): Promise<T> {
+    const { response, data } = await this.executeRequest(
+      method,
+      path,
+      params,
+    );
+    return this.handleResponse<T>(response, data);
   }
 }
 
@@ -138,7 +194,9 @@ export class StripeError extends Error {
     public readonly code: string | undefined,
     public readonly description: string,
   ) {
-    super(`Stripe error ${httpStatus} (${type}${code ? `/${code}` : ""}): ${description}`);
+    super(
+      `Stripe error ${httpStatus} (${type}${code ? `/${code}` : ""}): ${description}`,
+    );
     this.name = "StripeError";
   }
 }

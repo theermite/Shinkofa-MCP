@@ -18,6 +18,7 @@ import { registerPaymentTools } from "./tools/payments.js";
 import { registerSubscriptionTools } from "./tools/subscriptions.js";
 import { registerInvoiceTools } from "./tools/invoices.js";
 import { registerCatalogTools } from "./tools/catalog.js";
+import { registerPromotionTools } from "./tools/promotions.js";
 import { registerCheckoutTools } from "./tools/checkout.js";
 import { registerBillingTools } from "./tools/billing.js";
 import { registerFinanceTools } from "./tools/finance.js";
@@ -36,7 +37,7 @@ async function main(): Promise<void> {
     apiBaseUrl: process.env["STRIPE_API_BASE_URL"],
     apiVersion: process.env["STRIPE_API_VERSION"],
     timeoutMs: process.env["STRIPE_TIMEOUT_MS"]
-      ? parseInt(process.env["STRIPE_TIMEOUT_MS"], 10)
+      ? parseInt(process.env["STRIPE_TIMEOUT_MS"], 10) || undefined
       : undefined,
   });
 
@@ -50,6 +51,7 @@ async function main(): Promise<void> {
   registerSubscriptionTools(server, client);
   registerInvoiceTools(server, client);
   registerCatalogTools(server, client);
+  registerPromotionTools(server, client);
   registerCheckoutTools(server, client);
   registerBillingTools(server, client);
   registerFinanceTools(server, client);
