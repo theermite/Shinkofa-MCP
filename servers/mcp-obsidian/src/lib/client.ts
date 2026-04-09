@@ -15,12 +15,14 @@ export class ObsidianClient {
   private readonly apiKey: string;
   private readonly baseUrl: string;
   private readonly timeoutMs: number;
+  private readonly insecure: boolean;
 
   constructor(config: ObsidianClientConfig) {
     if (!config.apiKey) throw new Error("OBSIDIAN_API_KEY is required");
     this.apiKey = config.apiKey;
     this.baseUrl = config.baseUrl ?? "https://127.0.0.1:27124";
     this.timeoutMs = config.timeoutMs ?? 15_000;
+    this.insecure = config.insecure ?? false;
   }
 
   async callApi<T = unknown>(

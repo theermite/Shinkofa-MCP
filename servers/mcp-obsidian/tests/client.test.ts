@@ -35,6 +35,11 @@ describe("ObsidianClient — constructor", () => {
     const client = new ObsidianClient({ apiKey: "key123" });
     expect(client).toBeDefined();
   });
+
+  it("should_accept_insecure_option", () => {
+    const client = new ObsidianClient({ apiKey: "key123", insecure: true });
+    expect(client).toBeDefined();
+  });
 });
 
 describe("ObsidianClient — callApi", () => {
