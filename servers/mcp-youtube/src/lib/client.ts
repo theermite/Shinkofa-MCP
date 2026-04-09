@@ -32,7 +32,8 @@ export class YouTubeClient {
     try {
       const response = await fetch(url, { method, headers, body: fetchBody, signal: controller.signal });
       if (response.status === 204) return undefined as T;
-      const data = await response.json();
+      let data: unknown;
+      try { data = await response.json(); } catch { throw new YouTubeError(response.status, `Non-JSON response (${response.status})`); }
       if (!response.ok) { const err = (data as { error?: { code?: number; message?: string } }).error; throw new YouTubeError(err?.code ?? response.status, err?.message ?? response.statusText); }
       return data as T;
     } finally { clearTimeout(timeout); }
