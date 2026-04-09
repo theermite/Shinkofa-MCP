@@ -39,7 +39,7 @@ async function main(): Promise<void> {
     accessToken: process.env["TWITCH_ACCESS_TOKEN"],
     apiBaseUrl: process.env["TWITCH_API_BASE_URL"],
     timeoutMs: process.env["TWITCH_TIMEOUT_MS"]
-      ? parseInt(process.env["TWITCH_TIMEOUT_MS"], 10)
+      ? parseInt(process.env["TWITCH_TIMEOUT_MS"], 10) || undefined
       : undefined,
   });
 

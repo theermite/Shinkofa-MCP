@@ -144,7 +144,8 @@ export class TwitchClient {
         return undefined as T;
       }
 
-      const data = await response.json();
+      let data: unknown;
+      try { data = await response.json(); } catch { throw new TwitchError(response.status, `Non-JSON response (${response.status})`); }
 
       if (!response.ok) {
         throw new TwitchError(
