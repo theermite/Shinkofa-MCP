@@ -20,7 +20,7 @@ async function main(): Promise<void> {
   const client = new ObsidianClient({
     apiKey,
     baseUrl: process.env["OBSIDIAN_API_URL"],
-    timeoutMs: process.env["OBSIDIAN_TIMEOUT_MS"] ? parseInt(process.env["OBSIDIAN_TIMEOUT_MS"], 10) : undefined,
+    timeoutMs: process.env["OBSIDIAN_TIMEOUT_MS"] ? parseInt(process.env["OBSIDIAN_TIMEOUT_MS"], 10) || undefined : undefined,
   });
 
   const server = new McpServer({ name: "@shinkofa/mcp-obsidian", version: "1.0.0" });
