@@ -88,11 +88,13 @@ export class DiscordClient {
 
       // Handle rate limiting
       if (response.status === 429) {
-        const data = (await response.json()) as {
-          retry_after: number;
-          global: boolean;
-        };
-        throw new DiscordRateLimitError(data.retry_after, data.global);
+        let rlData: { retry_after: number; global: boolean };
+        try {
+          rlData = (await response.json()) as { retry_after: number; global: boolean };
+        } catch {
+          throw new DiscordRateLimitError(5, false);
+        }
+        throw new DiscordRateLimitError(rlData.retry_after, rlData.global);
       }
 
       // Handle 204 No Content
@@ -100,7 +102,12 @@ export class DiscordClient {
         return undefined as T;
       }
 
-      const data = await response.json();
+      let data: unknown;
+      try {
+        data = await response.json();
+      } catch {
+        throw new DiscordError(response.status, 0, `Non-JSON response (${response.status})`);
+      }
 
       if (!response.ok) {
         const err = data as DiscordApiError;

@@ -50,7 +50,7 @@ async function main(): Promise<void> {
     botToken,
     apiBaseUrl: process.env["DISCORD_API_BASE_URL"],
     timeoutMs: process.env["DISCORD_TIMEOUT_MS"]
-      ? parseInt(process.env["DISCORD_TIMEOUT_MS"], 10)
+      ? parseInt(process.env["DISCORD_TIMEOUT_MS"], 10) || undefined
       : undefined,
   });
 
