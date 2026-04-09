@@ -147,6 +147,23 @@ describe("TelegramClient", () => {
     expect(call[1].body).toBeUndefined();
   });
 
+  it("should throw TelegramError on non-JSON response", async () => {
+    mockFetch.mockResolvedValue({
+      json: () => Promise.reject(new SyntaxError("Unexpected token")),
+      status: 502,
+    });
+
+    try {
+      await client.callApi("getMe");
+      expect.unreachable("should have thrown");
+    } catch (e) {
+      const err = e as TelegramError;
+      expect(err).toBeInstanceOf(TelegramError);
+      expect(err.code).toBe(502);
+      expect(err.description).toContain("Non-JSON");
+    }
+  });
+
   it("should send no body when all params are undefined", async () => {
     mockFetch.mockResolvedValue(mockResponse({ ok: true, result: {} }));
 

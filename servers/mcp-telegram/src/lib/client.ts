@@ -94,7 +94,12 @@ export class TelegramClient {
         signal: controller.signal,
       });
 
-      const data = (await response.json()) as TelegramApiResponse<T>;
+      let data: TelegramApiResponse<T>;
+      try {
+        data = (await response.json()) as TelegramApiResponse<T>;
+      } catch {
+        throw new TelegramError(response.status, `Non-JSON response (${response.status})`);
+      }
 
       if (!data.ok) {
         const err = data as TelegramApiError;

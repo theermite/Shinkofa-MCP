@@ -40,7 +40,7 @@ async function main(): Promise<void> {
     botToken,
     apiBaseUrl: process.env["TELEGRAM_API_BASE_URL"],
     timeoutMs: process.env["TELEGRAM_TIMEOUT_MS"]
-      ? parseInt(process.env["TELEGRAM_TIMEOUT_MS"], 10)
+      ? parseInt(process.env["TELEGRAM_TIMEOUT_MS"], 10) || undefined
       : undefined,
   });
 

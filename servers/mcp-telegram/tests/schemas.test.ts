@@ -4,12 +4,14 @@ import {
   SendMediaSchema,
   DeleteMessagesSchema,
   SendPollSchema,
+} from "../src/lib/schemas.js";
+import {
   BanChatMemberSchema,
   SetWebhookSchema,
   RawApiCallSchema,
   CreateForumTopicSchema,
   SendInvoiceSchema,
-} from "../src/lib/schemas.js";
+} from "../src/lib/schemas-bot.js";
 
 describe("SendMessageSchema", () => {
   it("should accept valid message", () => {
