@@ -1,84 +1,119 @@
-# MCP Servers — Shinkofa Ecosystem
+# MCP Servers — Plan & Suivi
 
-> Custom MCP servers built by Jay The Ermite. Quality-first, 100% API coverage.
+> Source de verite pour tous les MCP Shinkofa : existants, planifies, progression.
+> Derniere mise a jour : 2026-04-12.
 
-## Philosophy
+---
 
-- **Typed tools** for common operations (Zod-validated, clear descriptions)
-- **Raw mode** for 100% API coverage (no limitations)
-- **Zero dependencies** beyond MCP SDK + Zod
-- **Dual transport**: stdio (Claude Code, KOSHIN) + HTTP/SSE (VPS, remote agents)
-- **GPU support** where applicable (RTX 4090 NVENC/CUDA)
+## Production (16 MCPs — 672 tools, 1 678 tests)
 
-## Batch 1 — Completed
+Tous : TypeScript, withErrorHandler, Zod, Vitest, build tsup, zero type errors.
 
-| MCP | Status | Tests | Tools | Coverage |
-|-----|--------|-------|-------|----------|
-| [@shinkofa/mcp-telegram](./mcp-telegram/) | Done | 36/36 | 42 + raw | 100% Bot API 9.5 |
-| [@shinkofa/mcp-ffmpeg](./mcp-ffmpeg/) | Done | 51/51 | 20 + 2 raw | 100% FFmpeg/FFprobe |
+| MCP | Tools | Tests | Sert a |
+|-----|------:|------:|--------|
+| mcp-discord | 108 | 235 | Koshin, communaute |
+| mcp-docker | 44 | 86 | Koshin, infra |
+| mcp-ffmpeg | 20 | 70 | Streaming, contenu video |
+| mcp-gmail | 34 | 171 | Koshin, communication |
+| mcp-google-calendar | 29 | 152 | Koshin, planning |
+| mcp-google-drive | 14 | 112 | Koshin, fichiers |
+| mcp-home-assistant | 18 | 86 | Domotique (en attente) |
+| mcp-imagemagick | 21 | 34 | Contenu images |
+| mcp-n8n | 28 | 50 | Koshin, automatisation |
+| mcp-obs | 71 | 25 | Streaming |
+| mcp-obsidian | 18 | 95 | Koshin, memoire projet |
+| mcp-streamerbot | 15 | 46 | Streaming |
+| mcp-stripe | 79 | 162 | Paiement, facturation |
+| mcp-telegram | 43 | 109 | Koshin, communication |
+| mcp-twitch | 83 | 137 | Streaming |
+| mcp-youtube | 47 | 108 | Contenu, streaming |
 
-## Batch 1 — Remaining
+---
 
-| MCP | Status | API Source | Estimated Tools |
-|-----|--------|------------|-----------------|
-| @shinkofa/mcp-stripe | Planned | ~515 endpoints | ~25 + raw |
-| @shinkofa/mcp-discord | Planned | ~225 endpoints | ~25 + raw |
-| @shinkofa/mcp-twitch | Planned | ~115 REST + 80 EventSub | ~20 + raw |
-| @shinkofa/mcp-calendar | Planned | 36 methods | ~12 + raw |
+## Sprint 1 — Koshin + Pipeline + Infra
 
-## Batch 2 — Planned
+| # | MCP | API / Protocole | Auth | Rate Limits | Projets | Status |
+|---|-----|----------------|------|-------------|---------|--------|
+| 1 | mcp-ollama | Ollama REST (localhost:11434) | Aucune | Illimitee (local) | Koshin, Shizen | [ ] A faire |
+| 2 | mcp-cloudflare | Cloudflare API v4 | API Token (self-service) | 1 200 req/5min | Koshin, infra | [ ] A faire |
+| 3 | mcp-devto | DEV.to REST API | API Key (self-service) | 30 req/30s (write), 10 req/30s (search) | Pipeline contenu | [ ] A faire |
+| 4 | mcp-hashnode | Hashnode GraphQL API | Personal Access Token | Non documente | Pipeline contenu | [ ] A faire |
+| 5 | mcp-linkedin | LinkedIn Posts API (w_member_social) | OAuth2 (Share on LinkedIn, self-service) | 100 posts/jour, token 60j (refresh 365j) | Pipeline contenu | [ ] A faire |
+| 6 | mcp-tailscale | Tailscale REST API | API Key (self-service) | Non documente | Koshin, reseau | [ ] A faire |
+| 7 | mcp-cpanel | cPanel UAPI / API2 | API Token (cree dans cPanel) | Non documente | O2Switch, tout hebergement cPanel | [ ] A faire |
+| 8 | mcp-system | OS natif (Win32 + Linux) | Aucune (local) | N/A | Koshin, migration Windows→Linux | [ ] A faire |
 
-| MCP | Priority |
-|-----|----------|
-| @shinkofa/mcp-docker | High |
-| @shinkofa/mcp-ovh | High |
-| @shinkofa/mcp-cloudflare | High |
-| @shinkofa/mcp-n8n | High |
-| @shinkofa/mcp-ollama | High |
-| @shinkofa/mcp-deepl | High |
-| @shinkofa/mcp-github | High |
-| @shinkofa/mcp-stripe | High |
-| @shinkofa/mcp-calcom | High |
-| @shinkofa/mcp-home-assistant | High |
-| @shinkofa/mcp-gmail | Medium |
-| @shinkofa/mcp-obsidian | Medium |
-| @shinkofa/mcp-bitwarden | Medium |
-| @shinkofa/mcp-chrome | Medium |
-| @shinkofa/mcp-vlc | Medium |
-| @shinkofa/mcp-paypal | Medium |
-| @shinkofa/mcp-spotify | Medium |
-| @shinkofa/mcp-youtube-live | Medium |
-| @shinkofa/mcp-google-meet | Low |
-| @shinkofa/mcp-alexa | Low |
-| @shinkofa/mcp-resend | Low |
-| @shinkofa/mcp-windows | Low |
-| @shinkofa/mcp-linux | Low |
+---
+
+## Sprint 2 — Kakusei Core (gaming/esport)
+
+| # | MCP | API / Protocole | Auth | Rate Limits | Jeux couverts | Status |
+|---|-----|----------------|------|-------------|---------------|--------|
+| 9 | mcp-riot-games | Riot Games API (REST) | API Key (dev: 24h auto, prod: approbation 1-3 sem.) | Dev: 20/s, 100/2min | LoL, Valorant, TFT, Wild Rift, LoR | [ ] A faire |
+| 10 | mcp-steam | Steam Web API (REST) | API Key (self-service, compte non-limite requis) | 100 000/jour | Profils, jeux, achievements, stats | [ ] A faire |
+| 11 | mcp-blizzard | Battle.net API (REST, OAuth2) | Client ID + Secret (self-service) | 36 000/h, 100/s | WoW, Diablo, Hearthstone, StarCraft 2 | [ ] A faire |
+| 12 | mcp-faceit | FACEIT Data API (REST) | API Key (self-service) | 10 000/h | CS2, Valorant, Dota 2, Rocket League | [ ] A faire |
+
+---
+
+## Sprint 3 — Kakusei Extension
+
+| # | MCP | API / Protocole | Auth | Rate Limits | Jeux couverts | Status |
+|---|-----|----------------|------|-------------|---------------|--------|
+| 13 | mcp-opendota | OpenDota REST API | Optionnel (gratuit sans cle) | 50 000/mois (avec cle), 2 000/jour (sans) | Dota 2 (matchs parses, telemetrie) | [ ] A faire |
+| 14 | mcp-pubg | PUBG REST API | JWT API Key (self-service) | 10/min (extensible sur demande) | PUBG PC + console | [ ] A faire |
+| 15 | mcp-supercell | Supercell REST APIs (3 portails) | API Key par jeu (IP-locked, self-service) | 10 req/s/token | Clash of Clans, Clash Royale, Brawl Stars | [ ] A faire |
+| 16 | mcp-osu | osu! REST API v2 (OAuth2) | Client ID + Secret (self-service) | ~60/min | osu! | [ ] A faire |
+| 17 | mcp-wargaming | Wargaming REST API | Application ID (self-service) | Moderee (header-based) | World of Tanks, Warships, Warplanes | [ ] A faire |
+| 18 | mcp-hypixel | Hypixel REST API | API Key (self-service) | 300/5min | Minecraft PvP (Bedwars, Skywars...) | [ ] A faire |
+| 19 | mcp-chess | Chess.com REST + Lichess REST | Aucune (Chess.com), OAuth2 optionnel (Lichess) | Genereux | Chess.com + Lichess | [ ] A faire |
+
+---
+
+## Optionnel / A evaluer
+
+| MCP | API | Notes |
+|-----|-----|-------|
+| mcp-dofusdude | Dofusdude community REST (pas Ankama officiel) | Encyclopedie Dofus uniquement (items, sets, almanax). Pas de stats joueurs. |
+| mcp-fortnite | fortnite-api.com (tierce, pas Epic officiel) | Stats joueurs, shop, cosmetics. API tierce = fragile. |
+| mcp-apex | apexlegendsapi.com (tierce, pas EA officiel) | Stats joueurs, rotations. API tierce = fragile. |
+| mcp-r6siege | r6data.eu (tierce, pas Ubisoft officiel) | Stats joueurs R6 Siege. API tierce = fragile. |
+| mcp-resend | Resend REST API | Email transactionnel. A considerer si on quitte le SMTP pur. |
+
+---
+
+## APIs sans acces viable (pas de MCP possible)
+
+| Jeu / Plateforme | Raison |
+|------------------|--------|
+| EA Sports FC (FIFA) | Pas d'API publique |
+| Rocket League | Acces restreint (contacter Psyonix) |
+| Overwatch 2 | Blizzard n'a jamais publie d'API |
+| Honor of Kings | Pas d'API publique (scrapers fragiles uniquement) |
+| Mobile Legends | Pas d'API publique (scrapers fragiles uniquement) |
+| Ankama (stats joueurs) | Pas d'API officielle (Dofusdude = encyclopedie seulement) |
+
+---
+
+## Standards de qualite (non-negociable)
+
+Chaque MCP doit respecter :
+
+- [ ] TypeScript ESM, Zod validation
+- [ ] `withErrorHandler` sur chaque tool (classe d'erreur custom + Error generique)
+- [ ] `toolResult(undefined)` retourne `{"status":"success"}`
+- [ ] Fichiers < 300 lignes (hook-enforced)
+- [ ] Tests Vitest (schemas, utils/error handler, tool registration, client/config)
+- [ ] Build tsup clean, zero erreurs TypeScript
+- [ ] Commit atomique avec Co-Authored-By
 
 ## Stack
 
-- **Language**: TypeScript (ESM)
-- **MCP SDK**: `@modelcontextprotocol/sdk`
-- **Validation**: Zod
-- **Build**: tsup
-- **Tests**: Vitest (95%+ coverage target)
-- **Runtime**: Node.js 20+
-
-## Quick Setup (Claude Code)
-
-Add to your Claude Code MCP settings:
-
-```json
-{
-  "mcpServers": {
-    "telegram": {
-      "command": "node",
-      "args": ["D:/30-Dev-Projects/Shinkofa-Ecosystem/tools/mcp-telegram/dist/index.js"],
-      "env": { "TELEGRAM_BOT_TOKEN": "your-token" }
-    },
-    "ffmpeg": {
-      "command": "node",
-      "args": ["D:/30-Dev-Projects/Shinkofa-Ecosystem/tools/mcp-ffmpeg/dist/index.js"]
-    }
-  }
-}
-```
+| Composant | Technologie |
+|-----------|-------------|
+| Language | TypeScript (ESM) |
+| MCP SDK | `@modelcontextprotocol/sdk` |
+| Validation | Zod |
+| Build | tsup |
+| Tests | Vitest |
+| Runtime | Node.js 20+ |
