@@ -5,7 +5,7 @@
 
 ---
 
-## Production (16 MCPs — 672 tools, 1 678 tests)
+## Production (20 MCPs — 709 tools, 1 903 tests)
 
 Tous : TypeScript, withErrorHandler, Zod, Vitest, build tsup, zero type errors.
 
@@ -27,6 +27,10 @@ Tous : TypeScript, withErrorHandler, Zod, Vitest, build tsup, zero type errors.
 | mcp-telegram | 43 | 109 | Koshin, communication |
 | mcp-twitch | 83 | 137 | Streaming |
 | mcp-youtube | 47 | 108 | Contenu, streaming |
+| mcp-ollama | 14 | 66 | Koshin, Shizen (local LLM) |
+| mcp-devto | 16 | 63 | Pipeline contenu |
+| mcp-hashnode | 16 | 45 | Pipeline contenu |
+| mcp-linkedin | 7 | 51 | Pipeline contenu |
 
 ---
 
@@ -34,11 +38,11 @@ Tous : TypeScript, withErrorHandler, Zod, Vitest, build tsup, zero type errors.
 
 | # | MCP | API / Protocole | Auth | Rate Limits | Projets | Status |
 |---|-----|----------------|------|-------------|---------|--------|
-| 1 | mcp-ollama | Ollama REST (localhost:11434) | Aucune | Illimitee (local) | Koshin, Shizen | [ ] A faire |
+| 1 | mcp-ollama | Ollama REST (localhost:11434) | Aucune | Illimitee (local) | Koshin, Shizen | [x] Done (14 tools, 66 tests) |
 | 2 | mcp-cloudflare | Cloudflare API v4 | API Token (self-service) | 1 200 req/5min | Koshin, infra | [ ] A faire |
-| 3 | mcp-devto | DEV.to REST API | API Key (self-service) | 30 req/30s (write), 10 req/30s (search) | Pipeline contenu | [ ] A faire |
-| 4 | mcp-hashnode | Hashnode GraphQL API | Personal Access Token | Non documente | Pipeline contenu | [ ] A faire |
-| 5 | mcp-linkedin | LinkedIn Posts API (w_member_social) | OAuth2 (Share on LinkedIn, self-service) | 100 posts/jour, token 60j (refresh 365j) | Pipeline contenu | [ ] A faire |
+| 3 | mcp-devto | DEV.to REST API | API Key (self-service) | 30 req/30s (write), 10 req/30s (search) | Pipeline contenu | [x] Done (16 tools, 63 tests) |
+| 4 | mcp-hashnode | Hashnode GraphQL API | Personal Access Token | Non documente | Pipeline contenu | [x] Done (16 tools, 45 tests) |
+| 5 | mcp-linkedin | LinkedIn Posts API (w_member_social) | OAuth2 (Share on LinkedIn, self-service) | 150 req/jour/member, token 60j | Pipeline contenu | [x] Done (7 tools, 51 tests) |
 | 6 | mcp-tailscale | Tailscale REST API | API Key (self-service) | Non documente | Koshin, reseau | [ ] A faire |
 | 7 | mcp-cpanel | cPanel UAPI / API2 | API Token (cree dans cPanel) | Non documente | O2Switch, tout hebergement cPanel | [ ] A faire |
 | 8 | mcp-system | OS natif (Win32 + Linux) | Aucune (local) | N/A | Koshin, migration Windows→Linux | [ ] A faire |
