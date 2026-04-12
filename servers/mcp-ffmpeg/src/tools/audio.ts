@@ -4,7 +4,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { NormalizeAudioSchema, GifSchema } from "../lib/schemas.js";
 import { exec, type ExecutorConfig, validateInputFile } from "../lib/executor.js";
-import { toolResult, toolError } from "../lib/utils.js";
+import { toolResult, toolError, withErrorHandler } from "../lib/utils.js";
 
 async function runFfmpeg(config: ExecutorConfig, args: string[]): Promise<ReturnType<typeof toolResult>> {
   const result = await exec(config.ffmpegPath, args, { timeoutMs: config.timeoutMs });
@@ -15,13 +15,8 @@ async function runFfmpeg(config: ExecutorConfig, args: string[]): Promise<Return
 }
 
 export function registerAudioTools(server: McpServer, config: ExecutorConfig): void {
-
-  // ── Normalize Audio ──
-  server.tool(
-    "normalize_audio",
-    "Normalize audio loudness to EBU R128 standard (broadcast standard)",
-    NormalizeAudioSchema.shape,
-    async (params) => {
+  server.tool("normalize_audio", "Normalize audio loudness to EBU R128 standard (broadcast standard)", NormalizeAudioSchema.shape, async (params) => {
+    return withErrorHandler(async () => {
       await validateInputFile(params.input);
       const args = [
         "-y", "-i", params.input,
@@ -29,22 +24,14 @@ export function registerAudioTools(server: McpServer, config: ExecutorConfig): v
         params.output,
       ];
       return runFfmpeg(config, args);
-    }
-  );
+    });
+  });
 
-  // ── GIF ──
-  server.tool(
-    "create_gif",
-    "Create a high-quality GIF from a video segment (with palette optimization)",
-    GifSchema.shape,
-    async (params) => {
+  server.tool("create_gif", "Create a high-quality GIF from a video segment (with palette optimization)", GifSchema.shape, async (params) => {
+    return withErrorHandler(async () => {
       await validateInputFile(params.input);
-
       if (params.high_quality) {
-        // Two-pass with palettegen for better colors
         const palettePath = `${params.output}.palette.png`;
-
-        // Pass 1: Generate palette
         const pass1Args = ["-y", "-i", params.input];
         if (params.start) pass1Args.push("-ss", params.start);
         pass1Args.push(
@@ -52,13 +39,10 @@ export function registerAudioTools(server: McpServer, config: ExecutorConfig): v
           "-vf", `fps=${params.fps},scale=${params.width}:-1:flags=lanczos,palettegen`,
           palettePath,
         );
-
         const pass1 = await exec(config.ffmpegPath, pass1Args, { timeoutMs: config.timeoutMs });
         if (pass1.exitCode !== 0) {
           return toolError(`GIF palette generation failed: ${pass1.stderr.slice(-500)}`);
         }
-
-        // Pass 2: Use palette
         const pass2Args = ["-y", "-i", params.input, "-i", palettePath];
         if (params.start) pass2Args.push("-ss", params.start);
         pass2Args.push(
@@ -66,31 +50,21 @@ export function registerAudioTools(server: McpServer, config: ExecutorConfig): v
           "-lavfi", `fps=${params.fps},scale=${params.width}:-1:flags=lanczos[x];[x][1:v]paletteuse`,
           params.output,
         );
-
         const pass2 = await exec(config.ffmpegPath, pass2Args, { timeoutMs: config.timeoutMs });
-
-        // Cleanup palette
         try {
           const { unlink } = await import("node:fs/promises");
           await unlink(palettePath);
         } catch {}
-
         if (pass2.exitCode !== 0) {
           return toolError(`GIF creation failed: ${pass2.stderr.slice(-500)}`);
         }
-
         return toolResult({ status: "success", output: params.output });
       } else {
-        // Simple single-pass GIF
         const args = ["-y", "-i", params.input];
         if (params.start) args.push("-ss", params.start);
-        args.push(
-          "-t", String(params.duration),
-          "-vf", `fps=${params.fps},scale=${params.width}:-1`,
-          params.output,
-        );
+        args.push("-t", String(params.duration), "-vf", `fps=${params.fps},scale=${params.width}:-1`, params.output);
         return runFfmpeg(config, args);
       }
-    }
-  );
+    });
+  });
 }

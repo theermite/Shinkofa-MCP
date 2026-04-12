@@ -4,7 +4,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ConvertSchema } from "../lib/schemas.js";
 import { exec, type ExecutorConfig, validateInputFile } from "../lib/executor.js";
-import { toolResult, toolError } from "../lib/utils.js";
+import { toolResult, toolError, withErrorHandler } from "../lib/utils.js";
 
 export function registerConvertTools(server: McpServer, config: ExecutorConfig): void {
   server.tool(
@@ -12,6 +12,7 @@ export function registerConvertTools(server: McpServer, config: ExecutorConfig):
     "Convert/transcode a media file — change format, codec, quality, resolution. Supports GPU (NVENC) acceleration.",
     ConvertSchema.shape,
     async (params) => {
+      return withErrorHandler(async () => {
       await validateInputFile(params.input);
 
       const args: string[] = ["-y"];
@@ -100,6 +101,7 @@ export function registerConvertTools(server: McpServer, config: ExecutorConfig):
         status: "success",
         output: params.output,
         log: result.stderr.slice(-300),
+      });
       });
     }
   );

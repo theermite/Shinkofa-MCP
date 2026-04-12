@@ -26,6 +26,7 @@ import { createConfig, checkBinaryExists } from "./lib/executor.js";
 import { registerProbeTools } from "./tools/probe.js";
 import { registerConvertTools } from "./tools/convert.js";
 import { registerEditTools } from "./tools/edit.js";
+import { registerComposeTools } from "./tools/compose.js";
 import { registerExtractTools } from "./tools/extract.js";
 import { registerAudioTools } from "./tools/audio.js";
 import { registerStreamingTools } from "./tools/streaming.js";
@@ -55,6 +56,7 @@ async function main(): Promise<void> {
   registerProbeTools(server, config);
   registerConvertTools(server, config);
   registerEditTools(server, config);
+  registerComposeTools(server, config);
   registerExtractTools(server, config);
   registerAudioTools(server, config);
   registerStreamingTools(server, config);
