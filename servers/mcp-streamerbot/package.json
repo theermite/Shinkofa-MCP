@@ -1,0 +1,37 @@
+{
+  "name": "@shinkofa/mcp-streamerbot",
+  "version": "1.0.0",
+  "description": "MCP server for Streamer.bot — actions, chat, events, globals, code triggers via WebSocket",
+  "author": "Jay The Ermite <jay@shinkofa.com>",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-streamerbot": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "dev": "tsup src/index.ts --format esm --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "ws": "^8.18.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.5.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.1.0",
+    "@vitest/coverage-v8": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
