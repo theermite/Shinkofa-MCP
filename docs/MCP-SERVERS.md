@@ -1,11 +1,11 @@
 # MCP Servers — Plan & Suivi
 
 > Source de verite pour tous les MCP Shinkofa : existants, planifies, progression.
-> Derniere mise a jour : 2026-04-12.
+> Derniere mise a jour : 2026-04-13.
 
 ---
 
-## Production (20 MCPs — 709 tools, 1 903 tests)
+## Production (22 MCPs — 739 tools, 2 048 tests)
 
 Tous : TypeScript, withErrorHandler, Zod, Vitest, build tsup, zero type errors.
 
@@ -31,6 +31,8 @@ Tous : TypeScript, withErrorHandler, Zod, Vitest, build tsup, zero type errors.
 | mcp-devto | 16 | 63 | Pipeline contenu |
 | mcp-hashnode | 16 | 45 | Pipeline contenu |
 | mcp-linkedin | 7 | 51 | Pipeline contenu |
+| mcp-tailscale | 16 | 81 | Koshin, reseau |
+| mcp-system | 14 | 64 | Koshin, infra locale |
 
 ---
 
@@ -43,9 +45,9 @@ Tous : TypeScript, withErrorHandler, Zod, Vitest, build tsup, zero type errors.
 | 3 | mcp-devto | DEV.to REST API | API Key (self-service) | 30 req/30s (write), 10 req/30s (search) | Pipeline contenu | [x] Done (16 tools, 63 tests) |
 | 4 | mcp-hashnode | Hashnode GraphQL API | Personal Access Token | Non documente | Pipeline contenu | [x] Done (16 tools, 45 tests) |
 | 5 | mcp-linkedin | LinkedIn Posts API (w_member_social) | OAuth2 (Share on LinkedIn, self-service) | 150 req/jour/member, token 60j | Pipeline contenu | [x] Done (7 tools, 51 tests) |
-| 6 | mcp-tailscale | Tailscale REST API | API Key (self-service) | Non documente | Koshin, reseau | [ ] A faire |
+| 6 | mcp-tailscale | Tailscale REST API | API Key (self-service) | Non documente | Koshin, reseau | [x] Done (16 tools, 81 tests) |
 | 7 | mcp-cpanel | cPanel UAPI / API2 | API Token (cree dans cPanel) | Non documente | O2Switch, tout hebergement cPanel | [ ] A faire |
-| 8 | mcp-system | OS natif (Win32 + Linux) | Aucune (local) | N/A | Koshin, migration Windows→Linux | [ ] A faire |
+| 8 | mcp-system | OS natif (Win32 + Linux) | Aucune (local) | N/A | Koshin, migration Windows→Linux | [x] Done (14 tools, 64 tests) |
 
 ---
 

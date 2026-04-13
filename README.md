@@ -3,7 +3,7 @@
 > Custom MCP (Model Context Protocol) servers for the Shinkofa ecosystem.
 > Built by Jay The Ermite. Quality-first, typed tools, comprehensive tests.
 
-## Production Servers (20)
+## Production Servers (22)
 
 | Server | Description | Tools | Tests |
 |--------|-------------|------:|------:|
@@ -24,11 +24,13 @@
 | [mcp-ollama](servers/mcp-ollama/) | Ollama REST API — generate, chat, embed, model management | 14 | 66 |
 | [mcp-streamerbot](servers/mcp-streamerbot/) | Streamer.bot WebSocket — actions, chat, events, globals, triggers | 15 | 46 |
 | [mcp-stripe](servers/mcp-stripe/) | Stripe API — customers, payments, subscriptions, invoices, webhooks | 79 | 162 |
+| [mcp-system](servers/mcp-system/) | OS system introspection (Win32+Linux+macOS) — CPU, memory, disk, processes, exec (gated) | 14 | 64 |
+| [mcp-tailscale](servers/mcp-tailscale/) | Tailscale API v2 — devices, auth keys, ACL (HuJSON), DNS | 16 | 81 |
 | [mcp-telegram](servers/mcp-telegram/) | Telegram Bot API — messages, media, groups, stickers, payments | 43 | 109 |
 | [mcp-twitch](servers/mcp-twitch/) | Twitch Helix API — streams, users, clips, channels, subscriptions | 83 | 137 |
 | [mcp-youtube](servers/mcp-youtube/) | YouTube Data API — videos, channels, playlists, comments, search | 47 | 108 |
 
-**Total: 709 tools, 1 903 tests.**
+**Total: 739 tools, 2 048 tests.**
 
 ## Philosophy
 
