@@ -17,13 +17,13 @@ Execute these steps IN ORDER. No skipping (unless LITE_MODE applies — see Step
    - `01-Projets/_Cross-Project.md` — cross-project decisions, shared infra, blockers, Lego state
    - `01-Projets/_Index.md` — project inventory and tracks
    - `01-Projets/[current-project].md` — the project file matching the current repo (e.g., `Koshin.md` for Koshin repo)
-   - `01-Projets/[current-project]-Notes-Jay.md` — Jay’s async feedback channel (bugs, questions, features, observations). Process new items (no marker = unseen). Display count of unseen items.
+   - `01-Projets/[current-project]-Notes-Jay.md` — Jay's async feedback channel (bugs, questions, features, observations). Process new items (no marker = unseen). Display count of unseen items.
    - **DO NOT load all project files.** Only load additional project files if explicitly needed (e.g., Jay mentions a specific project, or the current project's "Connexions" section flags an active dependency that requires checking).
    - **If Obsidian MCP is unreachable: STOP. Do not proceed. Escalate to Jay.**
    - **Flat structure** (post 2026-04-11): one file per project, no nested folders. The old `02-Projets/` structure is **LEGACY**.
-3. **EICHI**: Verify Eichi-Shinkofa KB is accessible (Obsidian MCP or file system). Load relevant domains (not just tech).
+3. **SKB**: Verify SKB (Shinkofa Knowledge Base) is accessible (Obsidian MCP or file system). Load relevant domains (not just tech).
 4. **RECAP**: Read last 3 session reports from `docs/Sessions/` in project repo. Display summary: work done, decisions, pending items, errors.
-5. **BLUEPRINT CHECK** *(SKIP in LITE_MODE)*: Verify `docs/Blueprint.md` exists and is current.
+5. **BLUEPRINT CHECK** *(SKIP in LITE_MODE)*: Verify `docs/Blueprint.md` exists and is current. If the project has `docs/critical-paths.md`, load it — risk classification affects all quality gates during the session.
 6. **CDC CHECK** *(SKIP in LITE_MODE)*: Verify `docs/CDC.md` exists. Flag any drift from implementation.
 7. **PRE-EXISTING ERRORS** *(SKIP in LITE_MODE)*: Run test suite. If ANY test fails, flag as priority.
 8. **VEILLE CHECK** *(SKIP in LITE_MODE)*: Verify stack versions via npm/pypi/web. Training data is ALWAYS months stale. One wrong version = cascading failures in code, tests, deploys.
@@ -32,6 +32,7 @@ Execute these steps IN ORDER. No skipping (unless LITE_MODE applies — see Step
 
 ## Rules
 
+- **Context Awareness Protocol is active from session start.** Track exchange count and file reads. Alert at ~40 exchanges or ~15 file reads (~60% context). STOP at ~60 exchanges or compaction triggered (~80%). See `rules/Workflows.md`.
 - **Obsidian sync is BLOCKING and non-negotiable** (step 2). A session that starts without it is a process violation. If MCP fails, escalate — never skip.
 - **4 files, not 21** — load `_Cross-Project.md` + `_Index.md` + current project file + `Notes-Jay.md`. Additional files on demand only.
 - **Notes-Jay processing** — at session start, identify unseen items (no status marker). At session end or when items are treated during the session, update the Notes-Jay file with status markers: `👀 Lu [date]` (seen), `🔧 En cours` (in progress), `✅ [date] — résumé` (done).

@@ -19,6 +19,7 @@ Execute these steps IN ORDER. Gate 8 must pass.
    - Errors encountered + corrections applied
    - Decisions made
    - Pending items for next session
+   - Context Awareness status: was the 60% threshold reached? Was a handoff brief written? Note any context degradation detected.
 3. **OBSIDIAN SYNC**: Update only the files touched by this session — not all project files:
    - `01-Projets/[current-project].md` — always (merge decisions, bugs, next steps)
    - `01-Projets/_Cross-Project.md` — only if decisions impact multiple projects
@@ -38,6 +39,7 @@ Execute these steps IN ORDER. Gate 8 must pass.
    - **Process (30%)**: Were methodology gates respected? (Obsidian, TDG, atomic commits, reformulation)
    - **Formula**: `Score = (Value × 0.4) + (Reliability × 0.3) + (Process × 0.3)`
    - In LITE_MODE, do NOT penalize absence of tests in Process dimension.
+   - Human Quality Gates compliance: if public-facing features were built, note whether the 4 gates were verified (Cognitive Load, Sensory Comfort, Error Resilience, Adaptation).
 8. **VISIBILITY CHECK**: Evaluate if this session produced something shareable. For each candidate, append a ready-to-publish entry to Obsidian `01-Projets/Contenu.md` under the "Idées / candidates" section (one bullet per idea with title + format + status). Options: mini-repo (reusable standalone solution), article (educational, common problem solved), PR/contribution (fix or improvement to an existing open-source project). If nothing qualifies, document "nothing shareable this session" in the report.
 9. **SAVE**: Store report in `docs/Sessions/Session-YYYY-MM-DD-NNN.md`.
 

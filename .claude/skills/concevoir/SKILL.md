@@ -11,12 +11,12 @@ Execute these steps IN ORDER. No skipping. Wait for Jay's validation at step 11.
 ## Steps
 
 1. **BLUEPRINT DETECT**: Identify project type from signals (see `mnk/10-Blueprints.md`).
-2. **EICHI (our brain)**: Search Eichi-Shinkofa KB for ALL relevant domains — vision (MasterPlan), coaching, neurodiversity, marketing, gaming. Not just technical knowledge. Eichi IS our collective brain.
+2. **SKB (our brain)**: Search SKB (Shinkofa Knowledge Base) for ALL relevant domains — vision (MasterPlan), coaching, neurodiversity, marketing, gaming. Not just technical knowledge. SKB IS our collective brain.
 3. **POUR QUOI (3 Layers)**: Define the WHY through all 3 layers: L3 — Does this serve Shinkofa's vision (invisible ecosystem respecting individuality)? L2 — How will this be PRESENTED to create magnetic visibility? L1 — What's the first step given current energy? All 3 must be documented.
-4. **RESEARCH + VEILLE**: Search in 7 languages (EN, FR, ZH, JA, KO, DE, RU). State-of-art < 14 days. **CRITICAL**: Verify ALL technology recommendations, architecture patterns, and best practices via web. Training data is months stale — every recommendation based on stale knowledge costs time and money downstream.
+4. **RESEARCH + VEILLE**: Search in 7 languages (EN, FR, ZH, JA, KO, DE, RU). State-of-art < 14 days. When evaluating architecture: consider the tri-layer direction (TypeScript visible + Elixir/Phoenix backend + Rust critical modules) as validated direction, POC pending. **CRITICAL**: Verify ALL technology recommendations, architecture patterns, and best practices via web. Training data is months stale — every recommendation based on stale knowledge costs time and money downstream.
 5. **NON-TECH AGENTS**: Invoke UX, Brand, Pedagogy, Content, Gaming agents to review the concept.
-6. **BLUEPRINT**: Write or update `docs/Blueprint.md`.
-7. **CDC**: Write `docs/CDC.md` via interactive Q&A with Jay.
+6. **BLUEPRINT**: Write or update `docs/Blueprint.md`. Include Risk Classification: classify each module/component as Critical/Sensitive/Standard/Tooling — this drives coverage requirements for `/dev`.
+7. **CDC**: Write `docs/CDC.md` via interactive Q&A with Jay. For public-facing projects: include Human Quality considerations — cognitive load budget, sensory preferences, adaptation requirements.
 8. **PET**: Write `docs/PET.md` (Plan d'Execution Technique).
 9. **PRESENT**: Generate HTML presentation (standalone file in docs/).
 10. **OBSIDIAN SYNC**: Create `01-Projets/[project].md` in Obsidian (flat structure post 2026-04-11, one file per project) with sections: Notes, Décisions, Bugs, Prochaines étapes, Connexions. Add an entry to `_Index.md`. The old nested `02-Projets/[project]/*.md` structure is LEGACY — never create there.
