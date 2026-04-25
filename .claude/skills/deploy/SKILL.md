@@ -34,7 +34,7 @@ If ANY pre-flight fails → STOP. Do not proceed. Fix the issue first.
 
 1. **CDC CHECK**: Deployment matches CDC scope. Read `docs/CDC.md` and verify the feature/fix being deployed is within scope.
 
-2. **VEILLE**: Verify no breaking changes in dependencies. **CRITICAL**: Before building, verify dependency versions are real and current via web. A phantom version in package.json = failed build = failed deploy.
+2. **VEILLE**: Verify no breaking changes in dependencies. **CRITICAL**: Before building, verify dependency versions are real and current via web. A phantom version in package.json = failed build = failed deploy. If deploying RAG-powered features: verify `/pre-rag-audit` result is < 30 days old (check `docs/Pre-RAG-Audit-*.md`). If absent or stale → run `/pre-rag-audit` first.
 
 3. **SECURITY**: Full scan. Verify CSP/headers don't break features. No critical/high CVEs.
    ```bash
