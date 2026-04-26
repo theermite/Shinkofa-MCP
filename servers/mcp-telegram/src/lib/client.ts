@@ -50,7 +50,7 @@ export class TelegramClient {
       ? Object.values(params).some((v) => v instanceof Blob || v instanceof Buffer || v instanceof Uint8Array)
       : false;
 
-    let body: BodyInit | undefined;
+    let body: string | FormData | undefined;
     let headers: Record<string, string> = {};
 
     if (hasFileUpload && params) {

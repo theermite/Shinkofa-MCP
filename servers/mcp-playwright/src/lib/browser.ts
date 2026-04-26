@@ -1,4 +1,4 @@
-import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
+import { type Browser, type BrowserContext, chromium, type Page } from "playwright";
 
 export interface BrowserManagerConfig {
   headless?: boolean;
@@ -31,7 +31,7 @@ export class BrowserManager {
   }
 
   private async ensureBrowser(): Promise<Browser> {
-    if (!this.browser || !this.browser.isConnected()) {
+    if (!this.browser?.isConnected()) {
       this.browser = await chromium.launch({ headless: this.headless });
       this.context = await this.browser.newContext();
       this.pages.clear();
@@ -43,14 +43,16 @@ export class BrowserManager {
   private async ensureContext(): Promise<BrowserContext> {
     await this.ensureBrowser();
     if (!this.context) {
-      this.context = await this.browser!.newContext();
+      if (!this.browser) throw new PlaywrightError("ensureContext", "Browser not available");
+      this.context = await this.browser.newContext();
     }
     return this.context;
   }
 
   async getActivePage(): Promise<Page> {
-    if (this.activePageId && this.pages.has(this.activePageId)) {
-      return this.pages.get(this.activePageId)!;
+    if (this.activePageId) {
+      const existing = this.pages.get(this.activePageId);
+      if (existing) return existing;
     }
     return this.newPage();
   }
@@ -70,14 +72,15 @@ export class BrowserManager {
     if (!id || !this.pages.has(id)) {
       throw new PlaywrightError("close_page", `Page ${id ?? "none"} not found`);
     }
-    const page = this.pages.get(id)!;
+    const page = this.pages.get(id);
+    if (!page) throw new PlaywrightError("close_page", `Page ${id} not found`);
     if (!page.isClosed()) {
       await page.close();
     }
     this.pages.delete(id);
     if (this.activePageId === id) {
       const remaining = [...this.pages.keys()];
-      this.activePageId = remaining.length > 0 ? remaining[remaining.length - 1]! : null;
+      this.activePageId = remaining.at(-1) ?? null;
     }
   }
 

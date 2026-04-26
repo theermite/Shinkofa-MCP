@@ -26,7 +26,9 @@ import { registerSessionTools } from "./tools/session.js";
 
 async function main(): Promise<void> {
   const headless = process.env.PLAYWRIGHT_HEADLESS !== "false";
-  const timeout = process.env.PLAYWRIGHT_TIMEOUT ? parseInt(process.env.PLAYWRIGHT_TIMEOUT, 10) || undefined : undefined;
+  const timeout = process.env.PLAYWRIGHT_TIMEOUT
+    ? parseInt(process.env.PLAYWRIGHT_TIMEOUT, 10) || undefined
+    : undefined;
 
   const browser = new BrowserManager({ headless, defaultTimeout: timeout });
 

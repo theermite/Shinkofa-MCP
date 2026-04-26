@@ -55,8 +55,8 @@ export class HashnodeClient {
       };
 
       if (body.errors && body.errors.length > 0) {
-        const first = body.errors[0]!;
-        throw new HashnodeError(400, first.message);
+        const first = body.errors.at(0);
+        throw new HashnodeError(400, first?.message ?? "Unknown API error");
       }
 
       return body.data as T;

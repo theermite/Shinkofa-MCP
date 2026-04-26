@@ -205,7 +205,12 @@ export class DriveClient {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
-      const response = await fetch(url, { method, headers, body, signal: controller.signal });
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: body as BodyInit | undefined,
+        signal: controller.signal,
+      });
       return { response, status: response.status };
     } finally {
       clearTimeout(timeout);

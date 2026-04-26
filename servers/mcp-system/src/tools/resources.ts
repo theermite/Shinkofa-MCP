@@ -71,6 +71,7 @@ function parseWmicCsv(text: string): unknown[] {
     .filter((l) => l.length > 0);
   if (lines.length < 2) return [];
   const header = lines[0]?.split(",");
+  if (!header) return [];
   return lines.slice(1).map((line) => {
     const cols = line.split(",");
     const row: Record<string, string> = {};

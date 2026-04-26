@@ -124,7 +124,8 @@ export class StreamerbotClient {
       const msg = JSON.parse(data.toString()) as Record<string, unknown>;
       const id = msg.id as string | undefined;
       if (id && this.pending.has(id)) {
-        const req = this.pending.get(id)!;
+        const req = this.pending.get(id);
+        if (!req) return;
         clearTimeout(req.timer);
         this.pending.delete(id);
         req.resolve(msg);

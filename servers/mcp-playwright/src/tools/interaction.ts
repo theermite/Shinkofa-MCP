@@ -64,15 +64,11 @@ export function registerInteractionTools(server: McpServer, browser: BrowserMana
       }),
   );
 
-  server.tool(
-    "hover",
-    "Hover over an element on the page.",
-    HoverSchema.shape,
-    async (p) =>
-      withErrorHandler(async () => {
-        const page = await browser.getActivePage();
-        await page.hover(p.selector, { timeout: p.timeout });
-        return toolResult({ hovered: p.selector });
-      }),
+  server.tool("hover", "Hover over an element on the page.", HoverSchema.shape, async (p) =>
+    withErrorHandler(async () => {
+      const page = await browser.getActivePage();
+      await page.hover(p.selector, { timeout: p.timeout });
+      return toolResult({ hovered: p.selector });
+    }),
   );
 }

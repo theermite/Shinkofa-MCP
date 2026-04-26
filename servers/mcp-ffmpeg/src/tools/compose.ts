@@ -57,7 +57,7 @@ export function registerComposeTools(server: McpServer, config: ExecutorConfig):
       }
       const args = ["-y", "-i", params.input, "-i", params.watermark];
       if (filterParts.length > 1) args.push("-filter_complex", filterParts.join(";"));
-      else args.push("-filter_complex", filterParts[0]!);
+      else args.push("-filter_complex", filterParts.at(0) ?? "");
       args.push("-c:a", "copy", params.output);
       return runFfmpeg(config, args);
     });

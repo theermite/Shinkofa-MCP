@@ -3,10 +3,26 @@ import type { BrowserManager } from "../lib/browser.js";
 import { EvaluateSchema, QuerySelectorAllSchema, QuerySelectorSchema, WaitForSelectorSchema } from "../lib/schemas.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
 
-const DEFAULT_ATTRIBUTES = ["id", "class", "href", "src", "alt", "title", "type", "name", "value", "role", "aria-label"];
+const DEFAULT_ATTRIBUTES = [
+  "id",
+  "class",
+  "href",
+  "src",
+  "alt",
+  "title",
+  "type",
+  "name",
+  "value",
+  "role",
+  "aria-label",
+];
 
 async function extractElementInfo(
-  el: { getAttribute: (name: string) => Promise<string | null>; innerText: () => Promise<string>; isVisible: () => Promise<boolean> },
+  el: {
+    getAttribute: (name: string) => Promise<string | null>;
+    innerText: () => Promise<string>;
+    isVisible: () => Promise<boolean>;
+  },
   attributes: string[],
 ): Promise<Record<string, unknown>> {
   const attrs: Record<string, string | null> = {};
@@ -47,7 +63,8 @@ export function registerQueryTools(server: McpServer, browser: BrowserManager): 
         const attrs = p.attributes ?? DEFAULT_ATTRIBUTES;
         const results = [];
         for (let i = 0; i < Math.min(elements.length, limit); i++) {
-          results.push(await extractElementInfo(elements[i]!, attrs));
+          const el = elements[i];
+          if (el) results.push(await extractElementInfo(el, attrs));
         }
         return toolResult({
           selector: p.selector,

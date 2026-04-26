@@ -43,10 +43,7 @@ export const ScreenshotSchema = z.object({
 });
 
 export const PdfSchema = z.object({
-  format: z
-    .enum(["A4", "A3", "Letter", "Legal", "Tabloid"])
-    .optional()
-    .describe("Paper format (default: A4)"),
+  format: z.enum(["A4", "A3", "Letter", "Legal", "Tabloid"]).optional().describe("Paper format (default: A4)"),
   landscape: z.boolean().optional().describe("Landscape orientation (default: false)"),
 });
 
