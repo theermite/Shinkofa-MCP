@@ -1,5 +1,6 @@
 node_modules/
 dist/
+coverage/
 *-broken-backup/
 # Nested duplicate dirs from migration (to clean up physically later)
 servers/*/mcp-*/

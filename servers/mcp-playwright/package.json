@@ -1,0 +1,39 @@
+{
+  "name": "@shinkofa/mcp-playwright",
+  "version": "1.0.0",
+  "description": "MCP server for browser automation via Playwright — navigation, content extraction, interaction, screenshots",
+  "author": "Jay The Ermite",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-playwright": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "dev": "tsup src/index.ts --format esm --watch",
+    "test": "cross-env NODE_OPTIONS=--max-old-space-size=2048 vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "cross-env NODE_OPTIONS=--max-old-space-size=2048 vitest run --coverage",
+    "lint": "biome check src/",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@shinkofa/mcp-shared": "^1.0.0",
+    "playwright": "^1.52.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.13",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.1.0",
+    "cross-env": "^7.0.3",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
