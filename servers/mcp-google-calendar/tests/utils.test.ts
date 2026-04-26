@@ -82,7 +82,7 @@ describe("withErrorHandler", () => {
   it("should_return_non_json_message_for_SyntaxError", async () => {
     const syntaxError = new SyntaxError("Unexpected token < in JSON");
     const result = await withErrorHandler(async () => { throw syntaxError; });
-    expect(result).toEqual(toolError("Invalid response from Google Calendar API (non-JSON)"));
+    expect(result).toEqual(toolError("Invalid API response (non-JSON)"));
   });
 
   it("should_return_network_error_message_for_TypeError", async () => {

@@ -57,7 +57,7 @@ describe("withErrorHandler", () => {
       throw new SyntaxError("Unexpected token");
     });
     expect(result).toEqual({
-      content: [{ type: "text", text: "Invalid response from YouTube API (non-JSON)" }],
+      content: [{ type: "text", text: "Invalid API response (non-JSON)" }],
       isError: true,
     });
   });

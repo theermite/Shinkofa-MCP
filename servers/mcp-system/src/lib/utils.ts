@@ -1,3 +1,7 @@
+import { createErrorHandler, toolError, toolResult } from "@shinkofa/mcp-shared";
+
+export { toolResult, toolError };
+
 export class SystemError extends Error {
   constructor(
     public readonly code: string,
@@ -8,33 +12,14 @@ export class SystemError extends Error {
   }
 }
 
-export function toolResult(data: unknown) {
-  const text =
-    data === undefined
-      ? '{"status":"success"}'
-      : JSON.stringify(data, null, 2);
-  return { content: [{ type: "text" as const, text }] };
-}
-
-export function toolError(message: string) {
-  return { content: [{ type: "text" as const, text: message }], isError: true };
-}
-
-export async function withErrorHandler<T>(
-  fn: () => Promise<T>,
-): Promise<T | ReturnType<typeof toolError>> {
-  try {
-    return await fn();
-  } catch (error) {
-    if (error instanceof SystemError) {
-      return toolError(`System error [${error.code}]: ${error.message}`);
-    }
-    if (error instanceof Error) {
-      return toolError(`${error.name}: ${error.message}`);
-    }
-    throw error;
+export const withErrorHandler = createErrorHandler((error) => {
+  if (error instanceof SystemError) {
+    return `System error [${error.code}]: ${error.message}`;
   }
-}
+  if (error instanceof Error) {
+    return `${error.name}: ${error.message}`;
+  }
+});
 
 const SECRET_KEY_PATTERN = /TOKEN|SECRET|KEY|PASSWORD|PASSWD|AUTH|CREDENTIAL|API_?KEY/i;
 

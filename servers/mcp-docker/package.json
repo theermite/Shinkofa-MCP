@@ -6,9 +6,29 @@
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
-  "bin": { "mcp-docker": "dist/index.js" },
-  "scripts": { "build": "tsup src/index.ts --format esm --dts --clean", "test": "vitest run", "type-check": "tsc --noEmit" },
-  "dependencies": { "@modelcontextprotocol/sdk": "^1.12.0", "zod": "^3.24.0" },
-  "devDependencies": { "@types/node": "^22.0.0", "tsup": "^8.4.0", "typescript": "^5.7.0", "vitest": "^3.1.0" },
-  "engines": { "node": ">=20.0.0" }
+  "bin": {
+    "mcp-docker": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "test": "cross-env NODE_OPTIONS=--max-old-space-size=2048 vitest run",
+    "lint": "biome check src/",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@shinkofa/mcp-shared": "^1.0.1",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.13",
+    "@types/node": "^22.0.0",
+    "cross-env": "^7.0.3",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
 }

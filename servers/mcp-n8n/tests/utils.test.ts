@@ -57,7 +57,7 @@ describe("withErrorHandler", () => {
 
   it("should_catch_SyntaxError_and_return_non_json_error", async () => {
     const r = await withErrorHandler(() => { throw new SyntaxError("Unexpected token"); });
-    expect(r).toEqual({ content: [{ type: "text", text: "Invalid response from n8n API (non-JSON)" }], isError: true });
+    expect(r).toEqual({ content: [{ type: "text", text: "Invalid API response (non-JSON)" }], isError: true });
   });
 
   it("should_rethrow_unknown_errors", async () => {

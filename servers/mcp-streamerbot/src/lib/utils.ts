@@ -1,33 +1,20 @@
-/**
- * Shared MCP response helpers and error handler.
- */
+import { createErrorHandler, toolError, toolResult as jsonToolResult } from "@shinkofa/mcp-shared";
 import { StreamerbotError } from "./client.js";
 
+export { toolError };
+
 export function toolResult(data: unknown) {
-  if (data === undefined) {
-    return { content: [{ type: "text" as const, text: '{"status":"success"}' }] };
+  if (typeof data === "string") {
+    return { content: [{ type: "text" as const, text: data }] };
   }
-  return {
-    content: [{ type: "text" as const, text: typeof data === "string" ? data : JSON.stringify(data, null, 2) }],
-  };
+  return jsonToolResult(data);
 }
 
-export function toolError(message: string) {
-  return { content: [{ type: "text" as const, text: message }], isError: true };
-}
-
-export async function withErrorHandler<T>(
-  fn: () => Promise<T>,
-): Promise<T | ReturnType<typeof toolError>> {
-  try {
-    return await fn();
-  } catch (error) {
-    if (error instanceof StreamerbotError) {
-      return toolError(`Streamer.bot error: ${error.message}`);
-    }
-    if (error instanceof Error) {
-      return toolError(`Error: ${error.message}`);
-    }
-    throw error;
+export const withErrorHandler = createErrorHandler((error) => {
+  if (error instanceof StreamerbotError) {
+    return `Streamer.bot error: ${error.message}`;
   }
-}
+  if (error instanceof Error) {
+    return `Error: ${error.message}`;
+  }
+});

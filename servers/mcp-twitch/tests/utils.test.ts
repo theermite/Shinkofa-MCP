@@ -60,7 +60,7 @@ describe("withErrorHandler", () => {
       err.name = "SyntaxError";
       throw err;
     });
-    expect(result.content[0].text).toBe("Invalid response from Twitch API (non-JSON)");
+    expect(result.content[0].text).toBe("Invalid API response (non-JSON)");
   });
 
   it("should_return_network_error_when_TypeError", async () => {
