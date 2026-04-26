@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  biome:
+    name: Biome lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+      - run: biome check packages/ servers/
+
+  shared:
+    name: mcp-shared
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: packages/mcp-shared
+        run: npm ci
+      - name: Type check
+        working-directory: packages/mcp-shared
+        run: npx tsc --noEmit
+      - name: Test
+        working-directory: packages/mcp-shared
+        run: npm test
+      - name: Coverage
+        working-directory: packages/mcp-shared
+        run: npm run test:coverage
+
+  servers:
+    name: ${{ matrix.server }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        server:
+          - mcp-devto
+          - mcp-discord
+          - mcp-docker
+          - mcp-ffmpeg
+          - mcp-gmail
+          - mcp-google-calendar
+          - mcp-google-drive
+          - mcp-hashnode
+          - mcp-home-assistant
+          - mcp-imagemagick
+          - mcp-linkedin
+          - mcp-n8n
+          - mcp-obs
+          - mcp-obsidian
+          - mcp-ollama
+          - mcp-streamerbot
+          - mcp-stripe
+          - mcp-system
+          - mcp-tailscale
+          - mcp-telegram
+          - mcp-twitch
+          - mcp-youtube
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: servers/${{ matrix.server }}
+        run: npm ci
+      - name: Type check
+        working-directory: servers/${{ matrix.server }}
+        run: npx tsc --noEmit
+      - name: Test
+        working-directory: servers/${{ matrix.server }}
+        run: npm test
+
+  security:
+    name: Security audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Audit mcp-shared
+        working-directory: packages/mcp-shared
+        run: npm audit --audit-level=high
