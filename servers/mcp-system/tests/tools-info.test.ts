@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { registerInfoTools } from "../src/tools/info.js";
 
 vi.mock("../src/lib/executor.js", () => ({
@@ -17,10 +17,7 @@ beforeEach(() => {
   registered = new Map();
   const orig = server.tool.bind(server);
   server.tool = ((...a: unknown[]) => {
-    registered.set(
-      a[0] as string,
-      a[a.length - 1] as (...x: unknown[]) => unknown,
-    );
+    registered.set(a[0] as string, a[a.length - 1] as (...x: unknown[]) => unknown);
     return orig(...(a as Parameters<typeof orig>));
   }) as typeof server.tool;
   registerInfoTools(server);
@@ -28,12 +25,7 @@ beforeEach(() => {
 
 describe("Info tools — registration", () => {
   it("should_register_4_info_tools", () => {
-    for (const n of [
-      "get_system_info",
-      "get_uptime",
-      "get_env_vars",
-      "which_command",
-    ]) {
+    for (const n of ["get_system_info", "get_uptime", "get_env_vars", "which_command"]) {
       expect(registered.has(n)).toBe(true);
     }
   });
@@ -62,36 +54,36 @@ describe("get_uptime", () => {
 
 describe("get_env_vars", () => {
   it("should_mask_secret_looking_vars_by_default", async () => {
-    process.env["TEST_FAKE_TOKEN"] = "abc1234567890def";
+    process.env.TEST_FAKE_TOKEN = "abc1234567890def";
     const cb = registered.get("get_env_vars")!;
     const result = (await cb({ unmask: false })) as {
       content: { text: string }[];
     };
     const data = JSON.parse(result.content[0].text);
     expect(data.TEST_FAKE_TOKEN).toContain("***");
-    delete process.env["TEST_FAKE_TOKEN"];
+    delete process.env.TEST_FAKE_TOKEN;
   });
 
   it("should_unmask_when_requested", async () => {
-    process.env["TEST_FAKE_TOKEN"] = "abc1234567890def";
+    process.env.TEST_FAKE_TOKEN = "abc1234567890def";
     const cb = registered.get("get_env_vars")!;
     const result = (await cb({ unmask: true })) as {
       content: { text: string }[];
     };
     const data = JSON.parse(result.content[0].text);
     expect(data.TEST_FAKE_TOKEN).toBe("abc1234567890def");
-    delete process.env["TEST_FAKE_TOKEN"];
+    delete process.env.TEST_FAKE_TOKEN;
   });
 
   it("should_filter_by_substring", async () => {
-    process.env["ZZ_MYCUSTOM_VAR"] = "val";
+    process.env.ZZ_MYCUSTOM_VAR = "val";
     const cb = registered.get("get_env_vars")!;
     const result = (await cb({ filter: "ZZ_MYCUSTOM", unmask: true })) as {
       content: { text: string }[];
     };
     const data = JSON.parse(result.content[0].text);
     expect(Object.keys(data)).toContain("ZZ_MYCUSTOM_VAR");
-    delete process.env["ZZ_MYCUSTOM_VAR"];
+    delete process.env.ZZ_MYCUSTOM_VAR;
   });
 });
 

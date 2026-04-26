@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { describe, expect, it } from "vitest";
 import { GoogleCalendarClient } from "../src/lib/client.js";
-import { registerEventTools } from "../src/tools/events.js";
-import { registerCalendarTools } from "../src/tools/calendars.js";
 import { registerAclTools } from "../src/tools/acl.js";
+import { registerCalendarTools } from "../src/tools/calendars.js";
+import { registerEventTools } from "../src/tools/events.js";
 import { registerRawTool } from "../src/tools/raw.js";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

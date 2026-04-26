@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { describe, expect, it, vi } from "vitest";
 import { DockerClient } from "../src/lib/client.js";
 import { registerResourceTools } from "../src/tools/resources.js";
 

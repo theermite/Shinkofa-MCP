@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { toolResult, toolError, withErrorHandler } from "../src/lib/utils.js";
+import { describe, expect, it } from "vitest";
 import { TailscaleError } from "../src/lib/client.js";
+import { toolError, toolResult, withErrorHandler } from "../src/lib/utils.js";
 
 describe("toolResult", () => {
   it("should_format_data_as_json", () => {
@@ -37,27 +37,21 @@ describe("withErrorHandler", () => {
     const r = await withErrorHandler(async () => {
       throw new TailscaleError(429, "Too many requests");
     });
-    expect(
-      (r as { content: { text: string }[] }).content[0].text,
-    ).toContain("rate limited");
+    expect((r as { content: { text: string }[] }).content[0].text).toContain("rate limited");
   });
 
   it("should_include_auth_hint_on_401", async () => {
     const r = await withErrorHandler(async () => {
       throw new TailscaleError(401, "Invalid");
     });
-    expect(
-      (r as { content: { text: string }[] }).content[0].text,
-    ).toContain("TAILSCALE_API_KEY");
+    expect((r as { content: { text: string }[] }).content[0].text).toContain("TAILSCALE_API_KEY");
   });
 
   it("should_include_auth_hint_on_403", async () => {
     const r = await withErrorHandler(async () => {
       throw new TailscaleError(403, "Forbidden");
     });
-    expect(
-      (r as { content: { text: string }[] }).content[0].text,
-    ).toContain("TAILSCALE_API_KEY");
+    expect((r as { content: { text: string }[] }).content[0].text).toContain("TAILSCALE_API_KEY");
   });
 
   it("should_catch_abort_as_timeout", async () => {
@@ -66,9 +60,7 @@ describe("withErrorHandler", () => {
     const r = await withErrorHandler(async () => {
       throw err;
     });
-    expect((r as { content: { text: string }[] }).content[0].text).toContain(
-      "timed out",
-    );
+    expect((r as { content: { text: string }[] }).content[0].text).toContain("timed out");
   });
 
   it("should_catch_syntax_error", async () => {
@@ -77,9 +69,7 @@ describe("withErrorHandler", () => {
     const r = await withErrorHandler(async () => {
       throw err;
     });
-    expect((r as { content: { text: string }[] }).content[0].text).toContain(
-      "non-JSON",
-    );
+    expect((r as { content: { text: string }[] }).content[0].text).toContain("non-JSON");
   });
 
   it("should_catch_network_type_error", async () => {
@@ -88,9 +78,7 @@ describe("withErrorHandler", () => {
     const r = await withErrorHandler(async () => {
       throw err;
     });
-    expect((r as { content: { text: string }[] }).content[0].text).toContain(
-      "Network error",
-    );
+    expect((r as { content: { text: string }[] }).content[0].text).toContain("Network error");
   });
 
   it("should_rethrow_unknown_errors", async () => {

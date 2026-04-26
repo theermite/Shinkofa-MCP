@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { LinkedInClient, LinkedInError } from "../src/lib/client.js";
 import { registerPostTools } from "../src/tools/posts.js";
 
 let server: McpServer;
 let client: LinkedInClient;
-let getSpy: ReturnType<typeof vi.spyOn>;
+let _getSpy: ReturnType<typeof vi.spyOn>;
 let postSpy: ReturnType<typeof vi.spyOn>;
 let delSpy: ReturnType<typeof vi.spyOn>;
 let registeredTools: Map<string, (...args: unknown[]) => unknown>;
@@ -13,17 +13,14 @@ let registeredTools: Map<string, (...args: unknown[]) => unknown>;
 beforeEach(() => {
   server = new McpServer({ name: "test", version: "1.0.0" });
   client = new LinkedInClient({ accessToken: "test" });
-  getSpy = vi.spyOn(client, "get").mockResolvedValue({});
+  _getSpy = vi.spyOn(client, "get").mockResolvedValue({});
   postSpy = vi.spyOn(client, "post").mockResolvedValue({});
   delSpy = vi.spyOn(client, "del").mockResolvedValue(undefined);
   registeredTools = new Map();
 
   const origTool = server.tool.bind(server);
   server.tool = ((...args: unknown[]) => {
-    registeredTools.set(
-      args[0] as string,
-      args[args.length - 1] as (...a: unknown[]) => unknown,
-    );
+    registeredTools.set(args[0] as string, args[args.length - 1] as (...a: unknown[]) => unknown);
     return origTool(...(args as Parameters<typeof origTool>));
   }) as typeof server.tool;
 
@@ -82,10 +79,9 @@ describe("Post tools — calls", () => {
   it("should_initialize_image_upload", async () => {
     const cb = registeredTools.get("initialize_image_upload")!;
     await cb({ owner: "urn:li:person:abc" });
-    expect(postSpy).toHaveBeenCalledWith(
-      "/rest/images?action=initializeUpload",
-      { initializeUploadRequest: { owner: "urn:li:person:abc" } },
-    );
+    expect(postSpy).toHaveBeenCalledWith("/rest/images?action=initializeUpload", {
+      initializeUploadRequest: { owner: "urn:li:person:abc" },
+    });
   });
 
   it("should_create_image_post_with_alt_text", async () => {
@@ -106,9 +102,7 @@ describe("Post tools — calls", () => {
   it("should_delete_post_with_encoded_urn", async () => {
     const cb = registeredTools.get("delete_post")!;
     await cb({ postUrn: "urn:li:share:123456" });
-    expect(delSpy).toHaveBeenCalledWith(
-      `/rest/posts/${encodeURIComponent("urn:li:share:123456")}`,
-    );
+    expect(delSpy).toHaveBeenCalledWith(`/rest/posts/${encodeURIComponent("urn:li:share:123456")}`);
   });
 });
 

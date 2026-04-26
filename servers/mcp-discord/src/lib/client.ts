@@ -69,9 +69,7 @@ export class DiscordClient {
 
     if (body && method !== "GET") {
       headers["Content-Type"] = "application/json";
-      const cleaned = Object.fromEntries(
-        Object.entries(body).filter(([, v]) => v !== undefined && v !== null),
-      );
+      const cleaned = Object.fromEntries(Object.entries(body).filter(([, v]) => v !== undefined && v !== null));
       fetchBody = JSON.stringify(cleaned);
     }
 
@@ -111,12 +109,7 @@ export class DiscordClient {
 
       if (!response.ok) {
         const err = data as DiscordApiError;
-        throw new DiscordError(
-          response.status,
-          err.code,
-          err.message,
-          err.errors,
-        );
+        throw new DiscordError(response.status, err.code, err.message, err.errors);
       }
 
       return data as T;
@@ -143,9 +136,7 @@ export class DiscordRateLimitError extends Error {
     public readonly retryAfter: number,
     public readonly global: boolean,
   ) {
-    super(
-      `Discord rate limit: retry after ${retryAfter}s${global ? " (global)" : ""}`,
-    );
+    super(`Discord rate limit: retry after ${retryAfter}s${global ? " (global)" : ""}`);
     this.name = "DiscordRateLimitError";
   }
 }

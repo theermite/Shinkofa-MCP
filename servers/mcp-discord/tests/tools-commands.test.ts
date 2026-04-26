@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DiscordClient, DiscordError, DiscordRateLimitError } from "../src/lib/client.js";
 import { registerCommandTools } from "../src/tools/commands.js";
 
@@ -39,7 +39,9 @@ describe("list_commands", () => {
   it("should_include_with_localizations_query_when_provided", async () => {
     const handler = registeredTools.get("list_commands")!;
     await handler({ application_id: "app1", with_localizations: true });
-    expect(callApiSpy).toHaveBeenCalledWith("GET", "/applications/app1/commands", undefined, { with_localizations: true });
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/applications/app1/commands", undefined, {
+      with_localizations: true,
+    });
   });
 });
 
@@ -47,13 +49,19 @@ describe("create_command", () => {
   it("should_call_POST_global_commands_when_no_guild_id", async () => {
     const handler = registeredTools.get("create_command")!;
     await handler({ application_id: "app1", name: "ping", description: "Pong!" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/applications/app1/commands", { name: "ping", description: "Pong!" });
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/applications/app1/commands", {
+      name: "ping",
+      description: "Pong!",
+    });
   });
 
   it("should_call_POST_guild_commands_when_guild_id_provided", async () => {
     const handler = registeredTools.get("create_command")!;
     await handler({ application_id: "app1", guild_id: "g1", name: "ping", description: "Pong!" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/applications/app1/guilds/g1/commands", { name: "ping", description: "Pong!" });
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/applications/app1/guilds/g1/commands", {
+      name: "ping",
+      description: "Pong!",
+    });
   });
 });
 
@@ -81,7 +89,9 @@ describe("modify_command", () => {
   it("should_call_PATCH_guild_command_when_guild_id_provided", async () => {
     const handler = registeredTools.get("modify_command")!;
     await handler({ application_id: "app1", guild_id: "g1", command_id: "cmd1", description: "Updated" });
-    expect(callApiSpy).toHaveBeenCalledWith("PATCH", "/applications/app1/guilds/g1/commands/cmd1", { description: "Updated" });
+    expect(callApiSpy).toHaveBeenCalledWith("PATCH", "/applications/app1/guilds/g1/commands/cmd1", {
+      description: "Updated",
+    });
   });
 });
 

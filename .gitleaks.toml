@@ -1,0 +1,7 @@
+title = "Shinkofa-MCP Gitleaks config"
+
+[allowlist]
+description = "False positives in test fixtures (fake tokens for maskSecretValue tests)"
+paths = [
+  '''servers/mcp-system/tests/utils\.test\.ts'''
+]

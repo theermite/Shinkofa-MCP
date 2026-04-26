@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TwitchClient, TwitchError, TwitchRateLimitError } from "../src/lib/client.js";
 
 describe("TwitchClient", () => {
@@ -105,7 +105,9 @@ describe("TwitchClient", () => {
 
     it("should_throw_TwitchError_when_json_parse_fails", async () => {
       const client = new TwitchClient({ clientId: "cid", accessToken: "tok" });
-      fetchSpy.mockResolvedValueOnce(new Response("not json", { status: 200, headers: { "Content-Type": "text/plain" } }));
+      fetchSpy.mockResolvedValueOnce(
+        new Response("not json", { status: 200, headers: { "Content-Type": "text/plain" } }),
+      );
 
       await expect(client.callApi("GET", "/bad")).rejects.toThrow(TwitchError);
     });
@@ -139,7 +141,9 @@ describe("TwitchClient", () => {
 
       // First call: token refresh
       fetchSpy.mockResolvedValueOnce(
-        new Response(JSON.stringify({ access_token: "new_tok", expires_in: 3600, token_type: "bearer" }), { status: 200 }),
+        new Response(JSON.stringify({ access_token: "new_tok", expires_in: 3600, token_type: "bearer" }), {
+          status: 200,
+        }),
       );
       // Second call: actual API
       fetchSpy.mockResolvedValueOnce(new Response(JSON.stringify({ data: [] }), { status: 200 }));

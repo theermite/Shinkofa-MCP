@@ -5,14 +5,9 @@ import { z } from "zod";
 
 // ── Common ──
 
-export const ChatId = z.union([z.string(), z.number()]).describe(
-  "Chat ID (number) or username (@channel)"
-);
+export const ChatId = z.union([z.string(), z.number()]).describe("Chat ID (number) or username (@channel)");
 
-export const ParseMode = z
-  .enum(["HTML", "MarkdownV2", "Markdown"])
-  .optional()
-  .describe("Message parse mode");
+export const ParseMode = z.enum(["HTML", "MarkdownV2", "Markdown"]).optional().describe("Message parse mode");
 
 export const ReplyMarkup = z
   .record(z.unknown())
@@ -109,10 +104,7 @@ export const SetMessageReactionSchema = z.object({
 
 // ── Media ──
 
-export const MediaType = z.enum([
-  "photo", "audio", "document", "video", "animation",
-  "voice", "video_note", "sticker",
-]);
+export const MediaType = z.enum(["photo", "audio", "document", "video", "animation", "voice", "video_note", "sticker"]);
 
 export const SendMediaSchema = z.object({
   chat_id: ChatId,

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TailscaleClient, TailscaleError } from "../src/lib/client.js";
 import { registerKeyTools } from "../src/tools/keys.js";
 
@@ -20,10 +20,7 @@ beforeEach(() => {
 
   const origTool = server.tool.bind(server);
   server.tool = ((...args: unknown[]) => {
-    registeredTools.set(
-      args[0] as string,
-      args[args.length - 1] as (...a: unknown[]) => unknown,
-    );
+    registeredTools.set(args[0] as string, args[args.length - 1] as (...a: unknown[]) => unknown);
     return origTool(...(args as Parameters<typeof origTool>));
   }) as typeof server.tool;
 
@@ -56,11 +53,8 @@ describe("Key tools — calls", () => {
     const call = postSpy.mock.calls[0]!;
     expect(call[0]).toBe("/api/v2/tailnet/ermite.ts.net/keys");
     const body = call[1] as Record<string, unknown>;
-    expect(body).toHaveProperty(
-      "capabilities.devices.create.reusable",
-      false,
-    );
-    expect(body["expirySeconds"]).toBe(86400);
+    expect(body).toHaveProperty("capabilities.devices.create.reusable", false);
+    expect(body.expirySeconds).toBe(86400);
   });
 
   it("should_include_tags_when_provided", async () => {
@@ -72,10 +66,8 @@ describe("Key tools — calls", () => {
       tags: ["tag:server"],
       expirySeconds: 3600,
     });
-    const body = postSpy.mock.calls[0]![1] as Record<string, unknown>;
-    expect(body).toHaveProperty("capabilities.devices.create.tags", [
-      "tag:server",
-    ]);
+    const body = postSpy.mock.calls[0]?.[1] as Record<string, unknown>;
+    expect(body).toHaveProperty("capabilities.devices.create.tags", ["tag:server"]);
   });
 
   it("should_include_description_when_provided", async () => {
@@ -87,8 +79,8 @@ describe("Key tools — calls", () => {
       expirySeconds: 3600,
       description: "CI runner",
     });
-    const body = postSpy.mock.calls[0]![1] as Record<string, unknown>;
-    expect(body["description"]).toBe("CI runner");
+    const body = postSpy.mock.calls[0]?.[1] as Record<string, unknown>;
+    expect(body.description).toBe("CI runner");
   });
 
   it("should_omit_description_when_absent", async () => {
@@ -99,16 +91,14 @@ describe("Key tools — calls", () => {
       preauthorized: false,
       expirySeconds: 3600,
     });
-    const body = postSpy.mock.calls[0]![1] as Record<string, unknown>;
+    const body = postSpy.mock.calls[0]?.[1] as Record<string, unknown>;
     expect(body).not.toHaveProperty("description");
   });
 
   it("should_delete_key", async () => {
     const cb = registeredTools.get("delete_key")!;
     await cb({ keyId: "key123" });
-    expect(delSpy).toHaveBeenCalledWith(
-      "/api/v2/tailnet/ermite.ts.net/keys/key123",
-    );
+    expect(delSpy).toHaveBeenCalledWith("/api/v2/tailnet/ermite.ts.net/keys/key123");
   });
 });
 

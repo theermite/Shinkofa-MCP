@@ -8,7 +8,7 @@ import { registerKeyTools } from "./tools/keys.js";
 import { registerPolicyTools } from "./tools/policy.js";
 import { registerRawTools } from "./tools/raw.js";
 
-const apiKey = process.env["TAILSCALE_API_KEY"];
+const apiKey = process.env.TAILSCALE_API_KEY;
 if (!apiKey) {
   console.error("TAILSCALE_API_KEY environment variable is required");
   process.exit(1);
@@ -16,10 +16,8 @@ if (!apiKey) {
 
 const client = new TailscaleClient({
   apiKey,
-  tailnet: process.env["TAILSCALE_TAILNET"],
-  timeoutMs: process.env["TAILSCALE_TIMEOUT_MS"]
-    ? Number(process.env["TAILSCALE_TIMEOUT_MS"])
-    : undefined,
+  tailnet: process.env.TAILSCALE_TAILNET,
+  timeoutMs: process.env.TAILSCALE_TIMEOUT_MS ? Number(process.env.TAILSCALE_TIMEOUT_MS) : undefined,
 });
 
 const server = new McpServer({

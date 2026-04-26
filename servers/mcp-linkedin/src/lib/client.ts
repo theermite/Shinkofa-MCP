@@ -28,10 +28,7 @@ export class LinkedInClient {
     return this.request<T>("GET", path);
   }
 
-  async post<T = unknown>(
-    path: string,
-    body?: Record<string, unknown>,
-  ): Promise<T> {
+  async post<T = unknown>(path: string, body?: Record<string, unknown>): Promise<T> {
     return this.request<T>("POST", path, body);
   }
 
@@ -39,11 +36,7 @@ export class LinkedInClient {
     await this.request("DELETE", path);
   }
 
-  private async request<T>(
-    method: string,
-    path: string,
-    body?: Record<string, unknown>,
-  ): Promise<T> {
+  private async request<T>(method: string, path: string, body?: Record<string, unknown>): Promise<T> {
     const url = `${this.baseUrl}${path}`;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { HAClient, HAError } from "../src/lib/client.js";
 
 // ---------------------------------------------------------------------------
@@ -8,19 +8,12 @@ import { HAClient, HAError } from "../src/lib/client.js";
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
-function mockResponse(
-  data: unknown,
-  status = 200,
-  contentType = "application/json",
-) {
+function mockResponse(data: unknown, status = 200, contentType = "application/json") {
   return {
     ok: status >= 200 && status < 300,
     status,
     json: () => Promise.resolve(data),
-    text: () =>
-      Promise.resolve(
-        typeof data === "string" ? data : JSON.stringify(data),
-      ),
+    text: () => Promise.resolve(typeof data === "string" ? data : JSON.stringify(data)),
     arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
     headers: new Headers({ "content-type": contentType }),
   };
@@ -65,15 +58,11 @@ describe("HAError", () => {
 
 describe("HAClient — constructor", () => {
   it("should_throw_when_accessToken_is_missing", () => {
-    expect(
-      () => new HAClient({ accessToken: "", baseUrl: "http://ha:8123" }),
-    ).toThrow("HA_ACCESS_TOKEN is required");
+    expect(() => new HAClient({ accessToken: "", baseUrl: "http://ha:8123" })).toThrow("HA_ACCESS_TOKEN is required");
   });
 
   it("should_throw_when_baseUrl_is_missing", () => {
-    expect(
-      () => new HAClient({ accessToken: "tok", baseUrl: "" }),
-    ).toThrow("HA_BASE_URL is required");
+    expect(() => new HAClient({ accessToken: "tok", baseUrl: "" })).toThrow("HA_BASE_URL is required");
   });
 
   it("should_construct_when_config_is_valid", () => {
@@ -106,9 +95,7 @@ describe("HAClient — callApi", () => {
     const client = makeClient();
     await client.callApi("GET", "/states/light.x");
     const init = mockFetch.mock.calls[0][1] as RequestInit;
-    expect((init.headers as Record<string, string>)["Authorization"]).toBe(
-      "Bearer test-token",
-    );
+    expect((init.headers as Record<string, string>).Authorization).toBe("Bearer test-token");
   });
 
   it("should_build_correct_url_when_calling_GET", async () => {
@@ -124,9 +111,7 @@ describe("HAClient — callApi", () => {
     });
     const init = mockFetch.mock.calls[0][1] as RequestInit;
     expect(init.body).toBe(JSON.stringify({ entity_id: "light.x" }));
-    expect((init.headers as Record<string, string>)["Content-Type"]).toBe(
-      "application/json",
-    );
+    expect((init.headers as Record<string, string>)["Content-Type"]).toBe("application/json");
   });
 
   it("should_return_undefined_when_response_status_is_204", async () => {
@@ -136,18 +121,12 @@ describe("HAClient — callApi", () => {
   });
 
   it("should_throw_HAError_when_response_is_not_ok", async () => {
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ message: "Entity not found" }, 404),
-    );
-    await expect(
-      makeClient().callApi("GET", "/states/fake.entity"),
-    ).rejects.toBeInstanceOf(HAError);
+    mockFetch.mockResolvedValueOnce(mockResponse({ message: "Entity not found" }, 404));
+    await expect(makeClient().callApi("GET", "/states/fake.entity")).rejects.toBeInstanceOf(HAError);
   });
 
   it("should_include_status_in_HAError_when_request_fails", async () => {
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ message: "Not found" }, 404),
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ message: "Not found" }, 404));
     const err = await makeClient()
       .callApi("GET", "/states/fake.entity")
       .catch((e) => e);
@@ -155,9 +134,7 @@ describe("HAClient — callApi", () => {
   });
 
   it("should_return_text_when_content_type_is_not_json", async () => {
-    mockFetch.mockResolvedValueOnce(
-      mockResponse("plain text log", 200, "text/plain"),
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse("plain text log", 200, "text/plain"));
     const result = await makeClient().callApi("GET", "/error_log");
     expect(result).toBe("plain text log");
   });
@@ -192,9 +169,7 @@ describe("HAClient — callApi", () => {
   });
 
   it("should_throw_HAError_with_text_body_when_error_response_is_plain_text", async () => {
-    mockFetch.mockResolvedValueOnce(
-      mockResponse("Unauthorized", 401, "text/plain"),
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse("Unauthorized", 401, "text/plain"));
     const err = await makeClient()
       .callApi("GET", "/states")
       .catch((e) => e);
@@ -211,9 +186,7 @@ describe("HAClient — callApiRaw", () => {
   beforeEach(() => mockFetch.mockReset());
 
   it("should_return_base64_and_mimeType_when_request_succeeds", async () => {
-    mockFetch.mockResolvedValueOnce(
-      mockResponse(null, 200, "image/jpeg"),
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse(null, 200, "image/jpeg"));
     const result = await makeClient().callApiRaw("/camera_proxy/camera.front");
     expect(result).toHaveProperty("base64");
     expect(result).toHaveProperty("mimeType", "image/jpeg");
@@ -233,18 +206,14 @@ describe("HAClient — callApiRaw", () => {
 
   it("should_throw_HAError_when_response_is_not_ok", async () => {
     mockFetch.mockResolvedValueOnce(mockResponse(null, 403, "image/jpeg"));
-    await expect(
-      makeClient().callApiRaw("/camera_proxy/camera.private"),
-    ).rejects.toBeInstanceOf(HAError);
+    await expect(makeClient().callApiRaw("/camera_proxy/camera.private")).rejects.toBeInstanceOf(HAError);
   });
 
   it("should_send_bearer_auth_header_when_making_raw_request", async () => {
     mockFetch.mockResolvedValueOnce(mockResponse(null, 200, "image/jpeg"));
     await makeClient().callApiRaw("/camera_proxy/camera.front");
     const init = mockFetch.mock.calls[0][1] as RequestInit;
-    expect((init.headers as Record<string, string>)["Authorization"]).toBe(
-      "Bearer test-token",
-    );
+    expect((init.headers as Record<string, string>).Authorization).toBe("Bearer test-token");
   });
 });
 

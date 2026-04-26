@@ -77,7 +77,10 @@ export const SetWorkflowTagsSchema = z.object({
 
 export const ListExecutionsSchema = z.object({
   workflowId: WorkflowId.optional().describe("Filter by workflow ID"),
-  status: z.enum(["error", "success", "waiting", "running", "canceled"]).optional().describe("Filter by execution status"),
+  status: z
+    .enum(["error", "success", "waiting", "running", "canceled"])
+    .optional()
+    .describe("Filter by execution status"),
   includeData: z.boolean().optional().describe("Include execution data in response"),
   limit: z.number().min(1).max(250).optional().describe("Max executions to return (default 20, max 250)"),
   cursor: z.string().optional().describe("Pagination cursor from previous response"),
@@ -185,10 +188,15 @@ export const GetUserSchema = z.object({
 });
 
 export const CreateUsersSchema = z.object({
-  users: z.array(z.object({
-    email: z.string().email().describe("User email"),
-    role: z.enum(["global:admin", "global:member"]).describe("User role"),
-  })).min(1).describe("Array of users to create"),
+  users: z
+    .array(
+      z.object({
+        email: z.string().email().describe("User email"),
+        role: z.enum(["global:admin", "global:member"]).describe("User role"),
+      }),
+    )
+    .min(1)
+    .describe("Array of users to create"),
 });
 
 export const DeleteUserSchema = z.object({
@@ -203,9 +211,10 @@ export const ChangeUserRoleSchema = z.object({
 // ── Audit ──
 
 export const GenerateAuditSchema = z.object({
-  categories: z.array(z.enum([
-    "credentials", "database", "filesystem", "instance", "nodes",
-  ])).optional().describe("Audit categories to include (default: all)"),
+  categories: z
+    .array(z.enum(["credentials", "database", "filesystem", "instance", "nodes"]))
+    .optional()
+    .describe("Audit categories to include (default: all)"),
   daysAbandonedWorkflow: z.number().optional().describe("Days to consider a workflow abandoned"),
 });
 

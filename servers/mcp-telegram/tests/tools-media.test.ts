@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TelegramClient, TelegramError } from "../src/lib/client.js";
 import { registerMediaTools } from "../src/tools/media.js";
 
@@ -56,7 +56,10 @@ describe("Media tools", () => {
 
   it("should_send_media_group", async () => {
     const cb = registeredTools.get("send_media_group")!;
-    const media = [{ type: "photo", media: "id1" }, { type: "photo", media: "id2" }];
+    const media = [
+      { type: "photo", media: "id1" },
+      { type: "photo", media: "id2" },
+    ];
     await cb({ chat_id: 123, media });
     expect(callApiSpy).toHaveBeenCalledWith("sendMediaGroup", { chat_id: 123, media });
   });
@@ -70,13 +73,21 @@ describe("Media tools", () => {
   it("should_send_contact", async () => {
     const cb = registeredTools.get("send_contact")!;
     await cb({ chat_id: 123, phone_number: "+33612345678", first_name: "Jay" });
-    expect(callApiSpy).toHaveBeenCalledWith("sendContact", { chat_id: 123, phone_number: "+33612345678", first_name: "Jay" });
+    expect(callApiSpy).toHaveBeenCalledWith("sendContact", {
+      chat_id: 123,
+      phone_number: "+33612345678",
+      first_name: "Jay",
+    });
   });
 
   it("should_send_poll", async () => {
     const cb = registeredTools.get("send_poll")!;
     await cb({ chat_id: 123, question: "Q?", options: [{ text: "A" }, { text: "B" }] });
-    expect(callApiSpy).toHaveBeenCalledWith("sendPoll", { chat_id: 123, question: "Q?", options: [{ text: "A" }, { text: "B" }] });
+    expect(callApiSpy).toHaveBeenCalledWith("sendPoll", {
+      chat_id: 123,
+      question: "Q?",
+      options: [{ text: "A" }, { text: "B" }],
+    });
   });
 });
 

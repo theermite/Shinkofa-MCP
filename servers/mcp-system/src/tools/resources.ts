@@ -1,8 +1,8 @@
 import os from "node:os";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { runCommand } from "../lib/executor.js";
 import { EmptySchema } from "../lib/schemas.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
-import { runCommand } from "../lib/executor.js";
 
 export function registerResourceTools(server: McpServer) {
   server.tool(
@@ -22,29 +22,22 @@ export function registerResourceTools(server: McpServer) {
       }),
   );
 
-  server.tool(
-    "get_memory_info",
-    "Get total, free, used memory in bytes and percent",
-    EmptySchema.shape,
-    async () =>
-      withErrorHandler(async () => {
-        const total = os.totalmem();
-        const free = os.freemem();
-        const used = total - free;
-        return toolResult({
-          totalBytes: total,
-          freeBytes: free,
-          usedBytes: used,
-          usedPercent: Math.round((used / total) * 10000) / 100,
-        });
-      }),
+  server.tool("get_memory_info", "Get total, free, used memory in bytes and percent", EmptySchema.shape, async () =>
+    withErrorHandler(async () => {
+      const total = os.totalmem();
+      const free = os.freemem();
+      const used = total - free;
+      return toolResult({
+        totalBytes: total,
+        freeBytes: free,
+        usedBytes: used,
+        usedPercent: Math.round((used / total) * 10000) / 100,
+      });
+    }),
   );
 
-  server.tool(
-    "get_disk_info",
-    "Get disk/filesystem usage for all mountpoints",
-    EmptySchema.shape,
-    async () => withErrorHandler(async () => toolResult(await getDiskInfo())),
+  server.tool("get_disk_info", "Get disk/filesystem usage for all mountpoints", EmptySchema.shape, async () =>
+    withErrorHandler(async () => toolResult(await getDiskInfo())),
   );
 
   server.tool(
@@ -62,11 +55,9 @@ export function registerResourceTools(server: McpServer) {
 async function getDiskInfo(): Promise<unknown> {
   const isWin = os.platform() === "win32";
   if (isWin) {
-    const res = await runCommand(
-      "wmic",
-      ["logicaldisk", "get", "DeviceID,Size,FreeSpace,VolumeName", "/format:csv"],
-      { timeoutMs: 10_000 },
-    );
+    const res = await runCommand("wmic", ["logicaldisk", "get", "DeviceID,Size,FreeSpace,VolumeName", "/format:csv"], {
+      timeoutMs: 10_000,
+    });
     return parseWmicCsv(res.stdout);
   }
   const res = await runCommand("df", ["-kP"], { timeoutMs: 10_000 });
@@ -79,7 +70,7 @@ function parseWmicCsv(text: string): unknown[] {
     .map((l) => l.trim())
     .filter((l) => l.length > 0);
   if (lines.length < 2) return [];
-  const header = lines[0]!.split(",");
+  const header = lines[0]?.split(",");
   return lines.slice(1).map((line) => {
     const cols = line.split(",");
     const row: Record<string, string> = {};
@@ -87,10 +78,10 @@ function parseWmicCsv(text: string): unknown[] {
       row[h] = cols[i] ?? "";
     });
     return {
-      mount: row["DeviceID"] ?? "",
-      name: row["VolumeName"] ?? "",
-      totalBytes: Number(row["Size"] ?? 0),
-      freeBytes: Number(row["FreeSpace"] ?? 0),
+      mount: row.DeviceID ?? "",
+      name: row.VolumeName ?? "",
+      totalBytes: Number(row.Size ?? 0),
+      freeBytes: Number(row.FreeSpace ?? 0),
     };
   });
 }

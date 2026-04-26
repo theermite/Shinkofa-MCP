@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { OllamaClient, OllamaError } from "../src/lib/client.js";
 
 const mockFetch = vi.fn();
@@ -42,10 +42,7 @@ describe("OllamaClient", () => {
     const c = new OllamaClient({ baseUrl: "http://localhost:11434/" });
     mockFetch.mockResolvedValue(mockResponse({ models: [] }));
     await c.get("/api/tags");
-    expect(mockFetch).toHaveBeenCalledWith(
-      "http://localhost:11434/api/tags",
-      expect.anything(),
-    );
+    expect(mockFetch).toHaveBeenCalledWith("http://localhost:11434/api/tags", expect.anything());
   });
 
   it("should_get_with_correct_url", async () => {
@@ -58,9 +55,7 @@ describe("OllamaClient", () => {
   });
 
   it("should_post_with_json_body", async () => {
-    mockFetch.mockResolvedValue(
-      mockResponse({ response: "Hello", done: true }),
-    );
+    mockFetch.mockResolvedValue(mockResponse({ response: "Hello", done: true }));
     await client.post("/api/generate", { model: "llama3", prompt: "hi" });
     const call = mockFetch.mock.calls[0]!;
     expect(call[1].method).toBe("POST");
@@ -95,18 +90,12 @@ describe("OllamaClient", () => {
   });
 
   it("should_throw_OllamaError_on_api_error", async () => {
-    mockFetch.mockResolvedValue(
-      mockResponse({ error: "model not found" }, 404),
-    );
-    await expect(client.post("/api/show", { model: "nope" })).rejects.toThrow(
-      OllamaError,
-    );
+    mockFetch.mockResolvedValue(mockResponse({ error: "model not found" }, 404));
+    await expect(client.post("/api/show", { model: "nope" })).rejects.toThrow(OllamaError);
   });
 
   it("should_parse_error_message_from_json", async () => {
-    mockFetch.mockResolvedValue(
-      mockResponse({ error: "model 'nope' not found" }, 404),
-    );
+    mockFetch.mockResolvedValue(mockResponse({ error: "model 'nope' not found" }, 404));
     try {
       await client.post("/api/show", { model: "nope" });
     } catch (e) {

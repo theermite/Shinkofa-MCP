@@ -2,8 +2,8 @@
  * Raw API call tool — 100% coverage of all Discord REST API v10 endpoints.
  * Use this for any endpoint not exposed as a dedicated tool.
  */
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { DiscordClient } from "../lib/client.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { DiscordClient } from "../lib/client.js";
 import { RawApiCallSchema } from "../lib/schemas.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
 

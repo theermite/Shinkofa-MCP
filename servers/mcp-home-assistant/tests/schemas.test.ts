@@ -4,7 +4,7 @@
  * recreate them here verbatim. Any drift between source and this file
  * is intentional and must be kept in sync.
  */
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
 // ---------------------------------------------------------------------------
@@ -131,9 +131,7 @@ describe("SetStateSchema", () => {
   });
 
   it("should_reject_missing_state_when_required", () => {
-    expect(() =>
-      SetStateSchema.parse({ entity_id: "sensor.temp" }),
-    ).toThrow();
+    expect(() => SetStateSchema.parse({ entity_id: "sensor.temp" })).toThrow();
   });
 
   it("should_reject_missing_entity_id_when_required", () => {
@@ -188,9 +186,7 @@ describe("CallServiceSchema", () => {
 
 describe("FireEventSchema", () => {
   it("should_accept_event_type_when_provided", () => {
-    expect(
-      FireEventSchema.parse({ event_type: "my_custom_event" }),
-    ).toEqual({ event_type: "my_custom_event" });
+    expect(FireEventSchema.parse({ event_type: "my_custom_event" })).toEqual({ event_type: "my_custom_event" });
   });
 
   it("should_accept_optional_event_data_when_provided", () => {
@@ -212,21 +208,15 @@ describe("FireEventSchema", () => {
 
 describe("RenderTemplateSchema", () => {
   it("should_accept_valid_template_string_when_under_2000_chars", () => {
-    expect(
-      RenderTemplateSchema.parse({ template: "{{ states('sensor.temp') }}" }),
-    ).toBeDefined();
+    expect(RenderTemplateSchema.parse({ template: "{{ states('sensor.temp') }}" })).toBeDefined();
   });
 
   it("should_reject_template_exceeding_2000_chars_when_too_long", () => {
-    expect(() =>
-      RenderTemplateSchema.parse({ template: "x".repeat(2001) }),
-    ).toThrow();
+    expect(() => RenderTemplateSchema.parse({ template: "x".repeat(2001) })).toThrow();
   });
 
   it("should_accept_template_at_exactly_2000_chars_when_at_limit", () => {
-    expect(
-      RenderTemplateSchema.parse({ template: "x".repeat(2000) }),
-    ).toBeDefined();
+    expect(RenderTemplateSchema.parse({ template: "x".repeat(2000) })).toBeDefined();
   });
 
   it("should_reject_missing_template_when_required", () => {
@@ -261,9 +251,7 @@ describe("GetHistorySchema", () => {
   });
 
   it("should_reject_non_boolean_for_minimal_response_when_wrong_type", () => {
-    expect(() =>
-      GetHistorySchema.parse({ minimal_response: "yes" }),
-    ).toThrow();
+    expect(() => GetHistorySchema.parse({ minimal_response: "yes" })).toThrow();
   });
 
   it("should_accept_all_params_simultaneously_when_all_provided", () => {
@@ -319,9 +307,7 @@ describe("GetCalendarEventsSchema", () => {
 
 describe("RawApiCallSchema", () => {
   it("should_accept_GET_method_when_provided", () => {
-    expect(
-      RawApiCallSchema.parse({ method: "GET", path: "/states" }),
-    ).toMatchObject({ method: "GET" });
+    expect(RawApiCallSchema.parse({ method: "GET", path: "/states" })).toMatchObject({ method: "GET" });
   });
 
   it("should_accept_POST_with_body_when_provided", () => {
@@ -343,9 +329,7 @@ describe("RawApiCallSchema", () => {
   });
 
   it("should_reject_invalid_method_when_not_in_enum", () => {
-    expect(() =>
-      RawApiCallSchema.parse({ method: "PATCH", path: "/states" }),
-    ).toThrow();
+    expect(() => RawApiCallSchema.parse({ method: "PATCH", path: "/states" })).toThrow();
   });
 
   it("should_reject_missing_path_when_required", () => {

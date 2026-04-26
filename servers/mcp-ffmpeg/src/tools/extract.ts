@@ -1,10 +1,10 @@
 /**
  * Extract tools — audio, frames, thumbnails, subtitles.
  */
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { ExtractAudioSchema, ExtractFramesSchema, ThumbnailSchema, BurnSubtitlesSchema } from "../lib/schemas.js";
-import { exec, type ExecutorConfig, validateInputFile } from "../lib/executor.js";
-import { toolResult, toolError, withErrorHandler } from "../lib/utils.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { type ExecutorConfig, exec, validateInputFile } from "../lib/executor.js";
+import { BurnSubtitlesSchema, ExtractAudioSchema, ExtractFramesSchema, ThumbnailSchema } from "../lib/schemas.js";
+import { toolError, toolResult, withErrorHandler } from "../lib/utils.js";
 
 async function runFfmpeg(config: ExecutorConfig, args: string[]): Promise<ReturnType<typeof toolResult>> {
   const result = await exec(config.ffmpegPath, args, { timeoutMs: config.timeoutMs });
@@ -27,38 +27,48 @@ export function registerExtractTools(server: McpServer, config: ExecutorConfig):
     });
   });
 
-  server.tool("extract_frames", "Extract frames/images from a video (single frame, interval, or all)", ExtractFramesSchema.shape, async (params) => {
-    return withErrorHandler(async () => {
-      await validateInputFile(params.input);
-      const args = ["-y", "-i", params.input];
-      if (params.timestamp) {
-        args.push("-ss", params.timestamp, "-frames:v", "1");
-      } else if (params.fps) {
-        args.push("-vf", `fps=${params.fps}`);
-      }
-      if (params.quality) args.push("-q:v", String(params.quality));
-      args.push(params.output_pattern);
-      return runFfmpeg(config, args);
-    });
-  });
+  server.tool(
+    "extract_frames",
+    "Extract frames/images from a video (single frame, interval, or all)",
+    ExtractFramesSchema.shape,
+    async (params) => {
+      return withErrorHandler(async () => {
+        await validateInputFile(params.input);
+        const args = ["-y", "-i", params.input];
+        if (params.timestamp) {
+          args.push("-ss", params.timestamp, "-frames:v", "1");
+        } else if (params.fps) {
+          args.push("-vf", `fps=${params.fps}`);
+        }
+        if (params.quality) args.push("-q:v", String(params.quality));
+        args.push(params.output_pattern);
+        return runFfmpeg(config, args);
+      });
+    },
+  );
 
-  server.tool("thumbnail", "Generate a thumbnail image from a video (smart scene detection or timestamp)", ThumbnailSchema.shape, async (params) => {
-    return withErrorHandler(async () => {
-      await validateInputFile(params.input);
-      const args = ["-y", "-i", params.input];
-      if (params.smart) {
-        const filters = ["thumbnail=300"];
-        if (params.width) filters.push(`scale=${params.width}:-1`);
-        args.push("-vf", filters.join(","), "-frames:v", "1");
-      } else {
-        args.push("-ss", params.timestamp);
-        if (params.width) args.push("-vf", `scale=${params.width}:-1`);
-        args.push("-frames:v", "1");
-      }
-      args.push("-q:v", "2", params.output);
-      return runFfmpeg(config, args);
-    });
-  });
+  server.tool(
+    "thumbnail",
+    "Generate a thumbnail image from a video (smart scene detection or timestamp)",
+    ThumbnailSchema.shape,
+    async (params) => {
+      return withErrorHandler(async () => {
+        await validateInputFile(params.input);
+        const args = ["-y", "-i", params.input];
+        if (params.smart) {
+          const filters = ["thumbnail=300"];
+          if (params.width) filters.push(`scale=${params.width}:-1`);
+          args.push("-vf", filters.join(","), "-frames:v", "1");
+        } else {
+          args.push("-ss", params.timestamp);
+          if (params.width) args.push("-vf", `scale=${params.width}:-1`);
+          args.push("-frames:v", "1");
+        }
+        args.push("-q:v", "2", params.output);
+        return runFfmpeg(config, args);
+      });
+    },
+  );
 
   server.tool("burn_subtitles", "Burn (hardcode) subtitles into a video", BurnSubtitlesSchema.shape, async (params) => {
     return withErrorHandler(async () => {

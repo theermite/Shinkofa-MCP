@@ -19,11 +19,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { DriveClient } from "./lib/client.js";
 import { registerFileTools } from "./tools/files.js";
-import { registerSharingTools } from "./tools/sharing.js";
 import { registerRawTool } from "./tools/raw.js";
+import { registerSharingTools } from "./tools/sharing.js";
 
 async function main(): Promise<void> {
-  const accessToken = process.env["GOOGLE_ACCESS_TOKEN"];
+  const accessToken = process.env.GOOGLE_ACCESS_TOKEN;
   if (!accessToken) {
     console.error("Error: GOOGLE_ACCESS_TOKEN environment variable is required");
     process.exit(1);
@@ -31,12 +31,10 @@ async function main(): Promise<void> {
 
   const client = new DriveClient({
     accessToken,
-    refreshToken: process.env["GOOGLE_REFRESH_TOKEN"],
-    clientId: process.env["GOOGLE_CLIENT_ID"],
-    clientSecret: process.env["GOOGLE_CLIENT_SECRET"],
-    timeoutMs: process.env["GOOGLE_DRIVE_TIMEOUT_MS"]
-      ? parseInt(process.env["GOOGLE_DRIVE_TIMEOUT_MS"], 10)
-      : undefined,
+    refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    timeoutMs: process.env.GOOGLE_DRIVE_TIMEOUT_MS ? parseInt(process.env.GOOGLE_DRIVE_TIMEOUT_MS, 10) : undefined,
   });
 
   const server = new McpServer({

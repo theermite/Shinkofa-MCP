@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DiscordClient, DiscordError, DiscordRateLimitError } from "../src/lib/client.js";
 import { registerMemberTools } from "../src/tools/members.js";
 
@@ -51,7 +51,13 @@ describe("modify_member", () => {
   it("should_call_PATCH_member_with_body_and_reason_when_modifying", async () => {
     const handler = registeredTools.get("modify_member")!;
     await handler({ guild_id: "g1", user_id: "u1", nick: "NewNick", reason: "request" });
-    expect(callApiSpy).toHaveBeenCalledWith("PATCH", "/guilds/g1/members/u1", { nick: "NewNick" }, undefined, "request");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PATCH",
+      "/guilds/g1/members/u1",
+      { nick: "NewNick" },
+      undefined,
+      "request",
+    );
   });
 });
 
@@ -67,7 +73,13 @@ describe("ban_member", () => {
   it("should_call_PUT_bans_with_body_and_reason_when_banning", async () => {
     const handler = registeredTools.get("ban_member")!;
     await handler({ guild_id: "g1", user_id: "u1", delete_message_seconds: 86400, reason: "spam" });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/guilds/g1/bans/u1", { delete_message_seconds: 86400 }, undefined, "spam");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/guilds/g1/bans/u1",
+      { delete_message_seconds: 86400 },
+      undefined,
+      "spam",
+    );
   });
 });
 
@@ -99,7 +111,13 @@ describe("bulk_ban", () => {
   it("should_call_POST_bulk_ban_with_body_and_reason_when_banning", async () => {
     const handler = registeredTools.get("bulk_ban")!;
     await handler({ guild_id: "g1", user_ids: ["u1", "u2"], delete_message_seconds: 3600, reason: "raid" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/guilds/g1/bulk-ban", { user_ids: ["u1", "u2"], delete_message_seconds: 3600 }, undefined, "raid");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/guilds/g1/bulk-ban",
+      { user_ids: ["u1", "u2"], delete_message_seconds: 3600 },
+      undefined,
+      "raid",
+    );
   });
 });
 
@@ -115,7 +133,13 @@ describe("create_role", () => {
   it("should_call_POST_roles_with_body_and_reason_when_creating", async () => {
     const handler = registeredTools.get("create_role")!;
     await handler({ guild_id: "g1", name: "Mod", color: 0xff0000, reason: "new role" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/guilds/g1/roles", { name: "Mod", color: 0xff0000 }, undefined, "new role");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/guilds/g1/roles",
+      { name: "Mod", color: 0xff0000 },
+      undefined,
+      "new role",
+    );
   });
 });
 
@@ -156,7 +180,13 @@ describe("remove_role", () => {
   it("should_call_DELETE_member_role_when_removing", async () => {
     const handler = registeredTools.get("remove_role")!;
     await handler({ guild_id: "g1", user_id: "u1", role_id: "r1", reason: "demotion" });
-    expect(callApiSpy).toHaveBeenCalledWith("DELETE", "/guilds/g1/members/u1/roles/r1", undefined, undefined, "demotion");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "DELETE",
+      "/guilds/g1/members/u1/roles/r1",
+      undefined,
+      undefined,
+      "demotion",
+    );
   });
 });
 

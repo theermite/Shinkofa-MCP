@@ -23,10 +23,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { createConfig, OBSClient } from "./lib/client.js";
-import { registerGeneralTools } from "./tools/general.js";
-import { registerSceneTools } from "./tools/scenes.js";
-import { registerInputTools } from "./tools/inputs.js";
 import { registerFilterTools } from "./tools/filters.js";
+import { registerGeneralTools } from "./tools/general.js";
+import { registerInputTools } from "./tools/inputs.js";
+import { registerSceneTools } from "./tools/scenes.js";
 import { registerStreamingTools } from "./tools/streaming.js";
 import { registerTransitionTools } from "./tools/transitions.js";
 

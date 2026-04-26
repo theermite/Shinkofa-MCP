@@ -18,15 +18,8 @@ export const GetPostSchema = z.object({
 
 export const ListPostsSchema = z.object({
   host: z.string().describe("Publication host"),
-  first: z
-    .number()
-    .max(50)
-    .optional()
-    .describe("Number of posts to fetch (max 50)"),
-  after: z
-    .string()
-    .optional()
-    .describe("Cursor for pagination (endCursor from previous page)"),
+  first: z.number().max(50).optional().describe("Number of posts to fetch (max 50)"),
+  after: z.string().optional().describe("Cursor for pagination (endCursor from previous page)"),
 });
 
 export const SearchPostsSchema = z.object({
@@ -47,21 +40,12 @@ export const PublishPostSchema = z.object({
   contentMarkdown: z.string().describe("Post content in Markdown"),
   subtitle: z.string().optional().describe("Post subtitle"),
   slug: z.string().optional().describe("Custom URL slug"),
-  originalArticleURL: z
-    .string()
-    .optional()
-    .describe("Canonical URL for cross-posted content"),
+  originalArticleURL: z.string().optional().describe("Canonical URL for cross-posted content"),
   coverImageURL: z.string().optional().describe("Cover image URL"),
-  tags: z
-    .array(TagInput)
-    .optional()
-    .describe("Tags as {name, slug} objects (NOT strings)"),
+  tags: z.array(TagInput).optional().describe("Tags as {name, slug} objects (NOT strings)"),
   seriesId: z.string().optional().describe("Series ID to add post to"),
   disableComments: z.boolean().optional(),
-  publishedAt: z
-    .string()
-    .optional()
-    .describe("ISO date to backdate the post"),
+  publishedAt: z.string().optional().describe("ISO date to backdate the post"),
 });
 
 export const UpdatePostSchema = z.object({
@@ -86,10 +70,7 @@ export const RemovePostSchema = z.object({
 export const CreateDraftSchema = z.object({
   publicationId: z.string().describe("Publication ID"),
   title: z.string().min(1).describe("Draft title"),
-  contentMarkdown: z
-    .string()
-    .optional()
-    .describe("Draft content in Markdown"),
+  contentMarkdown: z.string().optional().describe("Draft content in Markdown"),
   subtitle: z.string().optional(),
   slug: z.string().optional(),
   coverImageURL: z.string().optional(),
@@ -111,10 +92,7 @@ export const CreateSeriesSchema = z.object({
   publicationId: z.string().describe("Publication ID"),
   name: z.string().min(1).describe("Series name"),
   slug: z.string().describe("Series URL slug"),
-  description: z
-    .string()
-    .optional()
-    .describe("Series description in Markdown"),
+  description: z.string().optional().describe("Series description in Markdown"),
   coverImage: z.string().optional().describe("Series cover image URL"),
 });
 
@@ -140,8 +118,5 @@ export const LikePostSchema = z.object({
 
 export const RawGraphQLSchema = z.object({
   query: z.string().describe("GraphQL query or mutation string"),
-  variables: z
-    .record(z.unknown())
-    .optional()
-    .describe("GraphQL variables"),
+  variables: z.record(z.unknown()).optional().describe("GraphQL variables"),
 });

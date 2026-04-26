@@ -14,14 +14,17 @@ import { ObsidianClient } from "./lib/client.js";
 import { registerVaultTools } from "./tools/vault.js";
 
 async function main(): Promise<void> {
-  const apiKey = process.env["OBSIDIAN_API_KEY"];
-  if (!apiKey) { console.error("Error: OBSIDIAN_API_KEY environment variable is required"); process.exit(1); }
+  const apiKey = process.env.OBSIDIAN_API_KEY;
+  if (!apiKey) {
+    console.error("Error: OBSIDIAN_API_KEY environment variable is required");
+    process.exit(1);
+  }
 
   const client = new ObsidianClient({
     apiKey,
-    baseUrl: process.env["OBSIDIAN_API_URL"],
-    timeoutMs: process.env["OBSIDIAN_TIMEOUT_MS"] ? parseInt(process.env["OBSIDIAN_TIMEOUT_MS"], 10) || undefined : undefined,
-    insecure: process.env["OBSIDIAN_INSECURE_TLS"] === "true",
+    baseUrl: process.env.OBSIDIAN_API_URL,
+    timeoutMs: process.env.OBSIDIAN_TIMEOUT_MS ? parseInt(process.env.OBSIDIAN_TIMEOUT_MS, 10) || undefined : undefined,
+    insecure: process.env.OBSIDIAN_INSECURE_TLS === "true",
   });
 
   const server = new McpServer({ name: "@shinkofa/mcp-obsidian", version: "1.0.0" });
@@ -31,4 +34,7 @@ async function main(): Promise<void> {
   await server.connect(transport);
 }
 
-main().catch((error) => { console.error("Fatal error:", error); process.exit(1); });
+main().catch((error) => {
+  console.error("Fatal error:", error);
+  process.exit(1);
+});

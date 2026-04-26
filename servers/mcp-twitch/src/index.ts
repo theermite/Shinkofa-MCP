@@ -18,15 +18,15 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { TwitchClient } from "./lib/client.js";
 import { registerChannelTools } from "./tools/channels.js";
 import { registerChatTools } from "./tools/chat.js";
-import { registerModerationTools } from "./tools/moderation.js";
-import { registerStreamTools } from "./tools/streams.js";
-import { registerPointsTools } from "./tools/points.js";
-import { registerInteractiveTools } from "./tools/interactive.js";
 import { registerContentTools } from "./tools/content.js";
+import { registerInteractiveTools } from "./tools/interactive.js";
+import { registerModerationTools } from "./tools/moderation.js";
+import { registerPointsTools } from "./tools/points.js";
 import { registerRawTool } from "./tools/raw.js";
+import { registerStreamTools } from "./tools/streams.js";
 
 async function main(): Promise<void> {
-  const clientId = process.env["TWITCH_CLIENT_ID"];
+  const clientId = process.env.TWITCH_CLIENT_ID;
 
   if (!clientId) {
     console.error("Error: TWITCH_CLIENT_ID environment variable is required");
@@ -35,12 +35,10 @@ async function main(): Promise<void> {
 
   const client = new TwitchClient({
     clientId,
-    clientSecret: process.env["TWITCH_CLIENT_SECRET"],
-    accessToken: process.env["TWITCH_ACCESS_TOKEN"],
-    apiBaseUrl: process.env["TWITCH_API_BASE_URL"],
-    timeoutMs: process.env["TWITCH_TIMEOUT_MS"]
-      ? parseInt(process.env["TWITCH_TIMEOUT_MS"], 10) || undefined
-      : undefined,
+    clientSecret: process.env.TWITCH_CLIENT_SECRET,
+    accessToken: process.env.TWITCH_ACCESS_TOKEN,
+    apiBaseUrl: process.env.TWITCH_API_BASE_URL,
+    timeoutMs: process.env.TWITCH_TIMEOUT_MS ? parseInt(process.env.TWITCH_TIMEOUT_MS, 10) || undefined : undefined,
   });
 
   const server = new McpServer({

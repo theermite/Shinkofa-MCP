@@ -13,25 +13,28 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { GmailClient } from "./lib/client.js";
-import { registerMessageTools } from "./tools/messages.js";
 import { registerDraftTools } from "./tools/drafts.js";
 import { registerLabelTools } from "./tools/labels.js";
-import { registerThreadTools } from "./tools/threads.js";
+import { registerMessageTools } from "./tools/messages.js";
 import { registerMiscTools } from "./tools/misc.js";
+import { registerThreadTools } from "./tools/threads.js";
 
 async function main(): Promise<void> {
-  const accessToken = process.env["GOOGLE_ACCESS_TOKEN"];
-  if (!accessToken) { console.error("Error: GOOGLE_ACCESS_TOKEN is required"); process.exit(1); }
+  const accessToken = process.env.GOOGLE_ACCESS_TOKEN;
+  if (!accessToken) {
+    console.error("Error: GOOGLE_ACCESS_TOKEN is required");
+    process.exit(1);
+  }
 
-  const rawTimeout = process.env["GMAIL_TIMEOUT_MS"] ? parseInt(process.env["GMAIL_TIMEOUT_MS"], 10) : undefined;
+  const rawTimeout = process.env.GMAIL_TIMEOUT_MS ? parseInt(process.env.GMAIL_TIMEOUT_MS, 10) : undefined;
   const timeoutMs = rawTimeout !== undefined && Number.isFinite(rawTimeout) && rawTimeout > 0 ? rawTimeout : undefined;
 
   const client = new GmailClient({
     accessToken,
-    refreshToken: process.env["GOOGLE_REFRESH_TOKEN"],
-    clientId: process.env["GOOGLE_CLIENT_ID"],
-    clientSecret: process.env["GOOGLE_CLIENT_SECRET"],
-    apiBaseUrl: process.env["GMAIL_API_BASE_URL"],
+    refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    apiBaseUrl: process.env.GMAIL_API_BASE_URL,
     timeoutMs,
   });
 
@@ -46,4 +49,7 @@ async function main(): Promise<void> {
   await server.connect(transport);
 }
 
-main().catch((error) => { console.error("Fatal error:", error); process.exit(1); });
+main().catch((error) => {
+  console.error("Fatal error:", error);
+  process.exit(1);
+});

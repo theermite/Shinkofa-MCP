@@ -28,11 +28,7 @@ export class TailscaleClient {
     return this.request<T>("GET", path);
   }
 
-  async post<T = unknown>(
-    path: string,
-    body?: Record<string, unknown>,
-    contentType?: string,
-  ): Promise<T> {
+  async post<T = unknown>(path: string, body?: Record<string, unknown>, contentType?: string): Promise<T> {
     return this.request<T>("POST", path, body, contentType);
   }
 

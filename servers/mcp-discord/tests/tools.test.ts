@@ -1,19 +1,19 @@
-import { describe, it, expect } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { describe, expect, it } from "vitest";
 import { DiscordClient } from "../src/lib/client.js";
-import { registerMessageTools } from "../src/tools/messages.js";
 import { registerChannelTools } from "../src/tools/channels.js";
-import { registerGuildTools } from "../src/tools/guilds.js";
-import { registerMemberTools } from "../src/tools/members.js";
-import { registerWebhookTools } from "../src/tools/webhooks.js";
 import { registerCommandTools } from "../src/tools/commands.js";
-import { registerInteractionTools } from "../src/tools/interactions.js";
-import { registerUserTools } from "../src/tools/users.js";
 import { registerEmojiTools } from "../src/tools/emojis.js";
 import { registerEventTools } from "../src/tools/events.js";
-import { registerModerationTools } from "../src/tools/moderation.js";
+import { registerGuildTools } from "../src/tools/guilds.js";
+import { registerInteractionTools } from "../src/tools/interactions.js";
 import { registerInviteTools } from "../src/tools/invites.js";
+import { registerMemberTools } from "../src/tools/members.js";
+import { registerMessageTools } from "../src/tools/messages.js";
+import { registerModerationTools } from "../src/tools/moderation.js";
 import { registerRawTool } from "../src/tools/raw.js";
+import { registerUserTools } from "../src/tools/users.js";
+import { registerWebhookTools } from "../src/tools/webhooks.js";
 
 function createTestSetup() {
   const client = new DiscordClient({ botToken: "test-token" });

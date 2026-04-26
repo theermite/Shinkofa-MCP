@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { YouTubeClient, YouTubeError } from "../src/lib/client.js";
 import { registerLiveTools } from "../src/tools/live.js";
 
@@ -33,13 +33,23 @@ describe("Broadcast tools — callbacks", () => {
   it("should_create_broadcast_with_default_part", async () => {
     const cb = registeredTools.get("create_broadcast")!;
     await cb({ snippet: { title: "Live!", scheduledStartTime: "2026-01-01T00:00:00Z" } });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/liveBroadcasts", { snippet: { title: "Live!", scheduledStartTime: "2026-01-01T00:00:00Z" } }, { part: "snippet,status,contentDetails" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/liveBroadcasts",
+      { snippet: { title: "Live!", scheduledStartTime: "2026-01-01T00:00:00Z" } },
+      { part: "snippet,status,contentDetails" },
+    );
   });
 
   it("should_update_broadcast", async () => {
     const cb = registeredTools.get("update_broadcast")!;
     await cb({ id: "bc1", snippet: { title: "Updated" } });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/liveBroadcasts", { id: "bc1", snippet: { title: "Updated" } }, { part: "snippet,status,contentDetails" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/liveBroadcasts",
+      { id: "bc1", snippet: { title: "Updated" } },
+      { part: "snippet,status,contentDetails" },
+    );
   });
 
   it("should_delete_broadcast", async () => {
@@ -51,13 +61,21 @@ describe("Broadcast tools — callbacks", () => {
   it("should_bind_broadcast", async () => {
     const cb = registeredTools.get("bind_broadcast")!;
     await cb({ id: "bc1", part: "id,contentDetails", streamId: "s1" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/liveBroadcasts/bind", undefined, { id: "bc1", part: "id,contentDetails", streamId: "s1" });
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/liveBroadcasts/bind", undefined, {
+      id: "bc1",
+      part: "id,contentDetails",
+      streamId: "s1",
+    });
   });
 
   it("should_transition_broadcast", async () => {
     const cb = registeredTools.get("transition_broadcast")!;
     await cb({ id: "bc1", broadcastStatus: "live", part: "id,status" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/liveBroadcasts/transition", undefined, { id: "bc1", broadcastStatus: "live", part: "id,status" });
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/liveBroadcasts/transition", undefined, {
+      id: "bc1",
+      broadcastStatus: "live",
+      part: "id,status",
+    });
   });
 });
 
@@ -71,13 +89,23 @@ describe("Stream tools — callbacks", () => {
   it("should_create_live_stream_with_default_part", async () => {
     const cb = registeredTools.get("create_live_stream")!;
     await cb({ snippet: { title: "My Stream" } });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/liveStreams", { snippet: { title: "My Stream" } }, { part: "snippet,cdn" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/liveStreams",
+      { snippet: { title: "My Stream" } },
+      { part: "snippet,cdn" },
+    );
   });
 
   it("should_update_live_stream", async () => {
     const cb = registeredTools.get("update_live_stream")!;
     await cb({ id: "s1", snippet: { title: "Updated" } });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/liveStreams", { id: "s1", snippet: { title: "Updated" } }, { part: "snippet,cdn" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/liveStreams",
+      { id: "s1", snippet: { title: "Updated" } },
+      { part: "snippet,cdn" },
+    );
   });
 
   it("should_delete_live_stream", async () => {
@@ -91,13 +119,21 @@ describe("Chat tools — callbacks", () => {
   it("should_list_live_chat_messages", async () => {
     const cb = registeredTools.get("list_live_chat_messages")!;
     await cb({ part: "snippet", liveChatId: "lc1" });
-    expect(callApiSpy).toHaveBeenCalledWith("GET", "/liveChat/messages", undefined, { part: "snippet", liveChatId: "lc1" });
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/liveChat/messages", undefined, {
+      part: "snippet",
+      liveChatId: "lc1",
+    });
   });
 
   it("should_send_live_chat_message_with_default_type", async () => {
     const cb = registeredTools.get("send_live_chat_message")!;
     await cb({ liveChatId: "lc1", messageText: "Hello!" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/liveChat/messages", { snippet: { liveChatId: "lc1", type: "textMessageEvent", textMessageDetails: { messageText: "Hello!" } } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/liveChat/messages",
+      { snippet: { liveChatId: "lc1", type: "textMessageEvent", textMessageDetails: { messageText: "Hello!" } } },
+      { part: "snippet" },
+    );
   });
 
   it("should_delete_live_chat_message", async () => {
@@ -111,13 +147,21 @@ describe("Moderator tools — callbacks", () => {
   it("should_list_live_chat_moderators", async () => {
     const cb = registeredTools.get("list_live_chat_moderators")!;
     await cb({ part: "snippet", liveChatId: "lc1" });
-    expect(callApiSpy).toHaveBeenCalledWith("GET", "/liveChat/moderators", undefined, { part: "snippet", liveChatId: "lc1" });
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/liveChat/moderators", undefined, {
+      part: "snippet",
+      liveChatId: "lc1",
+    });
   });
 
   it("should_add_live_chat_moderator", async () => {
     const cb = registeredTools.get("add_live_chat_moderator")!;
     await cb({ liveChatId: "lc1", channelId: "ch1" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/liveChat/moderators", { snippet: { liveChatId: "lc1", moderatorDetails: { channelId: "ch1" } } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/liveChat/moderators",
+      { snippet: { liveChatId: "lc1", moderatorDetails: { channelId: "ch1" } } },
+      { part: "snippet" },
+    );
   });
 
   it("should_remove_live_chat_moderator", async () => {
@@ -131,7 +175,19 @@ describe("Ban tools — callbacks", () => {
   it("should_ban_live_chat_user", async () => {
     const cb = registeredTools.get("ban_live_chat_user")!;
     await cb({ liveChatId: "lc1", channelId: "ch1", type: "permanent" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/liveChat/bans", { snippet: { liveChatId: "lc1", type: "permanent", banDurationSeconds: undefined, bannedUserDetails: { channelId: "ch1" } } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/liveChat/bans",
+      {
+        snippet: {
+          liveChatId: "lc1",
+          type: "permanent",
+          banDurationSeconds: undefined,
+          bannedUserDetails: { channelId: "ch1" },
+        },
+      },
+      { part: "snippet" },
+    );
   });
 
   it("should_unban_live_chat_user", async () => {

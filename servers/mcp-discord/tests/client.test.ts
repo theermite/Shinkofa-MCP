@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { DiscordClient, DiscordError, DiscordRateLimitError } from "../src/lib/client.js";
 
 describe("DiscordClient", () => {
@@ -30,7 +30,9 @@ describe("DiscordClient", () => {
 
 describe("DiscordError", () => {
   it("should create with all properties", () => {
-    const error = new DiscordError(400, 50035, "Invalid Form Body", { name: { _errors: [{ code: "BASE_TYPE_REQUIRED" }] } });
+    const error = new DiscordError(400, 50035, "Invalid Form Body", {
+      name: { _errors: [{ code: "BASE_TYPE_REQUIRED" }] },
+    });
     expect(error.httpStatus).toBe(400);
     expect(error.code).toBe(50035);
     expect(error.description).toBe("Invalid Form Body");

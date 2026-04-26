@@ -23,8 +23,8 @@ export interface OBSConfig {
 
 export function createConfig(env: Record<string, string | undefined>): OBSConfig {
   return {
-    url: env["OBS_WEBSOCKET_URL"] ?? "ws://127.0.0.1:4455",
-    password: env["OBS_WEBSOCKET_PASSWORD"],
+    url: env.OBS_WEBSOCKET_URL ?? "ws://127.0.0.1:4455",
+    password: env.OBS_WEBSOCKET_PASSWORD,
   };
 }
 
@@ -35,8 +35,12 @@ export class OBSClient {
 
   constructor(config: OBSConfig) {
     this.config = config;
-    this.obs.on("ConnectionClosed", () => { this.connected = false; });
-    this.obs.on("ConnectionError", () => { this.connected = false; });
+    this.obs.on("ConnectionClosed", () => {
+      this.connected = false;
+    });
+    this.obs.on("ConnectionError", () => {
+      this.connected = false;
+    });
   }
 
   async ensureConnected(): Promise<void> {

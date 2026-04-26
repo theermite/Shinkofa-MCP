@@ -1,11 +1,11 @@
-import { describe, it, expect } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { describe, expect, it } from "vitest";
 import { GmailClient } from "../src/lib/client.js";
-import { registerMessageTools } from "../src/tools/messages.js";
 import { registerDraftTools } from "../src/tools/drafts.js";
 import { registerLabelTools } from "../src/tools/labels.js";
-import { registerThreadTools } from "../src/tools/threads.js";
+import { registerMessageTools } from "../src/tools/messages.js";
 import { registerMiscTools } from "../src/tools/misc.js";
+import { registerThreadTools } from "../src/tools/threads.js";
 
 function setup() {
   return {

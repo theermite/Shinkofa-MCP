@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { describe, expect, it } from "vitest";
 import { ImageMagickRunner } from "../src/lib/runner.js";
+import { registerAdvancedTools } from "../src/tools/advanced.js";
 import { registerBasicTools } from "../src/tools/basic.js";
 import { registerEffectTools } from "../src/tools/effects.js";
-import { registerAdvancedTools } from "../src/tools/advanced.js";
 
 function setup() {
   const runner = new ImageMagickRunner();
@@ -27,9 +27,15 @@ describe("Basic tool registration", () => {
     }) as typeof server.tool;
     registerBasicTools(server, runner);
     expect(registered).toEqual([
-      "identify", "convert", "resize_image", "crop_image",
-      "rotate_image", "flip_image", "create_thumbnail",
-      "strip_metadata", "optimize_image",
+      "identify",
+      "convert",
+      "resize_image",
+      "crop_image",
+      "rotate_image",
+      "flip_image",
+      "create_thumbnail",
+      "strip_metadata",
+      "optimize_image",
     ]);
     expect(registered).toHaveLength(9);
   });
@@ -50,10 +56,7 @@ describe("Effect tool registration", () => {
       return origTool(name, ...args);
     }) as typeof server.tool;
     registerEffectTools(server, runner);
-    expect(registered).toEqual([
-      "blur_image", "sharpen_image", "adjust_colors",
-      "add_border", "add_shadow",
-    ]);
+    expect(registered).toEqual(["blur_image", "sharpen_image", "adjust_colors", "add_border", "add_shadow"]);
     expect(registered).toHaveLength(5);
   });
 });
@@ -74,8 +77,13 @@ describe("Advanced tool registration", () => {
     }) as typeof server.tool;
     registerAdvancedTools(server, runner);
     expect(registered).toEqual([
-      "text_overlay", "composite_images", "batch_convert",
-      "create_gif", "create_sprite_sheet", "raw_magick", "raw_identify",
+      "text_overlay",
+      "composite_images",
+      "batch_convert",
+      "create_gif",
+      "create_sprite_sheet",
+      "raw_magick",
+      "raw_identify",
     ]);
     expect(registered).toHaveLength(7);
   });

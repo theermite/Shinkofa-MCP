@@ -1,14 +1,14 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  ListDevicesSchema,
-  DeviceIdSchema,
   AuthorizeDeviceSchema,
-  SetDeviceRoutesSchema,
   CreateAuthKeySchema,
+  DeviceIdSchema,
   KeyIdSchema,
-  UpdateAclSchema,
-  SetDnsNameserversSchema,
+  ListDevicesSchema,
   RawApiCallSchema,
+  SetDeviceRoutesSchema,
+  SetDnsNameserversSchema,
+  UpdateAclSchema,
 } from "../src/lib/schemas.js";
 
 describe("ListDevicesSchema", () => {
@@ -19,9 +19,7 @@ describe("ListDevicesSchema", () => {
     expect(ListDevicesSchema.safeParse({ fields: "all" }).success).toBe(true);
   });
   it("should_reject_unknown_fields_value", () => {
-    expect(
-      ListDevicesSchema.safeParse({ fields: "bogus" }).success,
-    ).toBe(false);
+    expect(ListDevicesSchema.safeParse({ fields: "bogus" }).success).toBe(false);
   });
 });
 
@@ -40,18 +38,13 @@ describe("AuthorizeDeviceSchema", () => {
     expect(r.authorized).toBe(true);
   });
   it("should_accept_explicit_false", () => {
-    expect(
-      AuthorizeDeviceSchema.parse({ deviceId: "d1", authorized: false })
-        .authorized,
-    ).toBe(false);
+    expect(AuthorizeDeviceSchema.parse({ deviceId: "d1", authorized: false }).authorized).toBe(false);
   });
 });
 
 describe("SetDeviceRoutesSchema", () => {
   it("should_require_routes_array", () => {
-    expect(SetDeviceRoutesSchema.safeParse({ deviceId: "d1" }).success).toBe(
-      false,
-    );
+    expect(SetDeviceRoutesSchema.safeParse({ deviceId: "d1" }).success).toBe(false);
   });
   it("should_accept_routes", () => {
     expect(
@@ -72,14 +65,10 @@ describe("CreateAuthKeySchema", () => {
     expect(r.expirySeconds).toBe(86400);
   });
   it("should_accept_tags", () => {
-    expect(
-      CreateAuthKeySchema.parse({ tags: ["tag:server"] }).tags,
-    ).toEqual(["tag:server"]);
+    expect(CreateAuthKeySchema.parse({ tags: ["tag:server"] }).tags).toEqual(["tag:server"]);
   });
   it("should_reject_negative_expiry", () => {
-    expect(
-      CreateAuthKeySchema.safeParse({ expirySeconds: -1 }).success,
-    ).toBe(false);
+    expect(CreateAuthKeySchema.safeParse({ expirySeconds: -1 }).success).toBe(false);
   });
 });
 
@@ -101,9 +90,7 @@ describe("UpdateAclSchema", () => {
 
 describe("SetDnsNameserversSchema", () => {
   it("should_accept_dns_array", () => {
-    expect(
-      SetDnsNameserversSchema.safeParse({ dns: ["1.1.1.1"] }).success,
-    ).toBe(true);
+    expect(SetDnsNameserversSchema.safeParse({ dns: ["1.1.1.1"] }).success).toBe(true);
   });
   it("should_require_dns_field", () => {
     expect(SetDnsNameserversSchema.safeParse({}).success).toBe(false);
@@ -120,8 +107,6 @@ describe("RawApiCallSchema", () => {
     ).toBe(true);
   });
   it("should_reject_unknown_method", () => {
-    expect(
-      RawApiCallSchema.safeParse({ method: "OPTIONS", path: "/x" }).success,
-    ).toBe(false);
+    expect(RawApiCallSchema.safeParse({ method: "OPTIONS", path: "/x" }).success).toBe(false);
   });
 });

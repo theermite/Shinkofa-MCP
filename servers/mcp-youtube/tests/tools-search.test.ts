@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { YouTubeClient, YouTubeError } from "../src/lib/client.js";
 import { registerSearchTools } from "../src/tools/search.js";
 
@@ -27,7 +27,12 @@ describe("Search tools — callbacks", () => {
   it("should_search_youtube", async () => {
     const cb = registeredTools.get("search_youtube")!;
     await cb({ part: "snippet", q: "typescript", type: "video", maxResults: 10 });
-    expect(callApiSpy).toHaveBeenCalledWith("GET", "/search", undefined, { part: "snippet", q: "typescript", type: "video", maxResults: 10 });
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/search", undefined, {
+      part: "snippet",
+      q: "typescript",
+      type: "video",
+      maxResults: 10,
+    });
   });
 
   it("should_list_captions", async () => {
@@ -51,7 +56,12 @@ describe("Search tools — callbacks", () => {
   it("should_subscribe_with_default_part", async () => {
     const cb = registeredTools.get("subscribe")!;
     await cb({ channelId: "UC123" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/subscriptions", { snippet: { resourceId: { kind: "youtube#channel", channelId: "UC123" } } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/subscriptions",
+      { snippet: { resourceId: { kind: "youtube#channel", channelId: "UC123" } } },
+      { part: "snippet" },
+    );
   });
 
   it("should_unsubscribe", async () => {

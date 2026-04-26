@@ -1,15 +1,15 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  GenerateSchema,
   ChatSchema,
-  EmbedSchema,
-  ShowModelSchema,
-  CopyModelSchema,
-  DeleteModelSchema,
-  PullModelSchema,
-  CreateModelSchema,
   CheckBlobSchema,
+  CopyModelSchema,
+  CreateModelSchema,
+  DeleteModelSchema,
+  EmbedSchema,
+  GenerateSchema,
+  PullModelSchema,
   RawApiCallSchema,
+  ShowModelSchema,
 } from "../src/lib/schemas.js";
 
 describe("GenerateSchema", () => {
@@ -86,9 +86,7 @@ describe("Model schemas", () => {
   });
 
   it("should_validate_CopyModelSchema", () => {
-    expect(
-      CopyModelSchema.safeParse({ source: "a", destination: "b" }).success,
-    ).toBe(true);
+    expect(CopyModelSchema.safeParse({ source: "a", destination: "b" }).success).toBe(true);
   });
 
   it("should_validate_DeleteModelSchema", () => {
@@ -109,9 +107,7 @@ describe("Model schemas", () => {
   });
 
   it("should_validate_CheckBlobSchema", () => {
-    expect(
-      CheckBlobSchema.safeParse({ digest: "sha256:abc123" }).success,
-    ).toBe(true);
+    expect(CheckBlobSchema.safeParse({ digest: "sha256:abc123" }).success).toBe(true);
   });
 });
 

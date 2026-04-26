@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DiscordClient, DiscordError, DiscordRateLimitError } from "../src/lib/client.js";
 import { registerMessageTools } from "../src/tools/messages.js";
 
@@ -83,7 +83,10 @@ describe("add_reaction", () => {
   it("should_call_PUT_with_encoded_emoji_when_adding_reaction", async () => {
     const handler = registeredTools.get("add_reaction")!;
     await handler({ channel_id: "ch1", message_id: "msg1", emoji: "👍" });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", `/channels/ch1/messages/msg1/reactions/${encodeURIComponent("👍")}/@me`);
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      `/channels/ch1/messages/msg1/reactions/${encodeURIComponent("👍")}/@me`,
+    );
   });
 });
 
@@ -91,13 +94,19 @@ describe("remove_reaction", () => {
   it("should_call_DELETE_own_reaction_when_no_user_id", async () => {
     const handler = registeredTools.get("remove_reaction")!;
     await handler({ channel_id: "ch1", message_id: "msg1", emoji: "👍" });
-    expect(callApiSpy).toHaveBeenCalledWith("DELETE", `/channels/ch1/messages/msg1/reactions/${encodeURIComponent("👍")}/@me`);
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "DELETE",
+      `/channels/ch1/messages/msg1/reactions/${encodeURIComponent("👍")}/@me`,
+    );
   });
 
   it("should_call_DELETE_user_reaction_when_user_id_provided", async () => {
     const handler = registeredTools.get("remove_reaction")!;
     await handler({ channel_id: "ch1", message_id: "msg1", emoji: "👍", user_id: "u1" });
-    expect(callApiSpy).toHaveBeenCalledWith("DELETE", `/channels/ch1/messages/msg1/reactions/${encodeURIComponent("👍")}/u1`);
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "DELETE",
+      `/channels/ch1/messages/msg1/reactions/${encodeURIComponent("👍")}/u1`,
+    );
   });
 });
 
@@ -105,7 +114,12 @@ describe("get_reactions", () => {
   it("should_call_GET_reactions_with_query_params_when_fetching_reactions", async () => {
     const handler = registeredTools.get("get_reactions")!;
     await handler({ channel_id: "ch1", message_id: "msg1", emoji: "👍", limit: 25 });
-    expect(callApiSpy).toHaveBeenCalledWith("GET", `/channels/ch1/messages/msg1/reactions/${encodeURIComponent("👍")}`, undefined, { limit: 25 });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "GET",
+      `/channels/ch1/messages/msg1/reactions/${encodeURIComponent("👍")}`,
+      undefined,
+      { limit: 25 },
+    );
   });
 });
 
@@ -119,7 +133,10 @@ describe("delete_all_reactions", () => {
   it("should_call_DELETE_specific_emoji_reactions_when_emoji_provided", async () => {
     const handler = registeredTools.get("delete_all_reactions")!;
     await handler({ channel_id: "ch1", message_id: "msg1", emoji: "🔥" });
-    expect(callApiSpy).toHaveBeenCalledWith("DELETE", `/channels/ch1/messages/msg1/reactions/${encodeURIComponent("🔥")}`);
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "DELETE",
+      `/channels/ch1/messages/msg1/reactions/${encodeURIComponent("🔥")}`,
+    );
   });
 });
 

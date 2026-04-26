@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { StripeClient, StripeError } from "../src/lib/client.js";
 import { registerRawTool } from "../src/tools/raw.js";
 
@@ -27,11 +27,7 @@ describe("Raw API tool", () => {
   it("should_call_GET_endpoint", async () => {
     const cb = registeredTools.get("raw_api_call")!;
     await cb({ method: "GET", path: "/tax/settings" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/tax/settings",
-      undefined,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/tax/settings", undefined);
   });
 
   it("should_call_POST_with_params", async () => {
@@ -41,27 +37,17 @@ describe("Raw API tool", () => {
       path: "/tax/calculations",
       params: { currency: "eur" },
     });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/tax/calculations",
-      { currency: "eur" },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/tax/calculations", { currency: "eur" });
   });
 
   it("should_call_DELETE_endpoint", async () => {
     const cb = registeredTools.get("raw_api_call")!;
     await cb({ method: "DELETE", path: "/files/file_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "DELETE",
-      "/files/file_123",
-      undefined,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("DELETE", "/files/file_123", undefined);
   });
 
   it("should_handle_StripeError_gracefully", async () => {
-    callApiSpy.mockRejectedValue(
-      new StripeError(404, "invalid_request_error", undefined, "Not found"),
-    );
+    callApiSpy.mockRejectedValue(new StripeError(404, "invalid_request_error", undefined, "Not found"));
     const cb = registeredTools.get("raw_api_call")!;
     const result = await cb({ method: "GET", path: "/unknown" });
     expect(result.isError).toBe(true);
@@ -89,10 +75,6 @@ describe("Raw API tool", () => {
   it("should_pass_undefined_when_no_params", async () => {
     const cb = registeredTools.get("raw_api_call")!;
     await cb({ method: "GET", path: "/balance" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/balance",
-      undefined,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/balance", undefined);
   });
 });

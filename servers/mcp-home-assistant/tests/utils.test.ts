@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { toolResult, toolError, withErrorHandler } from "../src/lib/utils.js";
+import { describe, expect, it } from "vitest";
 import { HAError } from "../src/lib/client.js";
+import { toolError, toolResult, withErrorHandler } from "../src/lib/utils.js";
 
 // ---------------------------------------------------------------------------
 // toolResult
@@ -64,12 +64,8 @@ describe("withErrorHandler", () => {
       throw new HAError(503, "Service unavailable");
     });
     expect(result).toMatchObject({ isError: true });
-    expect((result as ReturnType<typeof toolError>).content[0].text).toContain(
-      "503",
-    );
-    expect((result as ReturnType<typeof toolError>).content[0].text).toContain(
-      "Service unavailable",
-    );
+    expect((result as ReturnType<typeof toolError>).content[0].text).toContain("503");
+    expect((result as ReturnType<typeof toolError>).content[0].text).toContain("Service unavailable");
   });
 
   it("should_return_timeout_error_when_AbortError_is_thrown", async () => {
@@ -78,9 +74,7 @@ describe("withErrorHandler", () => {
     const result = await withErrorHandler(async () => {
       throw abortErr;
     });
-    expect((result as ReturnType<typeof toolError>).content[0].text).toBe(
-      "Request timed out",
-    );
+    expect((result as ReturnType<typeof toolError>).content[0].text).toBe("Request timed out");
   });
 
   it("should_return_network_error_when_TypeError_is_thrown", async () => {

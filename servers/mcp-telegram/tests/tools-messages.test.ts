@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TelegramClient, TelegramError } from "../src/lib/client.js";
 import { registerMessageTools } from "../src/tools/messages.js";
 
@@ -75,7 +75,11 @@ describe("Message tools", () => {
   it("should_set_reaction", async () => {
     const cb = registeredTools.get("set_reaction")!;
     await cb({ chat_id: 123, message_id: 1, reaction: [{ type: "emoji", emoji: "👍" }] });
-    expect(callApiSpy).toHaveBeenCalledWith("setMessageReaction", { chat_id: 123, message_id: 1, reaction: [{ type: "emoji", emoji: "👍" }] });
+    expect(callApiSpy).toHaveBeenCalledWith("setMessageReaction", {
+      chat_id: 123,
+      message_id: 1,
+      reaction: [{ type: "emoji", emoji: "👍" }],
+    });
   });
 });
 

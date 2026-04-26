@@ -1,12 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TailscaleClient, TailscaleError } from "../src/lib/client.js";
 
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
 function mockResponse(data: object | string | null, status = 200) {
-  const text =
-    data === null ? "" : typeof data === "string" ? data : JSON.stringify(data);
+  const text = data === null ? "" : typeof data === "string" ? data : JSON.stringify(data);
   return {
     ok: status >= 200 && status < 300,
     status,
@@ -28,9 +27,7 @@ describe("TailscaleClient", () => {
   });
 
   it("should_throw_if_api_key_is_empty", () => {
-    expect(() => new TailscaleClient({ apiKey: "" })).toThrow(
-      "TAILSCALE_API_KEY is required",
-    );
+    expect(() => new TailscaleClient({ apiKey: "" })).toThrow("TAILSCALE_API_KEY is required");
   });
 
   it("should_default_tailnet_to_dash", () => {
@@ -55,10 +52,7 @@ describe("TailscaleClient", () => {
   it("should_call_correct_url", async () => {
     mockFetch.mockResolvedValue(mockResponse({ ok: true }));
     await client.get("/api/v2/tailnet/-/devices");
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.tailscale.com/api/v2/tailnet/-/devices",
-      expect.anything(),
-    );
+    expect(mockFetch).toHaveBeenCalledWith("https://api.tailscale.com/api/v2/tailnet/-/devices", expect.anything());
   });
 
   it("should_send_content_type_json_for_post_object", async () => {
@@ -70,10 +64,10 @@ describe("TailscaleClient", () => {
 
   it("should_send_raw_text_for_string_body", async () => {
     mockFetch.mockResolvedValue(mockResponse({ ok: true }));
-    await client.request("POST", "/api/v2/tailnet/-/acl", "{\"acls\":[]}", "application/hujson");
+    await client.request("POST", "/api/v2/tailnet/-/acl", '{"acls":[]}', "application/hujson");
     const call = mockFetch.mock.calls[0]!;
     expect(call[1].headers["Content-Type"]).toBe("application/hujson");
-    expect(call[1].body).toBe("{\"acls\":[]}");
+    expect(call[1].body).toBe('{"acls":[]}');
   });
 
   it("should_send_body_as_json_string", async () => {
@@ -98,7 +92,7 @@ describe("TailscaleClient", () => {
   });
 
   it("should_return_text_for_non_json_response", async () => {
-    mockFetch.mockResolvedValue(mockResponse("// HuJSON ACL\n{\"acls\":[]}"));
+    mockFetch.mockResolvedValue(mockResponse('// HuJSON ACL\n{"acls":[]}'));
     const result = await client.get("/api/v2/tailnet/-/acl");
     expect(typeof result).toBe("string");
   });
@@ -111,9 +105,7 @@ describe("TailscaleClient", () => {
       json: () => Promise.resolve({ message: "Invalid API key" }),
       text: () => Promise.resolve('{"message":"Invalid API key"}'),
     });
-    await expect(client.get("/api/v2/tailnet/-/devices")).rejects.toThrow(
-      TailscaleError,
-    );
+    await expect(client.get("/api/v2/tailnet/-/devices")).rejects.toThrow(TailscaleError);
   });
 
   it("should_handle_non_json_http_error", async () => {
@@ -136,9 +128,7 @@ describe("TailscaleClient", () => {
       apiKey: "k",
       tailnet: "ermite.ts.net",
     });
-    expect(c.tailnetPath("/devices")).toBe(
-      "/api/v2/tailnet/ermite.ts.net/devices",
-    );
+    expect(c.tailnetPath("/devices")).toBe("/api/v2/tailnet/ermite.ts.net/devices");
   });
 });
 

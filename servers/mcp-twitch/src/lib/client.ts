@@ -113,9 +113,7 @@ export class TwitchClient {
 
     if (body && method !== "GET") {
       headers["Content-Type"] = "application/json";
-      const cleaned = Object.fromEntries(
-        Object.entries(body).filter(([, v]) => v !== undefined && v !== null),
-      );
+      const cleaned = Object.fromEntries(Object.entries(body).filter(([, v]) => v !== undefined && v !== null));
       fetchBody = JSON.stringify(cleaned);
     }
 
@@ -133,9 +131,7 @@ export class TwitchClient {
       // Handle rate limiting
       if (response.status === 429) {
         const resetEpoch = response.headers.get("Ratelimit-Reset");
-        const retryAfter = resetEpoch
-          ? Math.max(0, parseInt(resetEpoch, 10) - Math.floor(Date.now() / 1000))
-          : 60;
+        const retryAfter = resetEpoch ? Math.max(0, parseInt(resetEpoch, 10) - Math.floor(Date.now() / 1000)) : 60;
         throw new TwitchRateLimitError(retryAfter);
       }
 
@@ -145,13 +141,14 @@ export class TwitchClient {
       }
 
       let data: unknown;
-      try { data = await response.json(); } catch { throw new TwitchError(response.status, `Non-JSON response (${response.status})`); }
+      try {
+        data = await response.json();
+      } catch {
+        throw new TwitchError(response.status, `Non-JSON response (${response.status})`);
+      }
 
       if (!response.ok) {
-        throw new TwitchError(
-          response.status,
-          (data as { message?: string }).message ?? response.statusText,
-        );
+        throw new TwitchError(response.status, (data as { message?: string }).message ?? response.statusText);
       }
 
       return data as T;

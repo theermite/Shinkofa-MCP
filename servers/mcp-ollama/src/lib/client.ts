@@ -13,17 +13,11 @@ export class OllamaClient {
   private readonly timeoutMs: number;
 
   constructor(config: OllamaClientConfig = {}) {
-    this.baseUrl = (config.baseUrl ?? "http://localhost:11434").replace(
-      /\/$/,
-      "",
-    );
+    this.baseUrl = (config.baseUrl ?? "http://localhost:11434").replace(/\/$/, "");
     this.timeoutMs = config.timeoutMs ?? 120_000;
   }
 
-  async post<T = unknown>(
-    path: string,
-    body?: Record<string, unknown>,
-  ): Promise<T> {
+  async post<T = unknown>(path: string, body?: Record<string, unknown>): Promise<T> {
     return this.request<T>("POST", path, body);
   }
 
@@ -31,10 +25,7 @@ export class OllamaClient {
     return this.request<T>("GET", path);
   }
 
-  async del<T = unknown>(
-    path: string,
-    body?: Record<string, unknown>,
-  ): Promise<T> {
+  async del<T = unknown>(path: string, body?: Record<string, unknown>): Promise<T> {
     return this.request<T>("DELETE", path, body);
   }
 
@@ -53,11 +44,7 @@ export class OllamaClient {
     }
   }
 
-  private async request<T>(
-    method: string,
-    path: string,
-    body?: Record<string, unknown>,
-  ): Promise<T> {
+  private async request<T>(method: string, path: string, body?: Record<string, unknown>): Promise<T> {
     const url = `${this.baseUrl}${path}`;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { registerResourceTools } from "../src/tools/resources.js";
 
 vi.mock("../src/lib/executor.js", () => ({
@@ -17,10 +17,7 @@ beforeEach(() => {
   registered = new Map();
   const orig = server.tool.bind(server);
   server.tool = ((...a: unknown[]) => {
-    registered.set(
-      a[0] as string,
-      a[a.length - 1] as (...x: unknown[]) => unknown,
-    );
+    registered.set(a[0] as string, a[a.length - 1] as (...x: unknown[]) => unknown);
     return orig(...(a as Parameters<typeof orig>));
   }) as typeof server.tool;
   registerResourceTools(server);
@@ -28,12 +25,7 @@ beforeEach(() => {
 
 describe("Resource tools — registration", () => {
   it("should_register_4_resource_tools", () => {
-    for (const n of [
-      "get_cpu_info",
-      "get_memory_info",
-      "get_disk_info",
-      "get_network_interfaces",
-    ]) {
+    for (const n of ["get_cpu_info", "get_memory_info", "get_disk_info", "get_network_interfaces"]) {
       expect(registered.has(n)).toBe(true);
     }
   });

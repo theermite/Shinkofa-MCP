@@ -17,21 +17,27 @@ export const ContainerListSchema = z.object({
   all: z.boolean().optional().describe("Show all containers (default shows only running)"),
   limit: z.number().optional().describe("Return this number of most recently created containers"),
   size: z.boolean().optional().describe("Return the size of container as fields SizeRw and SizeRootFs"),
-  filters: z.string().optional().describe("JSON-encoded filters: {status:[\"running\"]}, {name:[\"foo\"]}, etc."),
+  filters: z.string().optional().describe('JSON-encoded filters: {status:["running"]}, {name:["foo"]}, etc.'),
 });
 
 export const ContainerCreateSchema = z.object({
   name: z.string().optional().describe("Container name"),
   Image: z.string().describe("Image to use (e.g. 'nginx:latest')"),
   Cmd: z.array(z.string()).optional().describe("Command to run (overrides image CMD)"),
-  Entrypoint: z.union([z.string(), z.array(z.string())]).optional().describe("Entrypoint (overrides image ENTRYPOINT)"),
-  Env: z.array(z.string()).optional().describe("Environment variables as [\"KEY=value\", ...]"),
-  ExposedPorts: z.record(z.object({})).optional().describe("Ports to expose: {\"80/tcp\": {}}"),
+  Entrypoint: z
+    .union([z.string(), z.array(z.string())])
+    .optional()
+    .describe("Entrypoint (overrides image ENTRYPOINT)"),
+  Env: z.array(z.string()).optional().describe('Environment variables as ["KEY=value", ...]'),
+  ExposedPorts: z.record(z.object({})).optional().describe('Ports to expose: {"80/tcp": {}}'),
   WorkingDir: z.string().optional().describe("Working directory inside container"),
   User: z.string().optional().describe("User to run as (uid or uid:gid)"),
   Labels: z.record(z.string()).optional().describe("Labels to attach"),
-  Volumes: z.record(z.object({})).optional().describe("Volume mount points: {\"/data\": {}}"),
-  HostConfig: z.record(z.unknown()).optional().describe("Host-level configuration (PortBindings, Binds, RestartPolicy, Memory, etc.)"),
+  Volumes: z.record(z.object({})).optional().describe('Volume mount points: {"/data": {}}'),
+  HostConfig: z
+    .record(z.unknown())
+    .optional()
+    .describe("Host-level configuration (PortBindings, Binds, RestartPolicy, Memory, etc.)"),
   NetworkingConfig: z.record(z.unknown()).optional().describe("Network config (EndpointsConfig)"),
   StopSignal: z.string().optional().describe("Signal to stop container (default SIGTERM)"),
   StopTimeout: z.number().optional().describe("Timeout to stop container in seconds"),
@@ -101,7 +107,7 @@ export const ExecCreateSchema = z.object({
   DetachKeys: z.string().optional().describe("Override key sequence for detaching"),
   Tty: z.boolean().optional().describe("Allocate a pseudo-TTY"),
   Cmd: z.array(z.string()).describe("Command and arguments to run"),
-  Env: z.array(z.string()).optional().describe("Environment variables [\"KEY=val\"]"),
+  Env: z.array(z.string()).optional().describe('Environment variables ["KEY=val"]'),
   WorkingDir: z.string().optional().describe("Working directory for the exec process"),
   User: z.string().optional().describe("User to run as"),
   Privileged: z.boolean().optional().describe("Run with elevated privileges"),
@@ -131,14 +137,17 @@ export const ContainerUpdateSchema = z.object({
   Memory: z.number().optional().describe("Memory limit in bytes"),
   MemoryReservation: z.number().optional().describe("Memory soft limit in bytes"),
   MemorySwap: z.number().optional().describe("Total memory+swap limit (-1 to disable swap)"),
-  RestartPolicy: z.object({
-    Name: z.enum(["", "no", "always", "unless-stopped", "on-failure"]).optional(),
-    MaximumRetryCount: z.number().optional(),
-  }).optional().describe("Restart policy"),
+  RestartPolicy: z
+    .object({
+      Name: z.enum(["", "no", "always", "unless-stopped", "on-failure"]).optional(),
+      MaximumRetryCount: z.number().optional(),
+    })
+    .optional()
+    .describe("Restart policy"),
 });
 
 export const ContainerPruneSchema = z.object({
-  filters: z.string().optional().describe("JSON-encoded filters e.g. {\"until\":[\"24h\"]}"),
+  filters: z.string().optional().describe('JSON-encoded filters e.g. {"until":["24h"]}'),
 });
 
 export const ContainerTopSchema = z.object({
@@ -155,7 +164,7 @@ export const ContainerWaitSchema = z.object({
 
 export const ImageListSchema = z.object({
   all: z.boolean().optional().describe("Show all images including intermediates"),
-  filters: z.string().optional().describe("JSON-encoded filters: {dangling:[\"true\"]}, {reference:[\"ubuntu:*\"]}"),
+  filters: z.string().optional().describe('JSON-encoded filters: {dangling:["true"]}, {reference:["ubuntu:*"]}'),
   shared_size: z.boolean().optional().describe("Include shared size in response"),
   digests: z.boolean().optional().describe("Show digest information in response"),
 });
@@ -185,11 +194,11 @@ export const ImageTagSchema = z.object({
 export const ImageSearchSchema = z.object({
   term: z.string().describe("Term to search for"),
   limit: z.number().optional().describe("Maximum number of results"),
-  filters: z.string().optional().describe("JSON-encoded filters: {is-official:[\"true\"]}"),
+  filters: z.string().optional().describe('JSON-encoded filters: {is-official:["true"]}'),
 });
 
 export const ImagePruneSchema = z.object({
-  filters: z.string().optional().describe("JSON-encoded filters: {dangling:[\"true\"]}, {until:[\"24h\"]}"),
+  filters: z.string().optional().describe('JSON-encoded filters: {dangling:["true"]}, {until:["24h"]}'),
 });
 
 export const ImageHistorySchema = z.object({
@@ -199,7 +208,7 @@ export const ImageHistorySchema = z.object({
 export const ImageBuildSchema = z.object({
   t: z.string().optional().describe("Name and tag in 'name:tag' format"),
   dockerfile: z.string().optional().describe("Path within context to Dockerfile (default 'Dockerfile')"),
-  buildargs: z.string().optional().describe("JSON-encoded build arguments {\"KEY\":\"value\"}"),
+  buildargs: z.string().optional().describe('JSON-encoded build arguments {"KEY":"value"}'),
   labels: z.string().optional().describe("JSON-encoded labels to attach to image"),
   nocache: z.boolean().optional().describe("Do not use cache"),
   rm: z.boolean().optional().describe("Remove intermediate containers after successful build (default true)"),
@@ -213,7 +222,7 @@ export const ImageBuildSchema = z.object({
 // ── Volumes ──
 
 export const VolumeListSchema = z.object({
-  filters: z.string().optional().describe("JSON-encoded filters: {dangling:[\"true\"]}, {driver:[\"local\"]}"),
+  filters: z.string().optional().describe('JSON-encoded filters: {dangling:["true"]}, {driver:["local"]}'),
 });
 
 export const VolumeCreateSchema = z.object({
@@ -233,14 +242,14 @@ export const VolumeRemoveSchema = z.object({
 });
 
 export const VolumePruneSchema = z.object({
-  filters: z.string().optional().describe("JSON-encoded filters: {label:[\"key=value\"]}"),
+  filters: z.string().optional().describe('JSON-encoded filters: {label:["key=value"]}'),
   all: z.boolean().optional().describe("Remove all unused volumes, not just anonymous ones"),
 });
 
 // ── Networks ──
 
 export const NetworkListSchema = z.object({
-  filters: z.string().optional().describe("JSON-encoded filters: {driver:[\"bridge\"]}, {name:[\"mynet\"]}"),
+  filters: z.string().optional().describe('JSON-encoded filters: {driver:["bridge"]}, {name:["mynet"]}'),
 });
 
 export const NetworkCreateSchema = z.object({
@@ -251,15 +260,22 @@ export const NetworkCreateSchema = z.object({
   Attachable: z.boolean().optional().describe("Allow manual container attachment (swarm)"),
   Ingress: z.boolean().optional().describe("Swarm routing-mesh network"),
   EnableIPv6: z.boolean().optional().describe("Enable IPv6 networking"),
-  IPAM: z.object({
-    Driver: z.string().optional(),
-    Config: z.array(z.object({
-      Subnet: z.string().optional(),
-      Gateway: z.string().optional(),
-      IPRange: z.string().optional(),
-    })).optional(),
-    Options: z.record(z.string()).optional(),
-  }).optional().describe("IP address management"),
+  IPAM: z
+    .object({
+      Driver: z.string().optional(),
+      Config: z
+        .array(
+          z.object({
+            Subnet: z.string().optional(),
+            Gateway: z.string().optional(),
+            IPRange: z.string().optional(),
+          }),
+        )
+        .optional(),
+      Options: z.record(z.string()).optional(),
+    })
+    .optional()
+    .describe("IP address management"),
   Options: z.record(z.string()).optional().describe("Network driver options"),
   Labels: z.record(z.string()).optional().describe("Labels to attach"),
   CheckDuplicate: z.boolean().optional().describe("Reject creation if name already exists"),
@@ -288,7 +304,7 @@ export const NetworkDisconnectSchema = z.object({
 });
 
 export const NetworkPruneSchema = z.object({
-  filters: z.string().optional().describe("JSON-encoded filters: {until:[\"24h\"]}, {label:[\"key=value\"]}"),
+  filters: z.string().optional().describe('JSON-encoded filters: {until:["24h"]}, {label:["key=value"]}'),
 });
 
 // ── System ──
@@ -296,7 +312,7 @@ export const NetworkPruneSchema = z.object({
 export const SystemEventsSchema = z.object({
   since: z.string().optional().describe("Show events created since this UNIX timestamp or relative time (e.g. '1h')"),
   until: z.string().optional().describe("Show events created until this UNIX timestamp or relative time"),
-  filters: z.string().optional().describe("JSON-encoded filters: {type:[\"container\"]}, {event:[\"start\"]}"),
+  filters: z.string().optional().describe('JSON-encoded filters: {type:["container"]}, {event:["start"]}'),
 });
 
 // ── Exec ──

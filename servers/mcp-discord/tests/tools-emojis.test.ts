@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DiscordClient, DiscordError, DiscordRateLimitError } from "../src/lib/client.js";
 import { registerEmojiTools } from "../src/tools/emojis.js";
 
@@ -43,7 +43,13 @@ describe("create_emoji", () => {
   it("should_call_POST_guild_emojis_with_body_and_reason_when_creating", async () => {
     const handler = registeredTools.get("create_emoji")!;
     await handler({ guild_id: "g1", name: "pepe", image: "data:image/png;base64,abc", reason: "fun" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/guilds/g1/emojis", { name: "pepe", image: "data:image/png;base64,abc" }, undefined, "fun");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/guilds/g1/emojis",
+      { name: "pepe", image: "data:image/png;base64,abc" },
+      undefined,
+      "fun",
+    );
   });
 });
 

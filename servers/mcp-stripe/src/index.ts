@@ -13,19 +13,19 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StripeClient } from "./lib/client.js";
-import { registerCustomerTools } from "./tools/customers.js";
-import { registerPaymentTools } from "./tools/payments.js";
-import { registerSubscriptionTools } from "./tools/subscriptions.js";
-import { registerInvoiceTools } from "./tools/invoices.js";
-import { registerCatalogTools } from "./tools/catalog.js";
-import { registerPromotionTools } from "./tools/promotions.js";
-import { registerCheckoutTools } from "./tools/checkout.js";
 import { registerBillingTools } from "./tools/billing.js";
+import { registerCatalogTools } from "./tools/catalog.js";
+import { registerCheckoutTools } from "./tools/checkout.js";
+import { registerCustomerTools } from "./tools/customers.js";
 import { registerFinanceTools } from "./tools/finance.js";
+import { registerInvoiceTools } from "./tools/invoices.js";
+import { registerPaymentTools } from "./tools/payments.js";
+import { registerPromotionTools } from "./tools/promotions.js";
 import { registerRawTool } from "./tools/raw.js";
+import { registerSubscriptionTools } from "./tools/subscriptions.js";
 
 async function main(): Promise<void> {
-  const secretKey = process.env["STRIPE_SECRET_KEY"];
+  const secretKey = process.env.STRIPE_SECRET_KEY;
 
   if (!secretKey) {
     console.error("Error: STRIPE_SECRET_KEY environment variable is required");
@@ -34,11 +34,9 @@ async function main(): Promise<void> {
 
   const client = new StripeClient({
     secretKey,
-    apiBaseUrl: process.env["STRIPE_API_BASE_URL"],
-    apiVersion: process.env["STRIPE_API_VERSION"],
-    timeoutMs: process.env["STRIPE_TIMEOUT_MS"]
-      ? parseInt(process.env["STRIPE_TIMEOUT_MS"], 10) || undefined
-      : undefined,
+    apiBaseUrl: process.env.STRIPE_API_BASE_URL,
+    apiVersion: process.env.STRIPE_API_VERSION,
+    timeoutMs: process.env.STRIPE_TIMEOUT_MS ? parseInt(process.env.STRIPE_TIMEOUT_MS, 10) || undefined : undefined,
   });
 
   const server = new McpServer({

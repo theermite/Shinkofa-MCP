@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { TwitchError, TwitchRateLimitError } from "../src/lib/client.js";
 import { registerStreamTools } from "../src/tools/streams.js";
 import { createToolTestContext, type ToolTestContext } from "./helpers.js";
@@ -29,7 +29,10 @@ describe("stream tools", () => {
     ctx.callApiSpy.mockResolvedValueOnce({ data: [] });
     const handler = ctx.registeredTools.get("create_stream_marker")!;
     await handler({ user_id: "123", description: "highlight" });
-    expect(ctx.callApiSpy).toHaveBeenCalledWith("POST", "/streams/markers", { user_id: "123", description: "highlight" });
+    expect(ctx.callApiSpy).toHaveBeenCalledWith("POST", "/streams/markers", {
+      user_id: "123",
+      description: "highlight",
+    });
   });
 
   it("should_get_stream_markers_when_called", async () => {
@@ -50,7 +53,7 @@ describe("stream tools", () => {
   it("should_return_error_when_TwitchError_thrown", async () => {
     ctx.callApiSpy.mockRejectedValueOnce(new TwitchError(500, "Internal error"));
     const handler = ctx.registeredTools.get("get_streams")!;
-    const result = await handler({}) as { isError: boolean; content: { text: string }[] };
+    const result = (await handler({})) as { isError: boolean; content: { text: string }[] };
     expect(result.isError).toBe(true);
     expect(result.content[0].text).toContain("500");
   });
@@ -58,7 +61,7 @@ describe("stream tools", () => {
   it("should_return_rate_limit_error_when_rate_limited", async () => {
     ctx.callApiSpy.mockRejectedValueOnce(new TwitchRateLimitError(10));
     const handler = ctx.registeredTools.get("get_stream_key")!;
-    const result = await handler({ broadcaster_id: "1" }) as { isError: boolean; content: { text: string }[] };
+    const result = (await handler({ broadcaster_id: "1" })) as { isError: boolean; content: { text: string }[] };
     expect(result.isError).toBe(true);
     expect(result.content[0].text).toContain("retry after 10s");
   });
@@ -68,7 +71,7 @@ describe("stream tools", () => {
     err.name = "AbortError";
     ctx.callApiSpy.mockRejectedValueOnce(err);
     const handler = ctx.registeredTools.get("create_stream_marker")!;
-    const result = await handler({ user_id: "1" }) as { content: { text: string }[] };
+    const result = (await handler({ user_id: "1" })) as { content: { text: string }[] };
     expect(result.content[0].text).toBe("Request timed out");
   });
 });

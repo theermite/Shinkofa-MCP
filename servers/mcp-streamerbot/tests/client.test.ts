@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { createConfig, getWsUrl, StreamerbotError, StreamerbotClient } from "../src/lib/client.js";
+import { describe, expect, it } from "vitest";
+import { createConfig, getWsUrl, StreamerbotClient, StreamerbotError } from "../src/lib/client.js";
 
 describe("createConfig", () => {
   it("should_use_defaults_when_env_is_empty", () => {

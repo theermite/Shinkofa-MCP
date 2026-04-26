@@ -1,6 +1,12 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { GmailClient } from "../lib/client.js";
-import { ListLabelsSchema, GetLabelSchema, CreateLabelSchema, UpdateLabelSchema, DeleteLabelSchema } from "../lib/schemas.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { GmailClient } from "../lib/client.js";
+import {
+  CreateLabelSchema,
+  DeleteLabelSchema,
+  GetLabelSchema,
+  ListLabelsSchema,
+  UpdateLabelSchema,
+} from "../lib/schemas.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
 
 export function registerLabelTools(server: McpServer, client: GmailClient): void {
@@ -22,11 +28,15 @@ export function registerLabelTools(server: McpServer, client: GmailClient): void
   server.tool("update_label", "Update an existing label", UpdateLabelSchema.shape, async (p) => {
     return withErrorHandler(async () => {
       const { userId, id, ...body } = p;
-      return toolResult(await client.callApi("PUT", `/users/${userId}/labels/${id}`, { id, ...body } as Record<string, unknown>));
+      return toolResult(
+        await client.callApi("PUT", `/users/${userId}/labels/${id}`, { id, ...body } as Record<string, unknown>),
+      );
     });
   });
 
   server.tool("delete_label", "Delete a label", DeleteLabelSchema.shape, async (p) => {
-    return withErrorHandler(async () => toolResult(await client.callApi("DELETE", `/users/${p.userId}/labels/${p.id}`)));
+    return withErrorHandler(async () =>
+      toolResult(await client.callApi("DELETE", `/users/${p.userId}/labels/${p.id}`)),
+    );
   });
 }

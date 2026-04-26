@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DevtoClient } from "../src/lib/client.js";
 import { registerCommunityTools } from "../src/tools/community.js";
 
@@ -18,10 +18,7 @@ beforeEach(() => {
 
   const origTool = server.tool.bind(server);
   server.tool = ((...args: unknown[]) => {
-    registeredTools.set(
-      args[0] as string,
-      args[args.length - 1] as (...a: unknown[]) => unknown,
-    );
+    registeredTools.set(args[0] as string, args[args.length - 1] as (...a: unknown[]) => unknown);
     return origTool(...(args as Parameters<typeof origTool>));
   }) as typeof server.tool;
 

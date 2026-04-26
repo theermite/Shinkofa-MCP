@@ -27,25 +27,15 @@ export class DevtoClient {
     return this.request<T>("GET", path);
   }
 
-  async post<T = unknown>(
-    path: string,
-    body?: Record<string, unknown>,
-  ): Promise<T> {
+  async post<T = unknown>(path: string, body?: Record<string, unknown>): Promise<T> {
     return this.request<T>("POST", path, body);
   }
 
-  async put<T = unknown>(
-    path: string,
-    body?: Record<string, unknown>,
-  ): Promise<T> {
+  async put<T = unknown>(path: string, body?: Record<string, unknown>): Promise<T> {
     return this.request<T>("PUT", path, body);
   }
 
-  private async request<T>(
-    method: string,
-    path: string,
-    body?: Record<string, unknown>,
-  ): Promise<T> {
+  private async request<T>(method: string, path: string, body?: Record<string, unknown>): Promise<T> {
     const url = `${this.baseUrl}${path}`;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);

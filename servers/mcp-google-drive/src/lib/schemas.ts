@@ -3,7 +3,10 @@ import { z } from "zod";
 const FileId = z.string().describe("Google Drive file or folder ID");
 
 export const ListFilesSchema = z.object({
-  q: z.string().optional().describe("Search query (e.g. \"name contains 'budget'\" or \"mimeType = 'application/vnd.google-apps.folder'\")"),
+  q: z
+    .string()
+    .optional()
+    .describe("Search query (e.g. \"name contains 'budget'\" or \"mimeType = 'application/vnd.google-apps.folder'\")"),
   pageSize: z.number().min(1).max(1000).optional().describe("Max results per page (default 100, max 1000)"),
   pageToken: z.string().optional().describe("Token for next page of results"),
   orderBy: z.string().optional().describe("Sort order (e.g. 'modifiedTime desc', 'name')"),
@@ -20,15 +23,31 @@ export const GetFileSchema = z.object({
 
 export const ReadFileSchema = z.object({
   fileId: FileId,
-  exportMimeType: z.string().optional().describe("For Google Workspace docs: export MIME type (e.g. 'text/markdown', 'text/csv', 'application/pdf'). Auto-detected if omitted."),
+  exportMimeType: z
+    .string()
+    .optional()
+    .describe(
+      "For Google Workspace docs: export MIME type (e.g. 'text/markdown', 'text/csv', 'application/pdf'). Auto-detected if omitted.",
+    ),
 });
 
 export const CreateFileSchema = z.object({
   name: z.string().describe("File name"),
-  mimeType: z.string().optional().describe("MIME type. Use 'application/vnd.google-apps.folder' for folders, 'application/vnd.google-apps.document' for Google Docs, etc."),
+  mimeType: z
+    .string()
+    .optional()
+    .describe(
+      "MIME type. Use 'application/vnd.google-apps.folder' for folders, 'application/vnd.google-apps.document' for Google Docs, etc.",
+    ),
   parents: z.array(z.string()).optional().describe("Parent folder IDs (default: root)"),
-  content: z.string().optional().describe("File content (text). For binary, use base64. Omit for empty files or Google Workspace types."),
-  contentType: z.string().optional().describe("MIME type of the content being uploaded (e.g. 'text/plain', 'text/csv')"),
+  content: z
+    .string()
+    .optional()
+    .describe("File content (text). For binary, use base64. Omit for empty files or Google Workspace types."),
+  contentType: z
+    .string()
+    .optional()
+    .describe("MIME type of the content being uploaded (e.g. 'text/plain', 'text/csv')"),
   description: z.string().optional().describe("File description"),
 });
 
@@ -67,7 +86,11 @@ export const DeleteFileSchema = z.object({
 
 export const ExportFileSchema = z.object({
   fileId: FileId,
-  mimeType: z.string().describe("Target MIME type (e.g. 'application/pdf', 'text/markdown', 'text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')"),
+  mimeType: z
+    .string()
+    .describe(
+      "Target MIME type (e.g. 'application/pdf', 'text/markdown', 'text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')",
+    ),
 });
 
 export const ShareFileSchema = z.object({
@@ -93,5 +116,8 @@ export const RawApiCallSchema = z.object({
   method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]).describe("HTTP method"),
   path: z.string().describe("API path (e.g. '/files' or '/files/{fileId}/revisions')"),
   body: z.record(z.unknown()).optional().describe("Request body (JSON)"),
-  query: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe("Query string parameters"),
+  query: z
+    .record(z.union([z.string(), z.number(), z.boolean()]))
+    .optional()
+    .describe("Query string parameters"),
 });

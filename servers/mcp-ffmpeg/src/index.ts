@@ -22,15 +22,15 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { createConfig, checkBinaryExists } from "./lib/executor.js";
-import { registerProbeTools } from "./tools/probe.js";
+import { checkBinaryExists, createConfig } from "./lib/executor.js";
+import { registerAudioTools } from "./tools/audio.js";
+import { registerComposeTools } from "./tools/compose.js";
 import { registerConvertTools } from "./tools/convert.js";
 import { registerEditTools } from "./tools/edit.js";
-import { registerComposeTools } from "./tools/compose.js";
 import { registerExtractTools } from "./tools/extract.js";
-import { registerAudioTools } from "./tools/audio.js";
-import { registerStreamingTools } from "./tools/streaming.js";
+import { registerProbeTools } from "./tools/probe.js";
 import { registerRawTools } from "./tools/raw.js";
+import { registerStreamingTools } from "./tools/streaming.js";
 
 async function main(): Promise<void> {
   const config = createConfig(process.env);

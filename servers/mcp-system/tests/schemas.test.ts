@@ -1,12 +1,12 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  GetEnvVarsSchema,
-  ListProcessesSchema,
-  GetProcessSchema,
-  WhichCommandSchema,
-  KillProcessSchema,
   ExecCommandSchema,
+  GetEnvVarsSchema,
+  GetProcessSchema,
+  KillProcessSchema,
+  ListProcessesSchema,
   ReadFileSchema,
+  WhichCommandSchema,
   WriteFileSchema,
 } from "../src/lib/schemas.js";
 
@@ -29,9 +29,7 @@ describe("ListProcessesSchema", () => {
     expect(ListProcessesSchema.safeParse({ limit: 501 }).success).toBe(false);
   });
   it("should_accept_memory_sort", () => {
-    expect(ListProcessesSchema.parse({ sortBy: "memory" }).sortBy).toBe(
-      "memory",
-    );
+    expect(ListProcessesSchema.parse({ sortBy: "memory" }).sortBy).toBe("memory");
   });
 });
 
@@ -66,10 +64,7 @@ describe("ExecCommandSchema", () => {
     expect(ExecCommandSchema.parse({ command: "ls" }).timeoutMs).toBe(30_000);
   });
   it("should_reject_timeout_over_10min", () => {
-    expect(
-      ExecCommandSchema.safeParse({ command: "ls", timeoutMs: 600_001 })
-        .success,
-    ).toBe(false);
+    expect(ExecCommandSchema.safeParse({ command: "ls", timeoutMs: 600_001 }).success).toBe(false);
   });
 });
 
@@ -81,17 +76,13 @@ describe("ReadFileSchema", () => {
     expect(ReadFileSchema.parse({ path: "/tmp/x" }).maxBytes).toBe(1_048_576);
   });
   it("should_reject_over_10mb", () => {
-    expect(
-      ReadFileSchema.safeParse({ path: "/x", maxBytes: 10_485_761 }).success,
-    ).toBe(false);
+    expect(ReadFileSchema.safeParse({ path: "/x", maxBytes: 10_485_761 }).success).toBe(false);
   });
 });
 
 describe("WriteFileSchema", () => {
   it("should_default_append_false", () => {
-    expect(
-      WriteFileSchema.parse({ path: "/tmp/x", content: "hi" }).append,
-    ).toBe(false);
+    expect(WriteFileSchema.parse({ path: "/tmp/x", content: "hi" }).append).toBe(false);
   });
   it("should_accept_base64", () => {
     expect(

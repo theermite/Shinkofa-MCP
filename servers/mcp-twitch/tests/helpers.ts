@@ -1,8 +1,9 @@
 /**
  * Shared test helper for tool tests.
  */
-import { vi } from "vitest";
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { vi } from "vitest";
 import { TwitchClient } from "../src/lib/client.js";
 
 export interface ToolTestContext {

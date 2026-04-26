@@ -17,7 +17,10 @@ export const ProbeSchema = z.object({
 export const ConvertSchema = z.object({
   input: z.string().describe("Input file path"),
   output: z.string().describe("Output file path (extension determines format)"),
-  video_codec: z.string().optional().describe("Video codec (libx264, h264_nvenc, libx265, hevc_nvenc, av1_nvenc, libvpx-vp9, copy)"),
+  video_codec: z
+    .string()
+    .optional()
+    .describe("Video codec (libx264, h264_nvenc, libx265, hevc_nvenc, av1_nvenc, libvpx-vp9, copy)"),
   audio_codec: z.string().optional().describe("Audio codec (aac, libmp3lame, libopus, flac, copy)"),
   crf: z.number().min(0).max(63).optional().describe("Constant Rate Factor (quality, lower = better)"),
   bitrate_video: z.string().optional().describe("Video bitrate (e.g. '5000k', '8M')"),
@@ -39,7 +42,11 @@ export const TrimSchema = z.object({
   start: z.string().describe("Start time (HH:MM:SS or seconds)"),
   end: z.string().optional().describe("End time (HH:MM:SS or seconds)"),
   duration: z.string().optional().describe("Duration (HH:MM:SS or seconds) — alternative to end"),
-  copy: z.boolean().optional().default(true).describe("Stream copy (fast, no re-encode). Set false for frame-precise cuts."),
+  copy: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe("Stream copy (fast, no re-encode). Set false for frame-precise cuts."),
 });
 
 // ── Extract Audio ──
@@ -103,7 +110,10 @@ export const WatermarkSchema = z.object({
   input: z.string().describe("Input video file path"),
   watermark: z.string().describe("Watermark image file path"),
   output: z.string().describe("Output file path"),
-  position: z.enum(["top-left", "top-right", "bottom-left", "bottom-right", "center"]).optional().default("bottom-right"),
+  position: z
+    .enum(["top-left", "top-right", "bottom-left", "bottom-right", "center"])
+    .optional()
+    .default("bottom-right"),
   margin: z.number().optional().default(10).describe("Margin in pixels from the edge"),
   opacity: z.number().min(0).max(1).optional().default(1).describe("Watermark opacity (0-1)"),
   scale: z.number().optional().describe("Scale watermark relative to video width (e.g. 0.1 = 10%)"),

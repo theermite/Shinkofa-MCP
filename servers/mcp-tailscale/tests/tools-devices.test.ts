@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TailscaleClient, TailscaleError } from "../src/lib/client.js";
 import { registerDeviceTools } from "../src/tools/devices.js";
 
@@ -20,10 +20,7 @@ beforeEach(() => {
 
   const origTool = server.tool.bind(server);
   server.tool = ((...args: unknown[]) => {
-    registeredTools.set(
-      args[0] as string,
-      args[args.length - 1] as (...a: unknown[]) => unknown,
-    );
+    registeredTools.set(args[0] as string, args[args.length - 1] as (...a: unknown[]) => unknown);
     return origTool(...(args as Parameters<typeof origTool>));
   }) as typeof server.tool;
 
@@ -51,17 +48,13 @@ describe("Device tools — calls", () => {
   it("should_list_devices_without_fields", async () => {
     const cb = registeredTools.get("list_devices")!;
     await cb({});
-    expect(getSpy).toHaveBeenCalledWith(
-      "/api/v2/tailnet/ermite.ts.net/devices",
-    );
+    expect(getSpy).toHaveBeenCalledWith("/api/v2/tailnet/ermite.ts.net/devices");
   });
 
   it("should_list_devices_with_fields_all", async () => {
     const cb = registeredTools.get("list_devices")!;
     await cb({ fields: "all" });
-    expect(getSpy).toHaveBeenCalledWith(
-      "/api/v2/tailnet/ermite.ts.net/devices?fields=all",
-    );
+    expect(getSpy).toHaveBeenCalledWith("/api/v2/tailnet/ermite.ts.net/devices?fields=all");
   });
 
   it("should_get_device", async () => {
@@ -73,9 +66,7 @@ describe("Device tools — calls", () => {
   it("should_encode_device_id_in_url", async () => {
     const cb = registeredTools.get("get_device")!;
     await cb({ deviceId: "node:id/special" });
-    expect(getSpy).toHaveBeenCalledWith(
-      `/api/v2/device/${encodeURIComponent("node:id/special")}`,
-    );
+    expect(getSpy).toHaveBeenCalledWith(`/api/v2/device/${encodeURIComponent("node:id/special")}`);
   });
 
   it("should_delete_device", async () => {
@@ -87,19 +78,13 @@ describe("Device tools — calls", () => {
   it("should_authorize_device", async () => {
     const cb = registeredTools.get("authorize_device")!;
     await cb({ deviceId: "abc", authorized: true });
-    expect(postSpy).toHaveBeenCalledWith(
-      "/api/v2/device/abc/authorized",
-      { authorized: true },
-    );
+    expect(postSpy).toHaveBeenCalledWith("/api/v2/device/abc/authorized", { authorized: true });
   });
 
   it("should_deauthorize_device", async () => {
     const cb = registeredTools.get("authorize_device")!;
     await cb({ deviceId: "abc", authorized: false });
-    expect(postSpy).toHaveBeenCalledWith(
-      "/api/v2/device/abc/authorized",
-      { authorized: false },
-    );
+    expect(postSpy).toHaveBeenCalledWith("/api/v2/device/abc/authorized", { authorized: false });
   });
 
   it("should_expire_device_key", async () => {
@@ -117,10 +102,7 @@ describe("Device tools — calls", () => {
   it("should_set_device_routes", async () => {
     const cb = registeredTools.get("set_device_routes")!;
     await cb({ deviceId: "abc", routes: ["10.0.0.0/24", "192.168.1.0/24"] });
-    expect(postSpy).toHaveBeenCalledWith(
-      "/api/v2/device/abc/routes",
-      { routes: ["10.0.0.0/24", "192.168.1.0/24"] },
-    );
+    expect(postSpy).toHaveBeenCalledWith("/api/v2/device/abc/routes", { routes: ["10.0.0.0/24", "192.168.1.0/24"] });
   });
 });
 

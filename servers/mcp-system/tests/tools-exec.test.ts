@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { registerExecTools } from "../src/tools/exec.js";
 
 vi.mock("../src/lib/executor.js", () => ({
@@ -15,8 +15,8 @@ vi.mock("node:fs/promises", () => ({
   },
 }));
 
-import { runCommand } from "../src/lib/executor.js";
 import fs from "node:fs/promises";
+import { runCommand } from "../src/lib/executor.js";
 
 let server: McpServer;
 let registered: Map<string, (...args: unknown[]) => unknown>;
@@ -27,10 +27,7 @@ beforeEach(() => {
   registered = new Map();
   const orig = server.tool.bind(server);
   server.tool = ((...a: unknown[]) => {
-    registered.set(
-      a[0] as string,
-      a[a.length - 1] as (...x: unknown[]) => unknown,
-    );
+    registered.set(a[0] as string, a[a.length - 1] as (...x: unknown[]) => unknown);
     return orig(...(a as Parameters<typeof orig>));
   }) as typeof server.tool;
   registerExecTools(server);
@@ -58,11 +55,7 @@ describe("exec_command", () => {
       args: ["hello"],
       timeoutMs: 5000,
     })) as { content: { text: string }[] };
-    expect(runCommand).toHaveBeenCalledWith(
-      "echo",
-      ["hello"],
-      expect.objectContaining({ timeoutMs: 5000 }),
-    );
+    expect(runCommand).toHaveBeenCalledWith("echo", ["hello"], expect.objectContaining({ timeoutMs: 5000 }));
     const data = JSON.parse(result.content[0].text);
     expect(data.stdout).toBe("hello\n");
     expect(data.exitCode).toBe(0);

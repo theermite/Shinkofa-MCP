@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import os from "node:os";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { registerProcessTools } from "../src/tools/processes.js";
 
 vi.mock("../src/lib/executor.js", () => ({
@@ -19,8 +19,7 @@ const PS_OUTPUT =
   " 2345  5.0  2.0 bash            jay\n";
 
 const TASKLIST_OUTPUT =
-  '"node.exe","1234","Console","1","128,456 K"\n' +
-  '"bash.exe","2345","Console","1","32,100 K"\n';
+  '"node.exe","1234","Console","1","128,456 K"\n' + '"bash.exe","2345","Console","1","32,100 K"\n';
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -28,10 +27,7 @@ beforeEach(() => {
   registered = new Map();
   const orig = server.tool.bind(server);
   server.tool = ((...a: unknown[]) => {
-    registered.set(
-      a[0] as string,
-      a[a.length - 1] as (...x: unknown[]) => unknown,
-    );
+    registered.set(a[0] as string, a[a.length - 1] as (...x: unknown[]) => unknown);
     return orig(...(a as Parameters<typeof orig>));
   }) as typeof server.tool;
   registerProcessTools(server);
@@ -100,7 +96,7 @@ describe("list_processes", () => {
     };
     const data = JSON.parse(result.content[0].text) as Array<{ pid: number }>;
     for (let i = 1; i < data.length; i++) {
-      expect(data[i]!.pid).toBeGreaterThanOrEqual(data[i - 1]!.pid);
+      expect(data[i]?.pid).toBeGreaterThanOrEqual(data[i - 1]?.pid);
     }
   });
 });

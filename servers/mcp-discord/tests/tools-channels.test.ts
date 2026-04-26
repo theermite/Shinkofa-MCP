@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DiscordClient, DiscordError, DiscordRateLimitError } from "../src/lib/client.js";
 import { registerChannelTools } from "../src/tools/channels.js";
 
@@ -51,7 +51,13 @@ describe("edit_channel_permissions", () => {
   it("should_call_PUT_permissions_with_overwrite_id_when_editing", async () => {
     const handler = registeredTools.get("edit_channel_permissions")!;
     await handler({ channel_id: "ch1", overwrite_id: "ow1", type: 0, allow: "1024" });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/channels/ch1/permissions/ow1", { type: 0, allow: "1024" }, undefined, undefined);
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/channels/ch1/permissions/ow1",
+      { type: 0, allow: "1024" },
+      undefined,
+      undefined,
+    );
   });
 });
 
@@ -99,7 +105,13 @@ describe("create_thread_from_message", () => {
   it("should_call_POST_message_threads_when_creating_thread", async () => {
     const handler = registeredTools.get("create_thread_from_message")!;
     await handler({ channel_id: "ch1", message_id: "msg1", name: "Discussion", reason: "topic" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/channels/ch1/messages/msg1/threads", { name: "Discussion" }, undefined, "topic");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/channels/ch1/messages/msg1/threads",
+      { name: "Discussion" },
+      undefined,
+      "topic",
+    );
   });
 });
 
@@ -107,7 +119,13 @@ describe("create_thread", () => {
   it("should_call_POST_threads_when_creating_thread_without_message", async () => {
     const handler = registeredTools.get("create_thread")!;
     await handler({ channel_id: "ch1", name: "New Thread", type: 11, reason: "forum" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/channels/ch1/threads", { name: "New Thread", type: 11 }, undefined, "forum");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/channels/ch1/threads",
+      { name: "New Thread", type: 11 },
+      undefined,
+      "forum",
+    );
   });
 });
 

@@ -1,35 +1,24 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { StripeClient, StripeError } from "../src/lib/client.js";
 
 // --- Helpers ---
 
-function mockFetch(
-  body: unknown,
-  status = 200,
-  ok = true,
-  jsonFails = false,
-) {
+function mockFetch(body: unknown, status = 200, ok = true, jsonFails = false) {
   return vi.fn().mockResolvedValue({
     ok,
     status,
     statusText: "OK",
-    json: jsonFails
-      ? () => Promise.reject(new SyntaxError("Unexpected token"))
-      : () => Promise.resolve(body),
+    json: jsonFails ? () => Promise.reject(new SyntaxError("Unexpected token")) : () => Promise.resolve(body),
   } as unknown as Response);
 }
 
 describe("StripeClient — constructor", () => {
   it("should throw if no secret key", () => {
-    expect(() => new StripeClient({ secretKey: "" })).toThrow(
-      "STRIPE_SECRET_KEY",
-    );
+    expect(() => new StripeClient({ secretKey: "" })).toThrow("STRIPE_SECRET_KEY");
   });
 
   it("should construct with key", () => {
-    expect(
-      new StripeClient({ secretKey: "sk_test_123" }),
-    ).toBeDefined();
+    expect(new StripeClient({ secretKey: "sk_test_123" })).toBeDefined();
   });
 
   it("should construct with custom settings", () => {
@@ -62,11 +51,8 @@ describe("StripeClient — callApi", () => {
     expect(result).toEqual({ id: "cus_123" });
     expect(globalThis.fetch).toHaveBeenCalledOnce();
 
-    const [url, opts] = (globalThis.fetch as ReturnType<typeof vi.fn>)
-      .mock.calls[0];
-    expect(url).toBe(
-      "https://api.stripe.com/v1/customers/cus_123",
-    );
+    const [url, opts] = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(url).toBe("https://api.stripe.com/v1/customers/cus_123");
     expect(opts.method).toBe("GET");
     expect(opts.headers.Authorization).toBe("Bearer sk_test_x");
     expect(opts.headers["Stripe-Version"]).toBeDefined();
@@ -77,8 +63,7 @@ describe("StripeClient — callApi", () => {
     const client = new StripeClient({ secretKey: "sk_test_x" });
     await client.callApi("GET", "/customers", { limit: 10 });
 
-    const [url] = (globalThis.fetch as ReturnType<typeof vi.fn>).mock
-      .calls[0];
+    const [url] = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
     expect(url).toContain("?limit=10");
   });
 
@@ -89,11 +74,8 @@ describe("StripeClient — callApi", () => {
       email: "jay@shinkofa.com",
     });
 
-    const [, opts] = (globalThis.fetch as ReturnType<typeof vi.fn>)
-      .mock.calls[0];
-    expect(opts.headers["Content-Type"]).toBe(
-      "application/x-www-form-urlencoded",
-    );
+    const [, opts] = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(opts.headers["Content-Type"]).toBe("application/x-www-form-urlencoded");
     expect(opts.body).toContain("email=jay%40shinkofa.com");
   });
 
@@ -106,8 +88,7 @@ describe("StripeClient — callApi", () => {
       phone: undefined,
     });
 
-    const [, opts] = (globalThis.fetch as ReturnType<typeof vi.fn>)
-      .mock.calls[0];
+    const [, opts] = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
     expect(opts.body).not.toContain("name");
     expect(opts.body).not.toContain("phone");
   });
@@ -126,9 +107,7 @@ describe("StripeClient — callApi", () => {
     );
     const client = new StripeClient({ secretKey: "sk_test_x" });
 
-    await expect(
-      client.callApi("GET", "/customers/cus_xxx"),
-    ).rejects.toThrow(StripeError);
+    await expect(client.callApi("GET", "/customers/cus_xxx")).rejects.toThrow(StripeError);
 
     try {
       await client.callApi("GET", "/customers/cus_xxx");
@@ -145,9 +124,7 @@ describe("StripeClient — callApi", () => {
     globalThis.fetch = mockFetch(null, 502, false, true);
     const client = new StripeClient({ secretKey: "sk_test_x" });
 
-    await expect(
-      client.callApi("GET", "/customers"),
-    ).rejects.toThrow(StripeError);
+    await expect(client.callApi("GET", "/customers")).rejects.toThrow(StripeError);
 
     try {
       await client.callApi("GET", "/customers");
@@ -166,10 +143,7 @@ describe("StripeClient — callApi", () => {
     } as unknown as Response);
 
     const client = new StripeClient({ secretKey: "sk_test_x" });
-    const result = await client.callApi(
-      "DELETE",
-      "/customers/cus_123",
-    );
+    const result = await client.callApi("DELETE", "/customers/cus_123");
     expect(result).toBeUndefined();
   });
 
@@ -187,20 +161,14 @@ describe("StripeClient — callApi", () => {
       timeoutMs: 5,
     });
 
-    await expect(
-      client.callApi("GET", "/customers"),
-    ).rejects.toThrow();
+    await expect(client.callApi("GET", "/customers")).rejects.toThrow();
   });
 
   it("should_throw_TypeError_when_network_error", async () => {
-    globalThis.fetch = vi.fn().mockRejectedValue(
-      new TypeError("fetch failed"),
-    );
+    globalThis.fetch = vi.fn().mockRejectedValue(new TypeError("fetch failed"));
 
     const client = new StripeClient({ secretKey: "sk_test_x" });
-    await expect(
-      client.callApi("GET", "/customers"),
-    ).rejects.toThrow(TypeError);
+    await expect(client.callApi("GET", "/customers")).rejects.toThrow(TypeError);
   });
 });
 
@@ -274,12 +242,7 @@ describe("StripeClient — flattenParams", () => {
 
 describe("StripeError", () => {
   it("should_create_with_all_properties", () => {
-    const e = new StripeError(
-      400,
-      "invalid_request_error",
-      "missing_param",
-      "Missing required param: amount",
-    );
+    const e = new StripeError(400, "invalid_request_error", "missing_param", "Missing required param: amount");
     expect(e.httpStatus).toBe(400);
     expect(e.type).toBe("invalid_request_error");
     expect(e.code).toBe("missing_param");
@@ -288,23 +251,13 @@ describe("StripeError", () => {
   });
 
   it("should_format_message_without_code", () => {
-    const e = new StripeError(
-      500,
-      "api_error",
-      undefined,
-      "Internal error",
-    );
+    const e = new StripeError(500, "api_error", undefined, "Internal error");
     expect(e.message).toContain("api_error");
     expect(e.message).not.toContain("/");
   });
 
   it("should_format_message_with_code", () => {
-    const e = new StripeError(
-      402,
-      "card_error",
-      "card_declined",
-      "Card was declined",
-    );
+    const e = new StripeError(402, "card_error", "card_declined", "Card was declined");
     expect(e.message).toContain("card_error/card_declined");
   });
 });

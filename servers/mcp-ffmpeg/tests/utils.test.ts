@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { toolResult, toolError, withErrorHandler } from "../src/lib/utils.js";
+import { describe, expect, it } from "vitest";
+import { toolError, toolResult, withErrorHandler } from "../src/lib/utils.js";
 
 describe("toolResult", () => {
   it("should_serialize_object_when_given_object", () => {
@@ -38,21 +38,40 @@ describe("withErrorHandler", () => {
   });
 
   it("should_catch_Error_and_return_toolError", async () => {
-    const r = await withErrorHandler(() => { throw new Error("Input file not found or not readable: test.mp4"); });
-    expect(r).toEqual({ content: [{ type: "text", text: "FFmpeg error: Input file not found or not readable: test.mp4" }], isError: true });
+    const r = await withErrorHandler(() => {
+      throw new Error("Input file not found or not readable: test.mp4");
+    });
+    expect(r).toEqual({
+      content: [{ type: "text", text: "FFmpeg error: Input file not found or not readable: test.mp4" }],
+      isError: true,
+    });
   });
 
   it("should_catch_timeout_error", async () => {
-    const r = await withErrorHandler(() => { throw new Error("Process timed out after 300000ms"); });
-    expect(r).toEqual({ content: [{ type: "text", text: "FFmpeg error: Process timed out after 300000ms" }], isError: true });
+    const r = await withErrorHandler(() => {
+      throw new Error("Process timed out after 300000ms");
+    });
+    expect(r).toEqual({
+      content: [{ type: "text", text: "FFmpeg error: Process timed out after 300000ms" }],
+      isError: true,
+    });
   });
 
   it("should_catch_spawn_error", async () => {
-    const r = await withErrorHandler(() => { throw new Error("Failed to spawn ffmpeg: ENOENT"); });
-    expect(r).toEqual({ content: [{ type: "text", text: "FFmpeg error: Failed to spawn ffmpeg: ENOENT" }], isError: true });
+    const r = await withErrorHandler(() => {
+      throw new Error("Failed to spawn ffmpeg: ENOENT");
+    });
+    expect(r).toEqual({
+      content: [{ type: "text", text: "FFmpeg error: Failed to spawn ffmpeg: ENOENT" }],
+      isError: true,
+    });
   });
 
   it("should_rethrow_non_Error_values", async () => {
-    await expect(withErrorHandler(() => { throw "string error"; })).rejects.toBe("string error");
+    await expect(
+      withErrorHandler(() => {
+        throw "string error";
+      }),
+    ).rejects.toBe("string error");
   });
 });

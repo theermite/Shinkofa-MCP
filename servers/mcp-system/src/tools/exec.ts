@@ -1,13 +1,8 @@
 import fs from "node:fs/promises";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import {
-  ExecCommandSchema,
-  KillProcessSchema,
-  ReadFileSchema,
-  WriteFileSchema,
-} from "../lib/schemas.js";
-import { SystemError, toolResult, withErrorHandler } from "../lib/utils.js";
 import { runCommand } from "../lib/executor.js";
+import { ExecCommandSchema, KillProcessSchema, ReadFileSchema, WriteFileSchema } from "../lib/schemas.js";
+import { SystemError, toolResult, withErrorHandler } from "../lib/utils.js";
 
 /**
  * WRITE / EXEC tools — registered only when MCP_SYSTEM_ALLOW_EXEC=true.
@@ -26,10 +21,7 @@ export function registerExecTools(server: McpServer) {
           return toolResult({ pid: p.pid, signal: p.signal, sent: true });
         } catch (err) {
           const e = err as NodeJS.ErrnoException;
-          throw new SystemError(
-            e.code ?? "EKILL",
-            `Failed to signal PID ${p.pid}: ${e.message}`,
-          );
+          throw new SystemError(e.code ?? "EKILL", `Failed to signal PID ${p.pid}: ${e.message}`);
         }
       }),
   );
@@ -67,16 +59,10 @@ export function registerExecTools(server: McpServer) {
           throw new SystemError("ENOTFILE", `${p.path} is not a regular file`);
         }
         if (stat.size > p.maxBytes) {
-          throw new SystemError(
-            "ETOOBIG",
-            `File size ${stat.size} exceeds maxBytes ${p.maxBytes}`,
-          );
+          throw new SystemError("ETOOBIG", `File size ${stat.size} exceeds maxBytes ${p.maxBytes}`);
         }
         const buf = await fs.readFile(p.path);
-        const content =
-          p.encoding === "base64"
-            ? buf.toString("base64")
-            : buf.toString("utf8");
+        const content = p.encoding === "base64" ? buf.toString("base64") : buf.toString("utf8");
         return toolResult({
           path: p.path,
           size: stat.size,
@@ -92,10 +78,7 @@ export function registerExecTools(server: McpServer) {
     WriteFileSchema.shape,
     async (p) =>
       withErrorHandler(async () => {
-        const data =
-          p.encoding === "base64"
-            ? Buffer.from(p.content, "base64")
-            : Buffer.from(p.content, "utf8");
+        const data = p.encoding === "base64" ? Buffer.from(p.content, "base64") : Buffer.from(p.content, "utf8");
         if (p.append) {
           await fs.appendFile(p.path, data);
         } else {

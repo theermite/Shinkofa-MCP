@@ -1,10 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
   DoActionSchema,
-  SendMessageSchema,
-  GetGlobalsSchema,
-  GetGlobalSchema,
   ExecuteCodeTriggerSchema,
+  GetGlobalSchema,
+  GetGlobalsSchema,
+  SendMessageSchema,
   SubscribeSchema,
 } from "../src/lib/schemas.js";
 

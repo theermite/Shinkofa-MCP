@@ -1,20 +1,11 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { OllamaClient } from "../lib/client.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { OllamaClient } from "../lib/client.js";
 import { RawApiCallSchema } from "../lib/schemas.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
 
-export function registerRawTools(
-  server: McpServer,
-  client: OllamaClient,
-): void {
-  server.tool(
-    "get_version",
-    "Get the Ollama server version",
-    {},
-    async () =>
-      withErrorHandler(async () =>
-        toolResult(await client.get("/api/version")),
-      ),
+export function registerRawTools(server: McpServer, client: OllamaClient): void {
+  server.tool("get_version", "Get the Ollama server version", {}, async () =>
+    withErrorHandler(async () => toolResult(await client.get("/api/version"))),
   );
 
   server.tool(

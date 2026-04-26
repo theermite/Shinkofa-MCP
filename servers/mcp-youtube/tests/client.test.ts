@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { YouTubeClient, YouTubeError } from "../src/lib/client.js";
 
 function mockFetch(body: unknown, status = 200, ok = true, jsonFails = false) {
@@ -6,9 +6,7 @@ function mockFetch(body: unknown, status = 200, ok = true, jsonFails = false) {
     ok,
     status,
     statusText: "OK",
-    json: jsonFails
-      ? () => Promise.reject(new SyntaxError("Unexpected token"))
-      : () => Promise.resolve(body),
+    json: jsonFails ? () => Promise.reject(new SyntaxError("Unexpected token")) : () => Promise.resolve(body),
   } as unknown as Response);
 }
 
@@ -38,8 +36,13 @@ describe("YouTubeClient — constructor", () => {
 describe("YouTubeClient — callApi", () => {
   let originalFetch: typeof globalThis.fetch;
 
-  beforeEach(() => { originalFetch = globalThis.fetch; });
-  afterEach(() => { globalThis.fetch = originalFetch; vi.restoreAllMocks(); });
+  beforeEach(() => {
+    originalFetch = globalThis.fetch;
+  });
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+    vi.restoreAllMocks();
+  });
 
   it("should_make_GET_request_with_api_key", async () => {
     globalThis.fetch = mockFetch({ items: [] });

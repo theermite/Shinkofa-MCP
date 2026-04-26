@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { toolResult, toolError, withErrorHandler } from "../src/lib/utils.js";
+import { describe, expect, it } from "vitest";
 import { GoogleCalendarError } from "../src/lib/client.js";
+import { toolError, toolResult, withErrorHandler } from "../src/lib/utils.js";
 
 // ── toolResult ────────────────────────────────────────────────────────────────
 
@@ -75,30 +75,44 @@ describe("withErrorHandler", () => {
   it("should_return_timeout_message_for_AbortError", async () => {
     const abortError = new Error("The operation was aborted.");
     abortError.name = "AbortError";
-    const result = await withErrorHandler(async () => { throw abortError; });
+    const result = await withErrorHandler(async () => {
+      throw abortError;
+    });
     expect(result).toEqual(toolError("Request timed out"));
   });
 
   it("should_return_non_json_message_for_SyntaxError", async () => {
     const syntaxError = new SyntaxError("Unexpected token < in JSON");
-    const result = await withErrorHandler(async () => { throw syntaxError; });
+    const result = await withErrorHandler(async () => {
+      throw syntaxError;
+    });
     expect(result).toEqual(toolError("Invalid API response (non-JSON)"));
   });
 
   it("should_return_network_error_message_for_TypeError", async () => {
     const typeError = new TypeError("Failed to fetch");
-    const result = await withErrorHandler(async () => { throw typeError; });
+    const result = await withErrorHandler(async () => {
+      throw typeError;
+    });
     expect(result).toEqual(toolError("Network error: Failed to fetch"));
   });
 
   it("should_rethrow_unknown_errors", async () => {
     const unknownError = { weirdObject: true };
-    await expect(withErrorHandler(async () => { throw unknownError; })).rejects.toBe(unknownError);
+    await expect(
+      withErrorHandler(async () => {
+        throw unknownError;
+      }),
+    ).rejects.toBe(unknownError);
   });
 
   it("should_rethrow_plain_Error_without_special_name", async () => {
     const plainError = new Error("some unexpected error");
     // name is "Error" — none of the special cases apply
-    await expect(withErrorHandler(async () => { throw plainError; })).rejects.toThrow("some unexpected error");
+    await expect(
+      withErrorHandler(async () => {
+        throw plainError;
+      }),
+    ).rejects.toThrow("some unexpected error");
   });
 });

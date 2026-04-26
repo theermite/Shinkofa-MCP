@@ -1,11 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  toolResult,
-  toolError,
-  withErrorHandler,
+  isExecAllowed,
   maskSecretValue,
   SystemError,
-  isExecAllowed,
+  toolError,
+  toolResult,
+  withErrorHandler,
 } from "../src/lib/utils.js";
 
 describe("toolResult", () => {
@@ -33,9 +33,7 @@ describe("withErrorHandler", () => {
       throw new SystemError("ENOENT", "not found");
     });
     expect(r).toHaveProperty("isError", true);
-    expect((r as { content: { text: string }[] }).content[0].text).toContain(
-      "ENOENT",
-    );
+    expect((r as { content: { text: string }[] }).content[0].text).toContain("ENOENT");
   });
   it("should_catch_generic_error", async () => {
     const r = await withErrorHandler(async () => {
@@ -54,9 +52,7 @@ describe("withErrorHandler", () => {
 
 describe("maskSecretValue", () => {
   it("should_mask_token_var", () => {
-    expect(maskSecretValue("GITHUB_TOKEN", "ghp_1234567890abcdef")).toContain(
-      "***",
-    );
+    expect(maskSecretValue("GITHUB_TOKEN", "ghp_1234567890abcdef")).toContain("***");
   });
   it("should_mask_secret_var", () => {
     expect(maskSecretValue("CLIENT_SECRET", "abcdefghij")).toBe("ab***ij");
@@ -77,17 +73,17 @@ describe("maskSecretValue", () => {
 
 describe("isExecAllowed", () => {
   it("should_return_false_when_unset", () => {
-    delete process.env["MCP_SYSTEM_ALLOW_EXEC"];
+    delete process.env.MCP_SYSTEM_ALLOW_EXEC;
     expect(isExecAllowed()).toBe(false);
   });
   it("should_return_true_when_exactly_true", () => {
-    process.env["MCP_SYSTEM_ALLOW_EXEC"] = "true";
+    process.env.MCP_SYSTEM_ALLOW_EXEC = "true";
     expect(isExecAllowed()).toBe(true);
-    delete process.env["MCP_SYSTEM_ALLOW_EXEC"];
+    delete process.env.MCP_SYSTEM_ALLOW_EXEC;
   });
   it("should_return_false_for_other_truthy_strings", () => {
-    process.env["MCP_SYSTEM_ALLOW_EXEC"] = "1";
+    process.env.MCP_SYSTEM_ALLOW_EXEC = "1";
     expect(isExecAllowed()).toBe(false);
-    delete process.env["MCP_SYSTEM_ALLOW_EXEC"];
+    delete process.env.MCP_SYSTEM_ALLOW_EXEC;
   });
 });

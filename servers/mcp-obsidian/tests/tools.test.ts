@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { describe, expect, it } from "vitest";
 import { ObsidianClient } from "../src/lib/client.js";
 import { registerVaultTools } from "../src/tools/vault.js";
 

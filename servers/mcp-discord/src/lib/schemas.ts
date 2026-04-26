@@ -7,10 +7,7 @@ import { z } from "zod";
 
 export const Snowflake = z.string().describe("Discord snowflake ID");
 
-export const OptionalReason = z
-  .string()
-  .optional()
-  .describe("Audit log reason (shown in server audit log)");
+export const OptionalReason = z.string().optional().describe("Audit log reason (shown in server audit log)");
 
 // ── Messages ──
 
@@ -21,12 +18,15 @@ export const SendMessageSchema = z.object({
   embeds: z.array(z.record(z.unknown())).max(10).optional().describe("Up to 10 embeds"),
   components: z.array(z.record(z.unknown())).max(5).optional().describe("Message components (buttons, selects)"),
   sticker_ids: z.array(Snowflake).max(3).optional().describe("Sticker IDs (max 3)"),
-  message_reference: z.object({
-    message_id: Snowflake,
-    channel_id: Snowflake.optional(),
-    guild_id: Snowflake.optional(),
-    fail_if_not_exists: z.boolean().optional(),
-  }).optional().describe("Reply to a message"),
+  message_reference: z
+    .object({
+      message_id: Snowflake,
+      channel_id: Snowflake.optional(),
+      guild_id: Snowflake.optional(),
+      fail_if_not_exists: z.boolean().optional(),
+    })
+    .optional()
+    .describe("Reply to a message"),
   flags: z.number().optional().describe("Message flags (e.g. 4096 for SUPPRESS_EMBEDS)"),
 });
 
@@ -188,11 +188,14 @@ export const CreateThreadSchema = z.object({
   auto_archive_duration: z.number().optional(),
   invitable: z.boolean().optional().describe("Whether non-moderators can add members (private threads)"),
   rate_limit_per_user: z.number().min(0).max(21600).optional(),
-  message: z.object({
-    content: z.string().max(2000).optional(),
-    embeds: z.array(z.record(z.unknown())).max(10).optional(),
-    components: z.array(z.record(z.unknown())).max(5).optional(),
-  }).optional().describe("Initial message for forum/media threads"),
+  message: z
+    .object({
+      content: z.string().max(2000).optional(),
+      embeds: z.array(z.record(z.unknown())).max(10).optional(),
+      components: z.array(z.record(z.unknown())).max(5).optional(),
+    })
+    .optional()
+    .describe("Initial message for forum/media threads"),
   reason: OptionalReason,
 });
 
@@ -271,12 +274,14 @@ export const CreateGuildChannelSchema = z.object({
 
 export const ModifyChannelPositionsSchema = z.object({
   guild_id: Snowflake,
-  channels: z.array(z.object({
-    id: Snowflake,
-    position: z.number().optional(),
-    lock_permissions: z.boolean().optional(),
-    parent_id: Snowflake.optional(),
-  })),
+  channels: z.array(
+    z.object({
+      id: Snowflake,
+      position: z.number().optional(),
+      lock_permissions: z.boolean().optional(),
+      parent_id: Snowflake.optional(),
+    }),
+  ),
 });
 
 export const GetActiveThreadsSchema = z.object({
@@ -292,12 +297,17 @@ export const GetWelcomeScreenSchema = z.object({
 export const ModifyWelcomeScreenSchema = z.object({
   guild_id: Snowflake,
   enabled: z.boolean().optional(),
-  welcome_channels: z.array(z.object({
-    channel_id: Snowflake,
-    description: z.string().max(50),
-    emoji_id: Snowflake.optional(),
-    emoji_name: z.string().optional(),
-  })).max(5).optional(),
+  welcome_channels: z
+    .array(
+      z.object({
+        channel_id: Snowflake,
+        description: z.string().max(50),
+        emoji_id: Snowflake.optional(),
+        emoji_name: z.string().optional(),
+      }),
+    )
+    .max(5)
+    .optional(),
   description: z.string().max(140).optional(),
   reason: OptionalReason,
 });
@@ -375,7 +385,12 @@ export const KickMemberSchema = z.object({
 export const BanMemberSchema = z.object({
   guild_id: Snowflake,
   user_id: Snowflake,
-  delete_message_seconds: z.number().min(0).max(604800).optional().describe("Delete messages from last N seconds (max 7 days)"),
+  delete_message_seconds: z
+    .number()
+    .min(0)
+    .max(604800)
+    .optional()
+    .describe("Delete messages from last N seconds (max 7 days)"),
   reason: OptionalReason,
 });
 
@@ -441,10 +456,12 @@ export const DeleteRoleSchema = z.object({
 
 export const ModifyRolePositionsSchema = z.object({
   guild_id: Snowflake,
-  roles: z.array(z.object({
-    id: Snowflake,
-    position: z.number().optional(),
-  })),
+  roles: z.array(
+    z.object({
+      id: Snowflake,
+      position: z.number().optional(),
+    }),
+  ),
 });
 
 export const AssignRoleSchema = z.object({
@@ -586,7 +603,9 @@ export const BulkOverwriteCommandsSchema = z.object({
 export const CreateInteractionResponseSchema = z.object({
   interaction_id: Snowflake,
   interaction_token: z.string(),
-  type: z.number().describe("4=CHANNEL_MESSAGE, 5=DEFERRED_CHANNEL_MESSAGE, 6=DEFERRED_UPDATE, 7=UPDATE_MESSAGE, 9=MODAL"),
+  type: z
+    .number()
+    .describe("4=CHANNEL_MESSAGE, 5=DEFERRED_CHANNEL_MESSAGE, 6=DEFERRED_UPDATE, 7=UPDATE_MESSAGE, 9=MODAL"),
   data: z.record(z.unknown()).optional().describe("Response data (content, embeds, components, etc.)"),
 });
 
@@ -670,9 +689,12 @@ export const ListEventsSchema = z.object({
 export const CreateEventSchema = z.object({
   guild_id: Snowflake,
   channel_id: Snowflake.optional().describe("Required for STAGE_INSTANCE and VOICE events"),
-  entity_metadata: z.object({
-    location: z.string().max(100).optional(),
-  }).optional().describe("Required for EXTERNAL events"),
+  entity_metadata: z
+    .object({
+      location: z.string().max(100).optional(),
+    })
+    .optional()
+    .describe("Required for EXTERNAL events"),
   name: z.string().min(1).max(100),
   privacy_level: z.number().describe("2 = GUILD_ONLY"),
   scheduled_start_time: z.string().describe("ISO8601 timestamp"),

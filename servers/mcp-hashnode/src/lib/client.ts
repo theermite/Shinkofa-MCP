@@ -23,10 +23,7 @@ export class HashnodeClient {
     this.timeoutMs = config.timeoutMs ?? 30_000;
   }
 
-  async query<T = unknown>(
-    gql: string,
-    variables?: Record<string, unknown>,
-  ): Promise<T> {
+  async query<T = unknown>(gql: string, variables?: Record<string, unknown>): Promise<T> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
 

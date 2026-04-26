@@ -1,12 +1,19 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  GetNoteSchema, CreateNoteSchema, UpdateNoteSchema,
-  AppendNoteSchema, PrependNoteSchema, DeleteNoteSchema,
-  ListFilesSchema, SearchSchema, SearchJsonLogicSchema,
-  GetActiveFileSchema, UpdateActiveFileSchema, AppendActiveFileSchema,
-  ListCommandsSchema, ExecuteCommandSchema,
-  OpenNoteSchema, GetPeriodicNoteSchema, GetStatusSchema,
+  AppendActiveFileSchema,
+  CreateNoteSchema,
+  ExecuteCommandSchema,
+  GetActiveFileSchema,
+  GetNoteSchema,
+  GetPeriodicNoteSchema,
+  GetStatusSchema,
+  ListCommandsSchema,
+  ListFilesSchema,
+  OpenNoteSchema,
   RawApiCallSchema,
+  SearchJsonLogicSchema,
+  SearchSchema,
+  UpdateActiveFileSchema,
 } from "../src/lib/schemas.js";
 
 describe("Vault schemas", () => {
@@ -19,7 +26,10 @@ describe("Vault schemas", () => {
   });
 
   it("should_validate_CreateNoteSchema", () => {
-    expect(CreateNoteSchema.parse({ path: "new.md", content: "# Hello" })).toEqual({ path: "new.md", content: "# Hello" });
+    expect(CreateNoteSchema.parse({ path: "new.md", content: "# Hello" })).toEqual({
+      path: "new.md",
+      content: "# Hello",
+    });
   });
 
   it("should_validate_ListFilesSchema_empty", () => {
@@ -64,7 +74,9 @@ describe("Command schemas", () => {
   });
 
   it("should_validate_ExecuteCommandSchema", () => {
-    expect(ExecuteCommandSchema.parse({ commandId: "editor:toggle-bold" })).toEqual({ commandId: "editor:toggle-bold" });
+    expect(ExecuteCommandSchema.parse({ commandId: "editor:toggle-bold" })).toEqual({
+      commandId: "editor:toggle-bold",
+    });
   });
 });
 
@@ -94,7 +106,12 @@ describe("Other schemas", () => {
   });
 
   it("should_validate_RawApiCallSchema_with_body_and_accept", () => {
-    const parsed = RawApiCallSchema.parse({ method: "POST", path: "/search/", body: { key: "val" }, accept: "application/json" });
+    const parsed = RawApiCallSchema.parse({
+      method: "POST",
+      path: "/search/",
+      body: { key: "val" },
+      accept: "application/json",
+    });
     expect(parsed.method).toBe("POST");
     expect(parsed.body).toEqual({ key: "val" });
     expect(parsed.accept).toBe("application/json");

@@ -5,10 +5,7 @@ import { z } from "zod";
 
 // ── Common ──
 
-export const UserId = z
-  .string()
-  .default("me")
-  .describe("Gmail user ID — use 'me' for the authenticated user");
+export const UserId = z.string().default("me").describe("Gmail user ID — use 'me' for the authenticated user");
 
 export const MessageId = z.string().describe("Gmail message ID");
 export const ThreadId = z.string().describe("Gmail thread ID");
@@ -160,10 +157,7 @@ export const CreateLabelSchema = z.object({
     .enum(["labelShow", "labelShowIfUnread", "labelHide"])
     .optional()
     .describe("Visibility in label list"),
-  messageListVisibility: z
-    .enum(["show", "hide"])
-    .optional()
-    .describe("Visibility in message list"),
+  messageListVisibility: z.enum(["show", "hide"]).optional().describe("Visibility in message list"),
   color: z
     .object({
       textColor: z.string().describe("Hex color for text (e.g. '#ffffff')"),
@@ -280,10 +274,7 @@ export const WatchSchema = z.object({
   userId: UserId,
   topicName: z.string().describe("Google Cloud Pub/Sub topic name (e.g. 'projects/myproject/topics/gmail')"),
   labelIds: z.array(z.string()).optional().describe("Label IDs to watch"),
-  labelFilterAction: z
-    .enum(["include", "exclude"])
-    .optional()
-    .describe("Action for labelIds filter"),
+  labelFilterAction: z.enum(["include", "exclude"]).optional().describe("Action for labelIds filter"),
 });
 
 export const StopWatchSchema = z.object({

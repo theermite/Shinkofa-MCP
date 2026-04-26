@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DiscordClient, DiscordError, DiscordRateLimitError } from "../src/lib/client.js";
 import { registerModerationTools } from "../src/tools/moderation.js";
 
@@ -57,7 +57,13 @@ describe("modify_automod_rule", () => {
   it("should_call_PATCH_automod_rule_with_body_and_reason_when_modifying", async () => {
     const handler = registeredTools.get("modify_automod_rule")!;
     await handler({ guild_id: "g1", rule_id: "r1", name: "Updated Rule", reason: "adjust" });
-    expect(callApiSpy).toHaveBeenCalledWith("PATCH", "/guilds/g1/auto-moderation/rules/r1", { name: "Updated Rule" }, undefined, "adjust");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PATCH",
+      "/guilds/g1/auto-moderation/rules/r1",
+      { name: "Updated Rule" },
+      undefined,
+      "adjust",
+    );
   });
 });
 
@@ -65,7 +71,13 @@ describe("delete_automod_rule", () => {
   it("should_call_DELETE_automod_rule_with_reason_when_deleting", async () => {
     const handler = registeredTools.get("delete_automod_rule")!;
     await handler({ guild_id: "g1", rule_id: "r1", reason: "obsolete" });
-    expect(callApiSpy).toHaveBeenCalledWith("DELETE", "/guilds/g1/auto-moderation/rules/r1", undefined, undefined, "obsolete");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "DELETE",
+      "/guilds/g1/auto-moderation/rules/r1",
+      undefined,
+      undefined,
+      "obsolete",
+    );
   });
 });
 

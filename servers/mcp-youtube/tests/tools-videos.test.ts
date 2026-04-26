@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { YouTubeClient, YouTubeError } from "../src/lib/client.js";
 import { registerVideoTools } from "../src/tools/videos.js";
 
@@ -33,13 +33,23 @@ describe("Video tools — callbacks", () => {
   it("should_update_video_with_default_part", async () => {
     const cb = registeredTools.get("update_video")!;
     await cb({ id: "vid1", snippet: { title: "New Title" } });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/videos", { id: "vid1", snippet: { title: "New Title" } }, { part: "snippet,status" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/videos",
+      { id: "vid1", snippet: { title: "New Title" } },
+      { part: "snippet,status" },
+    );
   });
 
   it("should_update_video_with_custom_part", async () => {
     const cb = registeredTools.get("update_video")!;
     await cb({ id: "vid1", part: "snippet", snippet: { title: "T" } });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/videos", { id: "vid1", snippet: { title: "T" } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/videos",
+      { id: "vid1", snippet: { title: "T" } },
+      { part: "snippet" },
+    );
   });
 
   it("should_delete_video", async () => {

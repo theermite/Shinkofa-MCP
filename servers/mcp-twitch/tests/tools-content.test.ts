@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { TwitchError, TwitchRateLimitError } from "../src/lib/client.js";
 import { registerContentTools } from "../src/tools/content.js";
 import { createToolTestContext, type ToolTestContext } from "./helpers.js";
@@ -38,21 +38,34 @@ describe("content tools", () => {
     ctx.callApiSpy.mockResolvedValueOnce({ data: {} });
     const handler = ctx.registeredTools.get("create_schedule_segment")!;
     await handler({ broadcaster_id: "1", start_time: "2026-01-01T00:00:00Z", timezone: "UTC" });
-    expect(ctx.callApiSpy).toHaveBeenCalledWith("POST", "/schedule/segment", { start_time: "2026-01-01T00:00:00Z", timezone: "UTC" }, { broadcaster_id: "1" });
+    expect(ctx.callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/schedule/segment",
+      { start_time: "2026-01-01T00:00:00Z", timezone: "UTC" },
+      { broadcaster_id: "1" },
+    );
   });
 
   it("should_update_schedule_segment_when_called", async () => {
     ctx.callApiSpy.mockResolvedValueOnce({ data: {} });
     const handler = ctx.registeredTools.get("update_schedule_segment")!;
     await handler({ broadcaster_id: "1", id: "seg1", title: "New Title" });
-    expect(ctx.callApiSpy).toHaveBeenCalledWith("PATCH", "/schedule/segment", { title: "New Title" }, { broadcaster_id: "1", id: "seg1" });
+    expect(ctx.callApiSpy).toHaveBeenCalledWith(
+      "PATCH",
+      "/schedule/segment",
+      { title: "New Title" },
+      { broadcaster_id: "1", id: "seg1" },
+    );
   });
 
   it("should_delete_schedule_segment_when_called", async () => {
     ctx.callApiSpy.mockResolvedValueOnce(undefined);
     const handler = ctx.registeredTools.get("delete_schedule_segment")!;
     await handler({ broadcaster_id: "1", id: "seg1" });
-    expect(ctx.callApiSpy).toHaveBeenCalledWith("DELETE", "/schedule/segment", undefined, { broadcaster_id: "1", id: "seg1" });
+    expect(ctx.callApiSpy).toHaveBeenCalledWith("DELETE", "/schedule/segment", undefined, {
+      broadcaster_id: "1",
+      id: "seg1",
+    });
   });
 
   // Videos
@@ -89,7 +102,10 @@ describe("content tools", () => {
     ctx.callApiSpy.mockResolvedValueOnce({ data: [] });
     const handler = ctx.registeredTools.get("search_channels")!;
     await handler({ query: "ninja", live_only: true });
-    expect(ctx.callApiSpy).toHaveBeenCalledWith("GET", "/search/channels", undefined, { query: "ninja", live_only: true });
+    expect(ctx.callApiSpy).toHaveBeenCalledWith("GET", "/search/channels", undefined, {
+      query: "ninja",
+      live_only: true,
+    });
   });
 
   // Games
@@ -155,7 +171,10 @@ describe("content tools", () => {
     ctx.callApiSpy.mockResolvedValueOnce({ data: [] });
     const handler = ctx.registeredTools.get("check_user_subscription")!;
     await handler({ broadcaster_id: "1", user_id: "2" });
-    expect(ctx.callApiSpy).toHaveBeenCalledWith("GET", "/subscriptions/user", undefined, { broadcaster_id: "1", user_id: "2" });
+    expect(ctx.callApiSpy).toHaveBeenCalledWith("GET", "/subscriptions/user", undefined, {
+      broadcaster_id: "1",
+      user_id: "2",
+    });
   });
 
   // Whispers
@@ -163,14 +182,24 @@ describe("content tools", () => {
     ctx.callApiSpy.mockResolvedValueOnce(undefined);
     const handler = ctx.registeredTools.get("send_whisper")!;
     await handler({ from_user_id: "1", to_user_id: "2", message: "Hi there" });
-    expect(ctx.callApiSpy).toHaveBeenCalledWith("POST", "/whispers", { message: "Hi there" }, { from_user_id: "1", to_user_id: "2" });
+    expect(ctx.callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/whispers",
+      { message: "Hi there" },
+      { from_user_id: "1", to_user_id: "2" },
+    );
   });
 
   // EventSub
   it("should_create_eventsub_subscription_when_called", async () => {
     ctx.callApiSpy.mockResolvedValueOnce({ data: [] });
     const handler = ctx.registeredTools.get("create_eventsub_subscription")!;
-    const params = { type: "stream.online", version: "1", condition: { broadcaster_user_id: "1" }, transport: { method: "webhook", callback: "https://example.com", secret: "s3cret" } };
+    const params = {
+      type: "stream.online",
+      version: "1",
+      condition: { broadcaster_user_id: "1" },
+      transport: { method: "webhook", callback: "https://example.com", secret: "s3cret" },
+    };
     await handler(params);
     expect(ctx.callApiSpy).toHaveBeenCalledWith("POST", "/eventsub/subscriptions", params);
   });
@@ -193,7 +222,7 @@ describe("content tools", () => {
   it("should_return_error_when_TwitchError_thrown", async () => {
     ctx.callApiSpy.mockRejectedValueOnce(new TwitchError(422, "Unprocessable"));
     const handler = ctx.registeredTools.get("create_clip")!;
-    const result = await handler({ broadcaster_id: "1" }) as { isError: boolean; content: { text: string }[] };
+    const result = (await handler({ broadcaster_id: "1" })) as { isError: boolean; content: { text: string }[] };
     expect(result.isError).toBe(true);
     expect(result.content[0].text).toContain("422");
   });
@@ -201,7 +230,7 @@ describe("content tools", () => {
   it("should_return_rate_limit_error_when_rate_limited", async () => {
     ctx.callApiSpy.mockRejectedValueOnce(new TwitchRateLimitError(45));
     const handler = ctx.registeredTools.get("get_videos")!;
-    const result = await handler({ user_id: "1" }) as { isError: boolean; content: { text: string }[] };
+    const result = (await handler({ user_id: "1" })) as { isError: boolean; content: { text: string }[] };
     expect(result.isError).toBe(true);
     expect(result.content[0].text).toContain("retry after 45s");
   });
@@ -211,7 +240,9 @@ describe("content tools", () => {
     err.name = "AbortError";
     ctx.callApiSpy.mockRejectedValueOnce(err);
     const handler = ctx.registeredTools.get("send_whisper")!;
-    const result = await handler({ from_user_id: "1", to_user_id: "2", message: "x" }) as { content: { text: string }[] };
+    const result = (await handler({ from_user_id: "1", to_user_id: "2", message: "x" })) as {
+      content: { text: string }[];
+    };
     expect(result.content[0].text).toBe("Request timed out");
   });
 });

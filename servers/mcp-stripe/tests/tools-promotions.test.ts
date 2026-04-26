@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { StripeClient } from "../src/lib/client.js";
 import { registerPromotionTools } from "../src/tools/promotions.js";
 
@@ -36,19 +36,13 @@ describe("Promotion tools — coupons", () => {
   it("should_get_coupon_with_encoded_id", async () => {
     const cb = registeredTools.get("get_coupon")!;
     await cb({ coupon_id: "SHINKOFA20" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/coupons/SHINKOFA20",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/coupons/SHINKOFA20");
   });
 
   it("should_delete_coupon", async () => {
     const cb = registeredTools.get("delete_coupon")!;
     await cb({ coupon_id: "SHINKOFA20" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "DELETE",
-      "/coupons/SHINKOFA20",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("DELETE", "/coupons/SHINKOFA20");
   });
 
   it("should_list_coupons", async () => {
@@ -64,39 +58,24 @@ describe("Promotion tools — promo codes", () => {
   it("should_create_promo_code", async () => {
     const cb = registeredTools.get("create_promo_code")!;
     await cb({ coupon: "coupon_123", code: "WELCOME" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/promotion_codes",
-      { coupon: "coupon_123", code: "WELCOME" },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/promotion_codes", { coupon: "coupon_123", code: "WELCOME" });
   });
 
   it("should_get_promo_code", async () => {
     const cb = registeredTools.get("get_promo_code")!;
     await cb({ promo_code_id: "promo_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/promotion_codes/promo_123",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/promotion_codes/promo_123");
   });
 
   it("should_update_promo_code", async () => {
     const cb = registeredTools.get("update_promo_code")!;
     await cb({ promo_code_id: "promo_123", active: false });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/promotion_codes/promo_123",
-      { active: false },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/promotion_codes/promo_123", { active: false });
   });
 
   it("should_list_promo_codes_by_coupon", async () => {
     const cb = registeredTools.get("list_promo_codes")!;
     await cb({ coupon: "coupon_123", active: true });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/promotion_codes",
-      { coupon: "coupon_123", active: true },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/promotion_codes", { coupon: "coupon_123", active: true });
   });
 });

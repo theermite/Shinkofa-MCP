@@ -1,6 +1,6 @@
 import { createErrorHandler, toolError, toolResult } from "@shinkofa/mcp-shared";
 
-export { toolResult, toolError };
+export { toolError, toolResult };
 
 export class SystemError extends Error {
   constructor(
@@ -30,5 +30,5 @@ export function maskSecretValue(key: string, value: string): string {
 }
 
 export function isExecAllowed(): boolean {
-  return process.env["MCP_SYSTEM_ALLOW_EXEC"] === "true";
+  return process.env.MCP_SYSTEM_ALLOW_EXEC === "true";
 }

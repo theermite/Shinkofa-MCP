@@ -103,7 +103,7 @@ export const SetMyCommandsSchema = z.object({
     z.object({
       command: z.string().min(1).max(32),
       description: z.string().min(3).max(256),
-    })
+    }),
   ),
   scope: z.record(z.unknown()).optional(),
   language_code: z.string().optional(),

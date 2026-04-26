@@ -1,16 +1,11 @@
-import { describe, it, expect } from "vitest";
-import {
-  SendMessageSchema,
-  SendMediaSchema,
-  DeleteMessagesSchema,
-  SendPollSchema,
-} from "../src/lib/schemas.js";
+import { describe, expect, it } from "vitest";
+import { DeleteMessagesSchema, SendMediaSchema, SendMessageSchema, SendPollSchema } from "../src/lib/schemas.js";
 import {
   BanChatMemberSchema,
-  SetWebhookSchema,
-  RawApiCallSchema,
   CreateForumTopicSchema,
+  RawApiCallSchema,
   SendInvoiceSchema,
+  SetWebhookSchema,
 } from "../src/lib/schemas-bot.js";
 
 describe("SendMessageSchema", () => {

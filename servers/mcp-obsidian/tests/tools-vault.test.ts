@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ObsidianClient, ObsidianError } from "../src/lib/client.js";
 import { registerVaultTools } from "../src/tools/vault.js";
 
@@ -38,51 +38,32 @@ describe("Vault tools — notes CRUD", () => {
   it("should_create_note", async () => {
     const cb = registeredTools.get("create_note")!;
     await cb({ path: "new-note.md", content: "# Hello" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "PUT",
-      "/vault/new-note.md",
-      "# Hello",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/vault/new-note.md", "# Hello");
   });
 
   it("should_update_note", async () => {
     const cb = registeredTools.get("update_note")!;
     await cb({ path: "note.md", content: "Updated" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "PUT",
-      "/vault/note.md",
-      "Updated",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/vault/note.md", "Updated");
   });
 
   it("should_append_to_note", async () => {
     const cb = registeredTools.get("append_to_note")!;
     await cb({ path: "note.md", content: "Appended" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/vault/note.md",
-      "Appended",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/vault/note.md", "Appended");
   });
 
   it("should_prepend_to_note", async () => {
     const cb = registeredTools.get("prepend_to_note")!;
     await cb({ path: "note.md", content: "Prepended" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "PATCH",
-      "/vault/note.md",
-      "Prepended",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("PATCH", "/vault/note.md", "Prepended");
   });
 
   it("should_delete_note", async () => {
     callApiSpy.mockResolvedValue(undefined);
     const cb = registeredTools.get("delete_note")!;
     const result = await cb({ path: "old.md" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "DELETE",
-      "/vault/old.md",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("DELETE", "/vault/old.md");
     expect(result.content[0].text).toBe('{"status":"success"}');
   });
 
@@ -111,30 +92,20 @@ describe("Vault tools — search", () => {
   it("should_search_vault", async () => {
     const cb = registeredTools.get("search_vault")!;
     await cb({ query: "test search" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/search/simple/?query=test%20search",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/search/simple/?query=test%20search");
   });
 
   it("should_search_with_contextLength", async () => {
     const cb = registeredTools.get("search_vault")!;
     await cb({ query: "hello", contextLength: 100 });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/search/simple/?query=hello&contextLength=100",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/search/simple/?query=hello&contextLength=100");
   });
 
   it("should_search_vault_jsonlogic", async () => {
     const query = { "==": [{ var: "path" }, "test.md"] };
     const cb = registeredTools.get("search_vault_jsonlogic")!;
     await cb({ query });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/search/",
-      query,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/search/", query);
   });
 });
 
@@ -142,32 +113,19 @@ describe("Vault tools — active file", () => {
   it("should_get_active_file", async () => {
     const cb = registeredTools.get("get_active_file")!;
     await cb({});
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/active/",
-      undefined,
-      "application/vnd.olrapi.note+json",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/active/", undefined, "application/vnd.olrapi.note+json");
   });
 
   it("should_update_active_file", async () => {
     const cb = registeredTools.get("update_active_file")!;
     await cb({ content: "New content" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "PUT",
-      "/active/",
-      "New content",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/active/", "New content");
   });
 
   it("should_append_to_active_file", async () => {
     const cb = registeredTools.get("append_to_active_file")!;
     await cb({ content: "More content" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/active/",
-      "More content",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/active/", "More content");
   });
 });
 
@@ -181,10 +139,7 @@ describe("Vault tools — commands", () => {
   it("should_execute_command", async () => {
     const cb = registeredTools.get("execute_command")!;
     await cb({ commandId: "editor:toggle-bold" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/commands/editor%3Atoggle-bold/",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/commands/editor%3Atoggle-bold/");
   });
 });
 
@@ -192,21 +147,13 @@ describe("Vault tools — open note", () => {
   it("should_open_note", async () => {
     const cb = registeredTools.get("open_note")!;
     await cb({ path: "note.md" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/open/note.md",
-      undefined,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/open/note.md", undefined);
   });
 
   it("should_open_note_in_new_leaf", async () => {
     const cb = registeredTools.get("open_note")!;
     await cb({ path: "note.md", newLeaf: true });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/open/note.md",
-      { newLeaf: true },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/open/note.md", { newLeaf: true });
   });
 });
 
@@ -214,23 +161,13 @@ describe("Vault tools — periodic notes", () => {
   it("should_get_daily_note", async () => {
     const cb = registeredTools.get("get_periodic_note")!;
     await cb({ period: "daily" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/periodic/daily/",
-      undefined,
-      "application/vnd.olrapi.note+json",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/periodic/daily/", undefined, "application/vnd.olrapi.note+json");
   });
 
   it("should_get_weekly_note", async () => {
     const cb = registeredTools.get("get_periodic_note")!;
     await cb({ period: "weekly" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/periodic/weekly/",
-      undefined,
-      "application/vnd.olrapi.note+json",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/periodic/weekly/", undefined, "application/vnd.olrapi.note+json");
   });
 });
 
@@ -246,34 +183,19 @@ describe("Vault tools — raw API call", () => {
   it("should_call_raw_GET", async () => {
     const cb = registeredTools.get("raw_api_call")!;
     await cb({ method: "GET", path: "/vault/" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/vault/",
-      undefined,
-      undefined,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/vault/", undefined, undefined);
   });
 
   it("should_call_raw_POST_with_body", async () => {
     const cb = registeredTools.get("raw_api_call")!;
     await cb({ method: "POST", path: "/search/", body: { key: "val" } });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/search/",
-      { key: "val" },
-      undefined,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/search/", { key: "val" }, undefined);
   });
 
   it("should_pass_accept_header", async () => {
     const cb = registeredTools.get("raw_api_call")!;
     await cb({ method: "GET", path: "/vault/note.md", accept: "text/markdown" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/vault/note.md",
-      undefined,
-      "text/markdown",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/vault/note.md", undefined, "text/markdown");
   });
 });
 

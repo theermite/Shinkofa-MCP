@@ -37,7 +37,10 @@ export class DriveClient {
 
   private async refreshAccessToken(): Promise<void> {
     if (!this.refreshToken || !this.clientId || !this.clientSecret) {
-      throw new DriveError(401, "Access token expired and no refresh token configured. Set GOOGLE_REFRESH_TOKEN, GOOGLE_CLIENT_ID, and GOOGLE_CLIENT_SECRET.");
+      throw new DriveError(
+        401,
+        "Access token expired and no refresh token configured. Set GOOGLE_REFRESH_TOKEN, GOOGLE_CLIENT_ID, and GOOGLE_CLIENT_SECRET.",
+      );
     }
     const response = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
@@ -49,7 +52,7 @@ export class DriveClient {
         client_secret: this.clientSecret,
       }),
     });
-    const data = await response.json() as { access_token?: string; error?: string; error_description?: string };
+    const data = (await response.json()) as { access_token?: string; error?: string; error_description?: string };
     if (!response.ok || !data.access_token) {
       throw new DriveError(401, `Token refresh failed: ${data.error_description ?? data.error ?? "unknown error"}`);
     }
@@ -103,9 +106,18 @@ export class DriveClient {
   }
 
   /** Multipart upload (metadata + content, up to 5MB). */
-  async uploadFile(metadata: Record<string, unknown>, content: string, contentType: string, query?: Record<string, string | number | boolean | undefined>): Promise<unknown> {
+  async uploadFile(
+    metadata: Record<string, unknown>,
+    content: string,
+    contentType: string,
+    query?: Record<string, string | number | boolean | undefined>,
+  ): Promise<unknown> {
     const boundary = `boundary_${crypto.randomUUID()}`;
-    const isBinary = !contentType.startsWith("text/") && !contentType.includes("json") && !contentType.includes("xml") && !contentType.includes("csv");
+    const isBinary =
+      !contentType.startsWith("text/") &&
+      !contentType.includes("json") &&
+      !contentType.includes("xml") &&
+      !contentType.includes("csv");
     const contentPart = isBinary
       ? Buffer.concat([
           Buffer.from(`--${boundary}\r\nContent-Type: ${contentType}\r\nContent-Transfer-Encoding: base64\r\n\r\n`),
@@ -113,13 +125,17 @@ export class DriveClient {
           Buffer.from("\r\n"),
         ])
       : Buffer.from(`--${boundary}\r\nContent-Type: ${contentType}\r\n\r\n${content}\r\n`);
-    const metadataPart = Buffer.from(`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`);
+    const metadataPart = Buffer.from(
+      `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`,
+    );
     const endPart = Buffer.from(`--${boundary}--`);
     const body = Buffer.concat([metadataPart, contentPart, endPart]);
     let url = `${UPLOAD_BASE}/files?uploadType=multipart`;
     if (query) {
       const p = new URLSearchParams();
-      for (const [k, v] of Object.entries(query)) { if (v !== undefined && v !== null) p.append(k, String(v)); }
+      for (const [k, v] of Object.entries(query)) {
+        if (v !== undefined && v !== null) p.append(k, String(v));
+      }
       const qs = p.toString();
       if (qs) url += `&${qs}`;
     }
@@ -133,9 +149,18 @@ export class DriveClient {
   }
 
   /** Multipart update (metadata + content). */
-  async updateFileContent(fileId: string, metadata: Record<string, unknown>, content: string, contentType: string): Promise<unknown> {
+  async updateFileContent(
+    fileId: string,
+    metadata: Record<string, unknown>,
+    content: string,
+    contentType: string,
+  ): Promise<unknown> {
     const boundary = `boundary_${crypto.randomUUID()}`;
-    const isBinary = !contentType.startsWith("text/") && !contentType.includes("json") && !contentType.includes("xml") && !contentType.includes("csv");
+    const isBinary =
+      !contentType.startsWith("text/") &&
+      !contentType.includes("json") &&
+      !contentType.includes("xml") &&
+      !contentType.includes("csv");
     const contentPart = isBinary
       ? Buffer.concat([
           Buffer.from(`--${boundary}\r\nContent-Type: ${contentType}\r\nContent-Transfer-Encoding: base64\r\n\r\n`),
@@ -143,7 +168,9 @@ export class DriveClient {
           Buffer.from("\r\n"),
         ])
       : Buffer.from(`--${boundary}\r\nContent-Type: ${contentType}\r\n\r\n${content}\r\n`);
-    const metadataPart = Buffer.from(`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`);
+    const metadataPart = Buffer.from(
+      `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`,
+    );
     const endPart = Buffer.from(`--${boundary}--`);
     const body = Buffer.concat([metadataPart, contentPart, endPart]);
     const url = `${UPLOAD_BASE}/files/${encodeURIComponent(fileId)}?uploadType=multipart`;
@@ -158,13 +185,21 @@ export class DriveClient {
 
   private async parseJsonResponse(result: { response: Response; status: number }): Promise<unknown> {
     let data: unknown;
-    try { data = await result.response.json(); }
-    catch { throw new DriveError(result.status, `Non-JSON response (${result.status})`); }
+    try {
+      data = await result.response.json();
+    } catch {
+      throw new DriveError(result.status, `Non-JSON response (${result.status})`);
+    }
     if (!result.response.ok) throw new DriveError(result.status, JSON.stringify(data));
     return data;
   }
 
-  private async rawRequest(url: string, method: string, body?: string | Buffer, contentType?: string): Promise<{ response: Response; status: number }> {
+  private async rawRequest(
+    url: string,
+    method: string,
+    body?: string | Buffer,
+    contentType?: string,
+  ): Promise<{ response: Response; status: number }> {
     const headers: Record<string, string> = { Authorization: `Bearer ${this.accessToken}` };
     if (contentType) headers["Content-Type"] = contentType;
     const controller = new AbortController();
@@ -172,7 +207,9 @@ export class DriveClient {
     try {
       const response = await fetch(url, { method, headers, body, signal: controller.signal });
       return { response, status: response.status };
-    } finally { clearTimeout(timeout); }
+    } finally {
+      clearTimeout(timeout);
+    }
   }
 
   private async extractContent(response: Response): Promise<{ content: string; mimeType: string }> {
@@ -184,27 +221,43 @@ export class DriveClient {
     return { content: Buffer.from(buf).toString("base64"), mimeType: ct };
   }
 
-  private async executeRequest<T>(base: string, method: string, path: string, body?: Record<string, unknown>, query?: Record<string, string | number | boolean | undefined>): Promise<{ response: Response; data: unknown; status: number }> {
+  private async executeRequest<_T>(
+    base: string,
+    method: string,
+    path: string,
+    body?: Record<string, unknown>,
+    query?: Record<string, string | number | boolean | undefined>,
+  ): Promise<{ response: Response; data: unknown; status: number }> {
     let url = `${base}${path}`;
     if (query) {
       const p = new URLSearchParams();
-      for (const [k, v] of Object.entries(query)) { if (v !== undefined && v !== null) p.append(k, String(v)); }
+      for (const [k, v] of Object.entries(query)) {
+        if (v !== undefined && v !== null) p.append(k, String(v));
+      }
       const qs = p.toString();
       if (qs) url += `?${qs}`;
     }
     const headers: Record<string, string> = { Authorization: `Bearer ${this.accessToken}` };
     let fetchBody: BodyInit | undefined;
-    if (body && method !== "GET") { headers["Content-Type"] = "application/json"; fetchBody = JSON.stringify(body); }
+    if (body && method !== "GET") {
+      headers["Content-Type"] = "application/json";
+      fetchBody = JSON.stringify(body);
+    }
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
       const response = await fetch(url, { method, headers, body: fetchBody, signal: controller.signal });
       if (response.status === 204) return { response, data: undefined, status: 204 };
       let data: unknown;
-      try { data = await response.json(); }
-      catch { data = { error: { code: response.status, message: `Non-JSON response (${response.status})` } }; }
+      try {
+        data = await response.json();
+      } catch {
+        data = { error: { code: response.status, message: `Non-JSON response (${response.status})` } };
+      }
       return { response, data, status: response.status };
-    } finally { clearTimeout(timeout); }
+    } finally {
+      clearTimeout(timeout);
+    }
   }
 
   private handleResponse<T>(result: { response: Response; data: unknown; status: number }): T {
@@ -218,7 +271,10 @@ export class DriveClient {
 }
 
 export class DriveError extends Error {
-  constructor(public readonly code: number, public readonly description: string) {
+  constructor(
+    public readonly code: number,
+    public readonly description: string,
+  ) {
     super(`Drive error ${code}: ${description}`);
     this.name = "DriveError";
   }

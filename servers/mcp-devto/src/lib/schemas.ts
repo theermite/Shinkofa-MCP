@@ -7,11 +7,7 @@ import { z } from "zod";
 
 export const Pagination = z.object({
   page: z.number().optional().describe("Page number (default: 1)"),
-  per_page: z
-    .number()
-    .max(1000)
-    .optional()
-    .describe("Items per page (default: 30, max: 1000)"),
+  per_page: z.number().max(1000).optional().describe("Items per page (default: 30, max: 1000)"),
 });
 
 // ── Articles ──
@@ -19,23 +15,11 @@ export const Pagination = z.object({
 export const ListArticlesSchema = Pagination.extend({
   tag: z.string().optional().describe("Filter by tag"),
   tags: z.string().optional().describe("Comma-separated tags (AND)"),
-  tags_exclude: z
-    .string()
-    .optional()
-    .describe("Comma-separated tags to exclude"),
+  tags_exclude: z.string().optional().describe("Comma-separated tags to exclude"),
   username: z.string().optional().describe("Filter by author username"),
-  state: z
-    .enum(["fresh", "rising", "all"])
-    .optional()
-    .describe("Article state filter"),
-  top: z
-    .number()
-    .optional()
-    .describe("Top articles in last N days"),
-  collection_id: z
-    .number()
-    .optional()
-    .describe("Filter by collection/series"),
+  state: z.enum(["fresh", "rising", "all"]).optional().describe("Article state filter"),
+  top: z.number().optional().describe("Top articles in last N days"),
+  collection_id: z.number().optional().describe("Filter by collection/series"),
 });
 
 export const GetArticleSchema = z.object({
@@ -50,31 +34,13 @@ export const GetArticleByPathSchema = z.object({
 export const CreateArticleSchema = z.object({
   title: z.string().min(1).describe("Article title"),
   body_markdown: z.string().describe("Article content in Markdown"),
-  published: z
-    .boolean()
-    .optional()
-    .describe("Publish immediately (default: false = draft)"),
-  tags: z
-    .string()
-    .optional()
-    .describe("Comma-separated tags (max 4)"),
-  canonical_url: z
-    .string()
-    .optional()
-    .describe("Original URL for cross-posted content"),
-  series: z
-    .string()
-    .optional()
-    .describe("Series name to group articles"),
+  published: z.boolean().optional().describe("Publish immediately (default: false = draft)"),
+  tags: z.string().optional().describe("Comma-separated tags (max 4)"),
+  canonical_url: z.string().optional().describe("Original URL for cross-posted content"),
+  series: z.string().optional().describe("Series name to group articles"),
   main_image: z.string().optional().describe("Cover image URL"),
-  description: z
-    .string()
-    .optional()
-    .describe("Brief description / subtitle"),
-  organization_id: z
-    .number()
-    .optional()
-    .describe("Publish under an organization"),
+  description: z.string().optional().describe("Brief description / subtitle"),
+  organization_id: z.number().optional().describe("Publish under an organization"),
 });
 
 export const UpdateArticleSchema = z.object({
@@ -101,14 +67,8 @@ export const ListMyArticlesSchema = Pagination.extend({
 
 export const ListCommentsSchema = z
   .object({
-    a_id: z
-      .number()
-      .optional()
-      .describe("Article ID to list comments for"),
-    p_id: z
-      .number()
-      .optional()
-      .describe("Podcast episode ID to list comments for"),
+    a_id: z.number().optional().describe("Article ID to list comments for"),
+    p_id: z.number().optional().describe("Podcast episode ID to list comments for"),
   })
   .refine((d) => d.a_id !== undefined || d.p_id !== undefined, {
     message: "Either a_id or p_id is required",
@@ -132,28 +92,14 @@ export const ListTagsSchema = Pagination;
 
 export const ToggleReactionSchema = z.object({
   reactable_id: z.number().describe("Article or comment ID"),
-  reactable_type: z
-    .enum(["Article", "Comment"])
-    .describe("Type of reactable"),
-  category: z
-    .enum([
-      "like",
-      "unicorn",
-      "readinglist",
-      "thumbsup",
-      "thumbsdown",
-      "vomit",
-    ])
-    .describe("Reaction category"),
+  reactable_type: z.enum(["Article", "Comment"]).describe("Type of reactable"),
+  category: z.enum(["like", "unicorn", "readinglist", "thumbsup", "thumbsdown", "vomit"]).describe("Reaction category"),
 });
 
 // ── Raw ──
 
 export const RawApiCallSchema = z.object({
   method: z.enum(["GET", "POST", "PUT"]).describe("HTTP method"),
-  path: z
-    .string()
-    .min(1)
-    .describe("API path (e.g. '/api/articles')"),
+  path: z.string().min(1).describe("API path (e.g. '/api/articles')"),
   body: z.record(z.unknown()).optional().describe("JSON request body"),
 });

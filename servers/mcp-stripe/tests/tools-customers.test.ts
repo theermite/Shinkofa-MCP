@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { StripeClient, StripeError } from "../src/lib/client.js";
 import { registerCustomerTools } from "../src/tools/customers.js";
 
@@ -41,21 +41,13 @@ describe("Customer tools — callbacks", () => {
     callApiSpy.mockResolvedValue({ id: "cus_123" });
     const cb = registeredTools.get("get_customer")!;
     await cb({ customer_id: "cus_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/customers/cus_123",
-      undefined,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/customers/cus_123", undefined);
   });
 
   it("should_encode_special_chars_in_customer_id", async () => {
     const cb = registeredTools.get("get_customer")!;
     await cb({ customer_id: "cus/special&id" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      `/customers/${encodeURIComponent("cus/special&id")}`,
-      undefined,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", `/customers/${encodeURIComponent("cus/special&id")}`, undefined);
   });
 
   it("should_pass_expand_when_provided", async () => {
@@ -64,52 +56,30 @@ describe("Customer tools — callbacks", () => {
       customer_id: "cus_123",
       expand: ["default_source"],
     });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/customers/cus_123",
-      { expand: ["default_source"] },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/customers/cus_123", { expand: ["default_source"] });
   });
 
   it("should_split_customer_id_from_update_params", async () => {
     const cb = registeredTools.get("update_customer")!;
     await cb({ customer_id: "cus_123", name: "Jay Updated" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/customers/cus_123",
-      { name: "Jay Updated" },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/customers/cus_123", { name: "Jay Updated" });
   });
 
   it("should_call_DELETE_when_delete_customer", async () => {
     callApiSpy.mockResolvedValue({ id: "cus_123", deleted: true });
     const cb = registeredTools.get("delete_customer")!;
     await cb({ customer_id: "cus_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "DELETE",
-      "/customers/cus_123",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("DELETE", "/customers/cus_123");
   });
 
   it("should_call_search_endpoint", async () => {
     const cb = registeredTools.get("search_customers")!;
     await cb({ query: "email:'jay@shinkofa.com'" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/customers/search",
-      { query: "email:'jay@shinkofa.com'" },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/customers/search", { query: "email:'jay@shinkofa.com'" });
   });
 
   it("should_return_toolError_when_StripeError", async () => {
-    callApiSpy.mockRejectedValue(
-      new StripeError(
-        404,
-        "invalid_request_error",
-        "resource_missing",
-        "No such customer",
-      ),
-    );
+    callApiSpy.mockRejectedValue(new StripeError(404, "invalid_request_error", "resource_missing", "No such customer"));
     const cb = registeredTools.get("get_customer")!;
     const result = await cb({ customer_id: "cus_xxx" });
     expect(result.isError).toBe(true);

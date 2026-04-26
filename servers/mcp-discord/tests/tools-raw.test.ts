@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DiscordClient, DiscordError, DiscordRateLimitError } from "../src/lib/client.js";
 import { registerRawTool } from "../src/tools/raw.js";
 
@@ -33,7 +33,13 @@ describe("raw_api_call", () => {
   it("should_call_POST_with_body_when_making_raw_post", async () => {
     const handler = registeredTools.get("raw_api_call")!;
     await handler({ method: "POST", path: "/channels/ch1/messages", body: { content: "Hello" } });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/channels/ch1/messages", { content: "Hello" }, undefined, undefined);
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/channels/ch1/messages",
+      { content: "Hello" },
+      undefined,
+      undefined,
+    );
   });
 
   it("should_pass_query_params_when_provided", async () => {

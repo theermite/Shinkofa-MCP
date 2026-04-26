@@ -36,7 +36,10 @@ export class GoogleCalendarClient {
 
   private async refreshAccessToken(): Promise<void> {
     if (!this.refreshToken || !this.clientId || !this.clientSecret) {
-      throw new GoogleCalendarError(401, "Access token expired and no refresh token configured. Set GOOGLE_REFRESH_TOKEN, GOOGLE_CLIENT_ID, and GOOGLE_CLIENT_SECRET.");
+      throw new GoogleCalendarError(
+        401,
+        "Access token expired and no refresh token configured. Set GOOGLE_REFRESH_TOKEN, GOOGLE_CLIENT_ID, and GOOGLE_CLIENT_SECRET.",
+      );
     }
     const response = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
@@ -48,9 +51,12 @@ export class GoogleCalendarClient {
         client_secret: this.clientSecret,
       }),
     });
-    const data = await response.json() as { access_token?: string; error?: string; error_description?: string };
+    const data = (await response.json()) as { access_token?: string; error?: string; error_description?: string };
     if (!response.ok || !data.access_token) {
-      throw new GoogleCalendarError(401, `Token refresh failed: ${data.error_description ?? data.error ?? "unknown error"}`);
+      throw new GoogleCalendarError(
+        401,
+        `Token refresh failed: ${data.error_description ?? data.error ?? "unknown error"}`,
+      );
     }
     this.accessToken = data.access_token;
   }
@@ -72,7 +78,12 @@ export class GoogleCalendarClient {
     return this.handleResponse<T>(result.response, result.data);
   }
 
-  private async executeRequest<T>(method: string, path: string, body?: Record<string, unknown>, query?: Record<string, string | number | boolean | undefined>): Promise<{ response: Response; data: unknown; status: number }> {
+  private async executeRequest<_T>(
+    method: string,
+    path: string,
+    body?: Record<string, unknown>,
+    query?: Record<string, string | number | boolean | undefined>,
+  ): Promise<{ response: Response; data: unknown; status: number }> {
     let url = `${this.apiBaseUrl}${path}`;
 
     if (query) {
@@ -90,9 +101,7 @@ export class GoogleCalendarClient {
     let fetchBody: BodyInit | undefined;
     if (body && method !== "GET") {
       headers["Content-Type"] = "application/json";
-      const cleaned = Object.fromEntries(
-        Object.entries(body).filter(([, v]) => v !== undefined && v !== null),
-      );
+      const cleaned = Object.fromEntries(Object.entries(body).filter(([, v]) => v !== undefined && v !== null));
       fetchBody = JSON.stringify(cleaned);
     }
 
@@ -102,8 +111,11 @@ export class GoogleCalendarClient {
       const response = await fetch(url, { method, headers, body: fetchBody, signal: controller.signal });
       if (response.status === 204) return { response, data: undefined, status: 204 };
       let data: unknown;
-      try { data = await response.json(); }
-      catch { data = { error: { code: response.status, message: `Non-JSON response (${response.status})` } }; }
+      try {
+        data = await response.json();
+      } catch {
+        data = { error: { code: response.status, message: `Non-JSON response (${response.status})` } };
+      }
       return { response, data, status: response.status };
     } finally {
       clearTimeout(timeout);
@@ -121,7 +133,10 @@ export class GoogleCalendarClient {
 }
 
 export class GoogleCalendarError extends Error {
-  constructor(public readonly code: number, public readonly description: string) {
+  constructor(
+    public readonly code: number,
+    public readonly description: string,
+  ) {
     super(`Google Calendar error ${code}: ${description}`);
     this.name = "GoogleCalendarError";
   }

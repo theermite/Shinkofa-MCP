@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DiscordClient, DiscordError, DiscordRateLimitError } from "../src/lib/client.js";
 import { registerInteractionTools } from "../src/tools/interactions.js";
 
@@ -27,7 +27,10 @@ describe("create_interaction_response", () => {
   it("should_call_POST_interaction_callback_with_type_and_data_when_responding", async () => {
     const handler = registeredTools.get("create_interaction_response")!;
     await handler({ interaction_id: "int1", interaction_token: "tok1", type: 4, data: { content: "Pong!" } });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/interactions/int1/tok1/callback", { type: 4, data: { content: "Pong!" } });
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/interactions/int1/tok1/callback", {
+      type: 4,
+      data: { content: "Pong!" },
+    });
   });
 });
 

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { StripeClient } from "../src/lib/client.js";
 import { registerCatalogTools } from "../src/tools/catalog.js";
 
@@ -35,30 +35,19 @@ describe("Catalog tools — products", () => {
   it("should_update_product_with_encoded_id", async () => {
     const cb = registeredTools.get("update_product")!;
     await cb({ product_id: "prod_123", name: "Updated" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/products/prod_123",
-      { name: "Updated" },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/products/prod_123", { name: "Updated" });
   });
 
   it("should_get_product_with_expand", async () => {
     const cb = registeredTools.get("get_product")!;
     await cb({ product_id: "prod_123", expand: ["default_price"] });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/products/prod_123",
-      { expand: ["default_price"] },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/products/prod_123", { expand: ["default_price"] });
   });
 
   it("should_delete_product", async () => {
     const cb = registeredTools.get("delete_product")!;
     await cb({ product_id: "prod_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "DELETE",
-      "/products/prod_123",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("DELETE", "/products/prod_123");
   });
 
   it("should_list_products_active_only", async () => {
@@ -90,21 +79,13 @@ describe("Catalog tools — prices", () => {
   it("should_update_price", async () => {
     const cb = registeredTools.get("update_price")!;
     await cb({ price_id: "price_123", active: false });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/prices/price_123",
-      { active: false },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/prices/price_123", { active: false });
   });
 
   it("should_get_price", async () => {
     const cb = registeredTools.get("get_price")!;
     await cb({ price_id: "price_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/prices/price_123",
-      undefined,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/prices/price_123", undefined);
   });
 
   it("should_list_prices_by_product", async () => {

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { OllamaClient, OllamaError } from "../src/lib/client.js";
 import { registerModelTools } from "../src/tools/models.js";
 
@@ -32,9 +32,15 @@ beforeEach(() => {
 describe("Model tools — registration", () => {
   it("should_register_all_9_model_tools", () => {
     const expected = [
-      "list_models", "show_model", "copy_model", "delete_model",
-      "pull_model", "push_model", "create_model",
-      "list_running_models", "check_blob",
+      "list_models",
+      "show_model",
+      "copy_model",
+      "delete_model",
+      "pull_model",
+      "push_model",
+      "create_model",
+      "list_running_models",
+      "check_blob",
     ];
     for (const name of expected) {
       expect(registeredTools.has(name)).toBe(true);

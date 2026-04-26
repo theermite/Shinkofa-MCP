@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
-import { toolResult, toolError, withErrorHandler, buildRawEmail } from "../src/lib/utils.js";
+import { describe, expect, it } from "vitest";
 import { GmailError } from "../src/lib/client.js";
+import { buildRawEmail, toolError, toolResult, withErrorHandler } from "../src/lib/utils.js";
 
 // ── toolResult ────────────────────────────────────────────────────────────────
 
@@ -99,7 +99,7 @@ describe("withErrorHandler", () => {
       withErrorHandler(async () => {
         // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw "raw string error";
-      })
+      }),
     ).rejects.toBe("raw string error");
   });
 
@@ -114,7 +114,7 @@ describe("withErrorHandler", () => {
     await expect(
       withErrorHandler(async () => {
         throw new CustomError();
-      })
+      }),
     ).rejects.toBeInstanceOf(CustomError);
   });
 });

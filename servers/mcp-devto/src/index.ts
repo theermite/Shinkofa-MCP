@@ -28,7 +28,7 @@ import { registerCommunityTools } from "./tools/community.js";
 import { registerRawTools } from "./tools/raw.js";
 
 async function main(): Promise<void> {
-  const apiKey = process.env["DEVTO_API_KEY"];
+  const apiKey = process.env.DEVTO_API_KEY;
 
   if (!apiKey) {
     console.error("Error: DEVTO_API_KEY environment variable is required");
@@ -37,10 +37,8 @@ async function main(): Promise<void> {
 
   const client = new DevtoClient({
     apiKey,
-    baseUrl: process.env["DEVTO_BASE_URL"],
-    timeoutMs: process.env["DEVTO_TIMEOUT_MS"]
-      ? parseInt(process.env["DEVTO_TIMEOUT_MS"], 10) || undefined
-      : undefined,
+    baseUrl: process.env.DEVTO_BASE_URL,
+    timeoutMs: process.env.DEVTO_TIMEOUT_MS ? parseInt(process.env.DEVTO_TIMEOUT_MS, 10) || undefined : undefined,
   });
 
   const server = new McpServer({

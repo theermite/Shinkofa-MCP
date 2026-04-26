@@ -1,20 +1,47 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  ContainerListSchema, ContainerCreateSchema, ContainerInspectSchema,
-  ContainerStartSchema, ContainerStopSchema, ContainerRestartSchema,
-  ContainerKillSchema, ContainerRemoveSchema, ContainerLogsSchema,
-  ContainerStatsSchema, ContainerRenameSchema, ContainerPauseSchema,
-  ContainerUpdateSchema, ContainerPruneSchema, ContainerTopSchema,
-  ContainerWaitSchema, ExecCreateSchema, ExecStartSchema, ExecInspectSchema,
-  ImageListSchema, ImageInspectSchema, ImagePullSchema, ImageRemoveSchema,
-  ImageTagSchema, ImageSearchSchema, ImagePruneSchema, ImageHistorySchema,
+  ContainerCreateSchema,
+  ContainerInspectSchema,
+  ContainerKillSchema,
+  ContainerListSchema,
+  ContainerLogsSchema,
+  ContainerPauseSchema,
+  ContainerPruneSchema,
+  ContainerRemoveSchema,
+  ContainerRenameSchema,
+  ContainerRestartSchema,
+  ContainerStartSchema,
+  ContainerStatsSchema,
+  ContainerStopSchema,
+  ContainerTopSchema,
+  ContainerUpdateSchema,
+  ContainerWaitSchema,
+  ExecCreateSchema,
+  ExecInspectSchema,
+  ExecStartSchema,
   ImageBuildSchema,
-  VolumeListSchema, VolumeCreateSchema, VolumeInspectSchema,
-  VolumeRemoveSchema, VolumePruneSchema,
-  NetworkListSchema, NetworkCreateSchema, NetworkInspectSchema,
-  NetworkRemoveSchema, NetworkConnectSchema, NetworkDisconnectSchema,
+  ImageHistorySchema,
+  ImageInspectSchema,
+  ImageListSchema,
+  ImagePruneSchema,
+  ImagePullSchema,
+  ImageRemoveSchema,
+  ImageSearchSchema,
+  ImageTagSchema,
+  NetworkConnectSchema,
+  NetworkCreateSchema,
+  NetworkDisconnectSchema,
+  NetworkInspectSchema,
+  NetworkListSchema,
   NetworkPruneSchema,
-  SystemEventsSchema, RawApiCallSchema,
+  NetworkRemoveSchema,
+  RawApiCallSchema,
+  SystemEventsSchema,
+  VolumeCreateSchema,
+  VolumeInspectSchema,
+  VolumeListSchema,
+  VolumePruneSchema,
+  VolumeRemoveSchema,
 } from "../src/lib/schemas.js";
 
 describe("Container schemas", () => {
@@ -22,7 +49,9 @@ describe("Container schemas", () => {
     expect(ContainerListSchema.safeParse({}).success).toBe(true);
   });
   it("should validate list_containers with all params", () => {
-    expect(ContainerListSchema.safeParse({ all: true, limit: 10, size: true, filters: '{"status":["running"]}' }).success).toBe(true);
+    expect(
+      ContainerListSchema.safeParse({ all: true, limit: 10, size: true, filters: '{"status":["running"]}' }).success,
+    ).toBe(true);
   });
   it("should validate create_container minimal", () => {
     expect(ContainerCreateSchema.safeParse({ Image: "nginx:latest" }).success).toBe(true);
@@ -31,10 +60,16 @@ describe("Container schemas", () => {
     expect(ContainerCreateSchema.safeParse({}).success).toBe(false);
   });
   it("should validate create_container full", () => {
-    expect(ContainerCreateSchema.safeParse({
-      name: "my-nginx", Image: "nginx:latest", Cmd: ["nginx", "-g", "daemon off;"],
-      Env: ["FOO=bar"], Labels: { app: "web" }, WorkingDir: "/app",
-    }).success).toBe(true);
+    expect(
+      ContainerCreateSchema.safeParse({
+        name: "my-nginx",
+        Image: "nginx:latest",
+        Cmd: ["nginx", "-g", "daemon off;"],
+        Env: ["FOO=bar"],
+        Labels: { app: "web" },
+        WorkingDir: "/app",
+      }).success,
+    ).toBe(true);
   });
   it("should validate inspect_container", () => {
     expect(ContainerInspectSchema.safeParse({ id: "abc123" }).success).toBe(true);
@@ -172,10 +207,15 @@ describe("Network schemas", () => {
     expect(NetworkCreateSchema.safeParse({}).success).toBe(false);
   });
   it("should validate create_network full", () => {
-    expect(NetworkCreateSchema.safeParse({
-      Name: "my-net", Driver: "bridge", Internal: true,
-      Labels: { env: "prod" }, EnableIPv6: true,
-    }).success).toBe(true);
+    expect(
+      NetworkCreateSchema.safeParse({
+        Name: "my-net",
+        Driver: "bridge",
+        Internal: true,
+        Labels: { env: "prod" },
+        EnableIPv6: true,
+      }).success,
+    ).toBe(true);
   });
   it("should validate inspect_network", () => {
     expect(NetworkInspectSchema.safeParse({ id: "net123" }).success).toBe(true);
@@ -208,10 +248,13 @@ describe("System schemas", () => {
     expect(RawApiCallSchema.safeParse({ method: "PATCH", path: "/" }).success).toBe(false);
   });
   it("should validate raw_api_call with body and query", () => {
-    expect(RawApiCallSchema.safeParse({
-      method: "POST", path: "/swarm/init",
-      body: { ListenAddr: "0.0.0.0:2377" },
-      query: { force: "true" },
-    }).success).toBe(true);
+    expect(
+      RawApiCallSchema.safeParse({
+        method: "POST",
+        path: "/swarm/init",
+        body: { ListenAddr: "0.0.0.0:2377" },
+        query: { force: "true" },
+      }).success,
+    ).toBe(true);
   });
 });

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TelegramClient, TelegramError } from "../src/lib/client.js";
 
 // Mock fetch globally
@@ -31,7 +31,7 @@ describe("TelegramClient", () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       "https://api.telegram.org/bot123:ABC/getMe",
-      expect.objectContaining({ method: "POST" })
+      expect.objectContaining({ method: "POST" }),
     );
   });
 
@@ -44,16 +44,11 @@ describe("TelegramClient", () => {
 
     await customClient.callApi("getMe");
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://custom.api.org/bot123:ABC/getMe",
-      expect.any(Object)
-    );
+    expect(mockFetch).toHaveBeenCalledWith("https://custom.api.org/bot123:ABC/getMe", expect.any(Object));
   });
 
   it("should send JSON body for params", async () => {
-    mockFetch.mockResolvedValue(
-      mockResponse({ ok: true, result: { message_id: 42 } })
-    );
+    mockFetch.mockResolvedValue(mockResponse({ ok: true, result: { message_id: 42 } }));
 
     await client.callApi("sendMessage", {
       chat_id: 123,
@@ -69,9 +64,7 @@ describe("TelegramClient", () => {
   });
 
   it("should strip undefined and null params", async () => {
-    mockFetch.mockResolvedValue(
-      mockResponse({ ok: true, result: { message_id: 42 } })
-    );
+    mockFetch.mockResolvedValue(mockResponse({ ok: true, result: { message_id: 42 } }));
 
     await client.callApi("sendMessage", {
       chat_id: 123,
@@ -80,7 +73,7 @@ describe("TelegramClient", () => {
       reply_markup: null,
     });
 
-    const body = JSON.parse(mockFetch.mock.calls[0]![1].body as string);
+    const body = JSON.parse(mockFetch.mock.calls[0]?.[1].body as string);
     expect(body).toEqual({ chat_id: 123, text: "hello" });
     expect(body).not.toHaveProperty("parse_mode");
     expect(body).not.toHaveProperty("reply_markup");
@@ -88,9 +81,7 @@ describe("TelegramClient", () => {
 
   it("should return result on success", async () => {
     const expectedResult = { message_id: 42, chat: { id: 123 } };
-    mockFetch.mockResolvedValue(
-      mockResponse({ ok: true, result: expectedResult })
-    );
+    mockFetch.mockResolvedValue(mockResponse({ ok: true, result: expectedResult }));
 
     const result = await client.callApi("sendMessage", { chat_id: 123, text: "hi" });
     expect(result).toEqual(expectedResult);
@@ -102,12 +93,10 @@ describe("TelegramClient", () => {
         ok: false,
         error_code: 400,
         description: "Bad Request: chat not found",
-      })
+      }),
     );
 
-    await expect(client.callApi("sendMessage", { chat_id: -1, text: "hi" }))
-      .rejects
-      .toThrow(TelegramError);
+    await expect(client.callApi("sendMessage", { chat_id: -1, text: "hi" })).rejects.toThrow(TelegramError);
 
     try {
       await client.callApi("sendMessage", { chat_id: -1, text: "hi" });
@@ -126,7 +115,7 @@ describe("TelegramClient", () => {
         error_code: 429,
         description: "Too Many Requests: retry after 30",
         parameters: { retry_after: 30 },
-      })
+      }),
     );
 
     try {

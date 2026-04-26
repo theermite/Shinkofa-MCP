@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { StripeClient, StripeError } from "../src/lib/client.js";
 import { registerPaymentTools } from "../src/tools/payments.js";
 
@@ -36,31 +36,19 @@ describe("Payment tools — callbacks", () => {
   it("should_get_payment_intent_with_encoded_id", async () => {
     const cb = registeredTools.get("get_payment_intent")!;
     await cb({ payment_intent_id: "pi_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/payment_intents/pi_123",
-      undefined,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/payment_intents/pi_123", undefined);
   });
 
   it("should_confirm_payment_intent", async () => {
     const cb = registeredTools.get("confirm_payment_intent")!;
     await cb({ payment_intent_id: "pi_123", payment_method: "pm_456" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/payment_intents/pi_123/confirm",
-      { payment_method: "pm_456" },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/payment_intents/pi_123/confirm", { payment_method: "pm_456" });
   });
 
   it("should_capture_payment_intent", async () => {
     const cb = registeredTools.get("capture_payment_intent")!;
     await cb({ payment_intent_id: "pi_123", amount_to_capture: 1000 });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/payment_intents/pi_123/capture",
-      { amount_to_capture: 1000 },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/payment_intents/pi_123/capture", { amount_to_capture: 1000 });
   });
 
   it("should_cancel_payment_intent", async () => {
@@ -69,11 +57,9 @@ describe("Payment tools — callbacks", () => {
       payment_intent_id: "pi_123",
       cancellation_reason: "duplicate",
     });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/payment_intents/pi_123/cancel",
-      { cancellation_reason: "duplicate" },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/payment_intents/pi_123/cancel", {
+      cancellation_reason: "duplicate",
+    });
   });
 
   it("should_create_refund", async () => {

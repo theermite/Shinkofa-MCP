@@ -1,12 +1,12 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import { DriveError } from "../src/lib/client.js";
 import {
-  toolResult,
-  toolError,
-  withErrorHandler,
   GOOGLE_WORKSPACE_TYPES,
   isGoogleWorkspaceType,
+  toolError,
+  toolResult,
+  withErrorHandler,
 } from "../src/lib/utils.js";
-import { DriveError } from "../src/lib/client.js";
 
 // ---------------------------------------------------------------------------
 // toolResult
@@ -106,7 +106,9 @@ describe("withErrorHandler", () => {
       }
     }
     await expect(
-      withErrorHandler(async () => { throw new WeirdError(); }),
+      withErrorHandler(async () => {
+        throw new WeirdError();
+      }),
     ).rejects.toBeInstanceOf(WeirdError);
   });
 });

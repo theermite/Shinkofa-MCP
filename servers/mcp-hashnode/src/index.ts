@@ -23,27 +23,23 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { HashnodeClient } from "./lib/client.js";
-import { registerPostTools } from "./tools/posts.js";
-import { registerDraftTools } from "./tools/drafts.js";
 import { registerCommunityTools } from "./tools/community.js";
+import { registerDraftTools } from "./tools/drafts.js";
+import { registerPostTools } from "./tools/posts.js";
 import { registerRawTools } from "./tools/raw.js";
 
 async function main(): Promise<void> {
-  const pat = process.env["HASHNODE_PAT"];
+  const pat = process.env.HASHNODE_PAT;
 
   if (!pat) {
-    console.error(
-      "Error: HASHNODE_PAT environment variable is required",
-    );
+    console.error("Error: HASHNODE_PAT environment variable is required");
     process.exit(1);
   }
 
   const client = new HashnodeClient({
     pat,
-    endpoint: process.env["HASHNODE_ENDPOINT"],
-    timeoutMs: process.env["HASHNODE_TIMEOUT_MS"]
-      ? parseInt(process.env["HASHNODE_TIMEOUT_MS"], 10) || undefined
-      : undefined,
+    endpoint: process.env.HASHNODE_ENDPOINT,
+    timeoutMs: process.env.HASHNODE_TIMEOUT_MS ? parseInt(process.env.HASHNODE_TIMEOUT_MS, 10) || undefined : undefined,
   });
 
   const server = new McpServer({

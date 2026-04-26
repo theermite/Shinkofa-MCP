@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { OllamaClient } from "../src/lib/client.js";
 import { registerEmbeddingTools } from "../src/tools/embeddings.js";
 

@@ -3,8 +3,8 @@
  * Spawns CLI processes and captures output safely.
  */
 import { spawn } from "node:child_process";
-import { access } from "node:fs/promises";
 import { constants } from "node:fs";
+import { access } from "node:fs/promises";
 
 export interface ExecResult {
   stdout: string;
@@ -28,11 +28,9 @@ const DEFAULT_CONFIG: ExecutorConfig = {
 
 export function createConfig(env: NodeJS.ProcessEnv): ExecutorConfig {
   return {
-    ffmpegPath: env["FFMPEG_PATH"] ?? DEFAULT_CONFIG.ffmpegPath,
-    ffprobePath: env["FFPROBE_PATH"] ?? DEFAULT_CONFIG.ffprobePath,
-    timeoutMs: env["FFMPEG_TIMEOUT_MS"]
-      ? parseInt(env["FFMPEG_TIMEOUT_MS"], 10)
-      : DEFAULT_CONFIG.timeoutMs,
+    ffmpegPath: env.FFMPEG_PATH ?? DEFAULT_CONFIG.ffmpegPath,
+    ffprobePath: env.FFPROBE_PATH ?? DEFAULT_CONFIG.ffprobePath,
+    timeoutMs: env.FFMPEG_TIMEOUT_MS ? parseInt(env.FFMPEG_TIMEOUT_MS, 10) : DEFAULT_CONFIG.timeoutMs,
     maxOutputBytes: DEFAULT_CONFIG.maxOutputBytes,
   };
 }
@@ -58,7 +56,7 @@ export async function validateInputFile(filePath: string): Promise<void> {
 export function exec(
   command: string,
   args: string[],
-  options?: Partial<Pick<ExecutorConfig, "timeoutMs" | "maxOutputBytes">>
+  options?: Partial<Pick<ExecutorConfig, "timeoutMs" | "maxOutputBytes">>,
 ): Promise<ExecResult> {
   const timeoutMs = options?.timeoutMs ?? DEFAULT_CONFIG.timeoutMs;
   const maxBytes = options?.maxOutputBytes ?? DEFAULT_CONFIG.maxOutputBytes;

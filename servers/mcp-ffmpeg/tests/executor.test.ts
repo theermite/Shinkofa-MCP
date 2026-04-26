@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { buildFfmpegArgs, createConfig } from "../src/lib/executor.js";
 
 describe("createConfig", () => {
@@ -29,12 +29,7 @@ describe("buildFfmpegArgs", () => {
       videoCodec: "libx264",
       audioCodec: "aac",
     });
-    expect(args).toEqual([
-      "-y", "-i", "input.mp4",
-      "-c:v", "libx264",
-      "-c:a", "aac",
-      "output.mkv",
-    ]);
+    expect(args).toEqual(["-y", "-i", "input.mp4", "-c:v", "libx264", "-c:a", "aac", "output.mkv"]);
   });
 
   it("should include input options before -i", () => {
@@ -47,10 +42,7 @@ describe("buildFfmpegArgs", () => {
 
   it("should handle multiple inputs", () => {
     const args = buildFfmpegArgs({
-      inputs: [
-        { path: "video.mp4" },
-        { path: "logo.png" },
-      ],
+      inputs: [{ path: "video.mp4" }, { path: "logo.png" }],
       outputPath: "output.mp4",
       complexFilter: "overlay=10:10",
     });
@@ -97,7 +89,7 @@ describe("buildFfmpegArgs", () => {
       outputPath: "output.mp4",
       maps: ["[v]", "[a]"],
     });
-    expect(args.filter(a => a === "-map").length).toBe(2);
+    expect(args.filter((a) => a === "-map").length).toBe(2);
   });
 
   it("should add format", () => {

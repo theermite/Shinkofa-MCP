@@ -76,6 +76,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Configure Verdaccio auth
+        run: echo '//npm.shinkofa.com/:_auth=${{ secrets.VERDACCIO_AUTH }}' >> ~/.npmrc
       - name: Install
         working-directory: servers/${{ matrix.server }}
         run: npm ci

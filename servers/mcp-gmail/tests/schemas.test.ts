@@ -1,39 +1,39 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  ListMessagesSchema,
-  GetMessageSchema,
-  SendMessageSchema,
-  DeleteMessageSchema,
-  TrashMessageSchema,
-  UntrashMessageSchema,
-  ModifyMessageSchema,
-  BatchModifyMessagesSchema,
   BatchDeleteMessagesSchema,
-  GetAttachmentSchema,
-  ListDraftsSchema,
-  GetDraftSchema,
+  BatchModifyMessagesSchema,
   CreateDraftSchema,
-  UpdateDraftSchema,
-  DeleteDraftSchema,
-  SendDraftSchema,
-  ListLabelsSchema,
-  GetLabelSchema,
   CreateLabelSchema,
-  UpdateLabelSchema,
+  DeleteDraftSchema,
   DeleteLabelSchema,
-  ListThreadsSchema,
-  GetThreadSchema,
-  ModifyThreadSchema,
-  TrashThreadSchema,
-  UntrashThreadSchema,
+  DeleteMessageSchema,
   DeleteThreadSchema,
-  ListHistorySchema,
+  GetAttachmentSchema,
+  GetDraftSchema,
+  GetLabelSchema,
+  GetMessageSchema,
   GetProfileSchema,
+  GetThreadSchema,
   GetVacationSchema,
+  ListDraftsSchema,
+  ListHistorySchema,
+  ListLabelsSchema,
+  ListMessagesSchema,
+  ListThreadsSchema,
+  ModifyMessageSchema,
+  ModifyThreadSchema,
+  RawApiCallSchema,
+  SendDraftSchema,
+  SendMessageSchema,
+  StopWatchSchema,
+  TrashMessageSchema,
+  TrashThreadSchema,
+  UntrashMessageSchema,
+  UntrashThreadSchema,
+  UpdateDraftSchema,
+  UpdateLabelSchema,
   UpdateVacationSchema,
   WatchSchema,
-  StopWatchSchema,
-  RawApiCallSchema,
 } from "../src/lib/schemas.js";
 
 // ── Messages — happy path ─────────────────────────────────────────────────────
@@ -51,7 +51,7 @@ describe("ListMessagesSchema", () => {
         pageToken: "abc123",
         labelIds: ["INBOX", "UNREAD"],
         includeSpamTrash: false,
-      }).success
+      }).success,
     ).toBe(true);
   });
 
@@ -88,17 +88,13 @@ describe("GetMessageSchema", () => {
   });
 
   it("should accept metadataHeaders as array of strings", () => {
-    expect(
-      GetMessageSchema.safeParse({ id: "msg123", metadataHeaders: ["From", "Subject"] }).success
-    ).toBe(true);
+    expect(GetMessageSchema.safeParse({ id: "msg123", metadataHeaders: ["From", "Subject"] }).success).toBe(true);
   });
 });
 
 describe("SendMessageSchema", () => {
   it("should accept minimal required fields", () => {
-    expect(
-      SendMessageSchema.safeParse({ to: "test@example.com", subject: "Hi", body: "Hello" }).success
-    ).toBe(true);
+    expect(SendMessageSchema.safeParse({ to: "test@example.com", subject: "Hi", body: "Hello" }).success).toBe(true);
   });
 
   it("should require to field", () => {
@@ -126,7 +122,7 @@ describe("SendMessageSchema", () => {
         references: "<ref@b.com>",
         isHtml: true,
         threadId: "thread123",
-      }).success
+      }).success,
     ).toBe(true);
   });
 
@@ -181,7 +177,7 @@ describe("ModifyMessageSchema", () => {
         id: "msg123",
         addLabelIds: ["STARRED"],
         removeLabelIds: ["UNREAD"],
-      }).success
+      }).success,
     ).toBe(true);
   });
 
@@ -234,7 +230,7 @@ describe("GetAttachmentSchema", () => {
       GetAttachmentSchema.safeParse({
         messageId: "msg123",
         attachmentId: "att456",
-      }).success
+      }).success,
     ).toBe(true);
   });
 
@@ -260,9 +256,9 @@ describe("ListDraftsSchema", () => {
   });
 
   it("should accept full valid input", () => {
-    expect(
-      ListDraftsSchema.safeParse({ maxResults: 20, q: "subject:test", includeSpamTrash: true }).success
-    ).toBe(true);
+    expect(ListDraftsSchema.safeParse({ maxResults: 20, q: "subject:test", includeSpamTrash: true }).success).toBe(
+      true,
+    );
   });
 
   it("should reject maxResults above 500", () => {
@@ -307,7 +303,7 @@ describe("UpdateDraftSchema", () => {
         to: "a@b.com",
         subject: "Updated Subject",
         body: "Updated body",
-      }).success
+      }).success,
     ).toBe(true);
   });
 
@@ -329,7 +325,7 @@ describe("UpdateDraftSchema", () => {
         cc: "cc@b.com",
         bcc: "bcc@b.com",
         replyTo: "r@b.com",
-      }).success
+      }).success,
     ).toBe(true);
   });
 
@@ -387,7 +383,7 @@ describe("CreateLabelSchema", () => {
       CreateLabelSchema.safeParse({
         name: "Projects",
         color: { textColor: "#fff", backgroundColor: "#000" },
-      }).success
+      }).success,
     ).toBe(true);
   });
 
@@ -396,9 +392,7 @@ describe("CreateLabelSchema", () => {
   });
 
   it("should reject invalid labelListVisibility enum", () => {
-    expect(
-      CreateLabelSchema.safeParse({ name: "Test", labelListVisibility: "invalid" }).success
-    ).toBe(false);
+    expect(CreateLabelSchema.safeParse({ name: "Test", labelListVisibility: "invalid" }).success).toBe(false);
   });
 
   it("should accept all valid labelListVisibility values", () => {
@@ -408,9 +402,7 @@ describe("CreateLabelSchema", () => {
   });
 
   it("should reject invalid messageListVisibility enum", () => {
-    expect(
-      CreateLabelSchema.safeParse({ name: "Test", messageListVisibility: "visible" }).success
-    ).toBe(false);
+    expect(CreateLabelSchema.safeParse({ name: "Test", messageListVisibility: "visible" }).success).toBe(false);
   });
 
   it("should accept show and hide for messageListVisibility", () => {
@@ -438,7 +430,7 @@ describe("UpdateLabelSchema", () => {
       UpdateLabelSchema.safeParse({
         id: "label123",
         color: { textColor: "#ffffff", backgroundColor: "#000000" },
-      }).success
+      }).success,
     ).toBe(true);
   });
 });
@@ -467,7 +459,7 @@ describe("ListThreadsSchema", () => {
         q: "label:work",
         labelIds: ["IMPORTANT"],
         includeSpamTrash: false,
-      }).success
+      }).success,
     ).toBe(true);
   });
 
@@ -552,7 +544,7 @@ describe("ListHistorySchema", () => {
       ListHistorySchema.safeParse({
         startHistoryId: "12345",
         historyTypes: ["messageAdded", "labelAdded"],
-      }).success
+      }).success,
     ).toBe(true);
   });
 
@@ -561,7 +553,7 @@ describe("ListHistorySchema", () => {
       ListHistorySchema.safeParse({
         startHistoryId: "12345",
         historyTypes: ["messageAdded", "invalid"],
-      }).success
+      }).success,
     ).toBe(false);
   });
 });
@@ -603,7 +595,7 @@ describe("UpdateVacationSchema", () => {
         restrictToDomain: false,
         startTime: "1717200000000",
         endTime: "1717286400000",
-      }).success
+      }).success,
     ).toBe(true);
   });
 });
@@ -623,7 +615,7 @@ describe("WatchSchema", () => {
         topicName: "projects/myproject/topics/gmail",
         labelIds: ["INBOX"],
         labelFilterAction: "include",
-      }).success
+      }).success,
     ).toBe(true);
   });
 
@@ -632,7 +624,7 @@ describe("WatchSchema", () => {
       WatchSchema.safeParse({
         topicName: "projects/myproject/topics/gmail",
         labelFilterAction: "filter",
-      }).success
+      }).success,
     ).toBe(false);
   });
 });
@@ -673,7 +665,7 @@ describe("RawApiCallSchema", () => {
         path: "/users/me/labels",
         body: { name: "Test" },
         query: { param: "value" },
-      }).success
+      }).success,
     ).toBe(true);
   });
 });

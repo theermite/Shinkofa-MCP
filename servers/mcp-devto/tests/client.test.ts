@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DevtoClient, DevtoError } from "../src/lib/client.js";
 
 const mockFetch = vi.fn();
@@ -11,8 +11,7 @@ function mockResponse(data: object | string, status = 200) {
     status,
     statusText: status === 200 ? "OK" : "Error",
     text: () => Promise.resolve(body),
-    json: () =>
-      Promise.resolve(typeof data === "object" ? data : JSON.parse(data)),
+    json: () => Promise.resolve(typeof data === "object" ? data : JSON.parse(data)),
   };
 }
 
@@ -25,9 +24,7 @@ describe("DevtoClient", () => {
   });
 
   it("should_throw_if_apiKey_is_empty", () => {
-    expect(() => new DevtoClient({ apiKey: "" })).toThrow(
-      "DEVTO_API_KEY is required",
-    );
+    expect(() => new DevtoClient({ apiKey: "" })).toThrow("DEVTO_API_KEY is required");
   });
 
   it("should_send_api_key_and_accept_headers", async () => {
@@ -35,24 +32,17 @@ describe("DevtoClient", () => {
     await client.get("/api/articles");
     const call = mockFetch.mock.calls[0]!;
     expect(call[1].headers["api-key"]).toBe("test-key");
-    expect(call[1].headers["Accept"]).toBe(
-      "application/vnd.forem.api-v1+json",
-    );
+    expect(call[1].headers.Accept).toBe("application/vnd.forem.api-v1+json");
   });
 
   it("should_get_with_correct_url", async () => {
     mockFetch.mockResolvedValue(mockResponse([]));
     await client.get("/api/articles");
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://dev.to/api/articles",
-      expect.anything(),
-    );
+    expect(mockFetch).toHaveBeenCalledWith("https://dev.to/api/articles", expect.anything());
   });
 
   it("should_post_with_json_body", async () => {
-    mockFetch.mockResolvedValue(
-      mockResponse({ id: 1, title: "Test" }),
-    );
+    mockFetch.mockResolvedValue(mockResponse({ id: 1, title: "Test" }));
     await client.post("/api/articles", {
       article: { title: "Test", body_markdown: "content" },
     });
@@ -76,18 +66,12 @@ describe("DevtoClient", () => {
   });
 
   it("should_throw_DevtoError_on_api_error", async () => {
-    mockFetch.mockResolvedValue(
-      mockResponse({ error: "not found" }, 404),
-    );
-    await expect(client.get("/api/articles/99999")).rejects.toThrow(
-      DevtoError,
-    );
+    mockFetch.mockResolvedValue(mockResponse({ error: "not found" }, 404));
+    await expect(client.get("/api/articles/99999")).rejects.toThrow(DevtoError);
   });
 
   it("should_parse_error_detail", async () => {
-    mockFetch.mockResolvedValue(
-      mockResponse({ error: "not authorized" }, 401),
-    );
+    mockFetch.mockResolvedValue(mockResponse({ error: "not authorized" }, 401));
     try {
       await client.get("/api/users/me");
     } catch (e) {
@@ -120,10 +104,7 @@ describe("DevtoClient", () => {
     });
     mockFetch.mockResolvedValue(mockResponse([]));
     await c.get("/api/tags");
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://dev.to/api/tags",
-      expect.anything(),
-    );
+    expect(mockFetch).toHaveBeenCalledWith("https://dev.to/api/tags", expect.anything());
   });
 });
 

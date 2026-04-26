@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { YouTubeClient, YouTubeError } from "../src/lib/client.js";
 import { registerRawTool } from "../src/tools/raw.js";
 
@@ -27,7 +27,10 @@ describe("Raw API call tool — callbacks", () => {
   it("should_make_GET_raw_call", async () => {
     const cb = registeredTools.get("raw_api_call")!;
     await cb({ method: "GET", path: "/videoCategories", query: { part: "snippet", regionCode: "US" } });
-    expect(callApiSpy).toHaveBeenCalledWith("GET", "/videoCategories", undefined, { part: "snippet", regionCode: "US" });
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/videoCategories", undefined, {
+      part: "snippet",
+      regionCode: "US",
+    });
   });
 
   it("should_make_POST_raw_call_with_body", async () => {

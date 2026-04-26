@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { HashnodeClient, HashnodeError } from "../src/lib/client.js";
 import { registerPostTools } from "../src/tools/posts.js";
 
@@ -16,10 +16,7 @@ beforeEach(() => {
 
   const origTool = server.tool.bind(server);
   server.tool = ((...args: unknown[]) => {
-    registeredTools.set(
-      args[0] as string,
-      args[args.length - 1] as (...a: unknown[]) => unknown,
-    );
+    registeredTools.set(args[0] as string, args[args.length - 1] as (...a: unknown[]) => unknown);
     return origTool(...(args as Parameters<typeof origTool>));
   }) as typeof server.tool;
 
@@ -28,10 +25,7 @@ beforeEach(() => {
 
 describe("Post tools — registration", () => {
   it("should_register_all_6_post_tools", () => {
-    const expected = [
-      "get_post", "list_posts", "search_posts",
-      "publish_post", "update_post", "remove_post",
-    ];
+    const expected = ["get_post", "list_posts", "search_posts", "publish_post", "update_post", "remove_post"];
     for (const name of expected) {
       expect(registeredTools.has(name)).toBe(true);
     }
@@ -42,19 +36,20 @@ describe("Post tools — calls", () => {
   it("should_get_post_with_host_and_slug", async () => {
     const cb = registeredTools.get("get_post")!;
     await cb({ host: "blog.test.com", slug: "my-post" });
-    expect(querySpy).toHaveBeenCalledWith(
-      expect.stringContaining("publication(host: $host)"),
-      { host: "blog.test.com", slug: "my-post" },
-    );
+    expect(querySpy).toHaveBeenCalledWith(expect.stringContaining("publication(host: $host)"), {
+      host: "blog.test.com",
+      slug: "my-post",
+    });
   });
 
   it("should_list_posts_with_default_first", async () => {
     const cb = registeredTools.get("list_posts")!;
     await cb({ host: "blog.test.com" });
-    expect(querySpy).toHaveBeenCalledWith(
-      expect.stringContaining("posts(first: $first"),
-      { host: "blog.test.com", first: 10, after: undefined },
-    );
+    expect(querySpy).toHaveBeenCalledWith(expect.stringContaining("posts(first: $first"), {
+      host: "blog.test.com",
+      first: 10,
+      after: undefined,
+    });
   });
 
   it("should_publish_post_with_cover_image", async () => {
@@ -65,8 +60,8 @@ describe("Post tools — calls", () => {
       contentMarkdown: "content",
       coverImageURL: "https://img.com/cover.png",
     });
-    const vars = querySpy.mock.calls[0]![1] as { input: Record<string, unknown> };
-    expect(vars.input["coverImageOptions"]).toEqual({
+    const vars = querySpy.mock.calls[0]?.[1] as { input: Record<string, unknown> };
+    expect(vars.input.coverImageOptions).toEqual({
       coverImageURL: "https://img.com/cover.png",
     });
   });
@@ -79,17 +74,14 @@ describe("Post tools — calls", () => {
       contentMarkdown: "c",
       tags: [{ name: "JS", slug: "javascript" }],
     });
-    const vars = querySpy.mock.calls[0]![1] as { input: Record<string, unknown> };
-    expect(vars.input["tags"]).toEqual([{ name: "JS", slug: "javascript" }]);
+    const vars = querySpy.mock.calls[0]?.[1] as { input: Record<string, unknown> };
+    expect(vars.input.tags).toEqual([{ name: "JS", slug: "javascript" }]);
   });
 
   it("should_remove_post_by_id", async () => {
     const cb = registeredTools.get("remove_post")!;
     await cb({ id: "p123" });
-    expect(querySpy).toHaveBeenCalledWith(
-      expect.stringContaining("removePost"),
-      { id: "p123" },
-    );
+    expect(querySpy).toHaveBeenCalledWith(expect.stringContaining("removePost"), { id: "p123" });
   });
 });
 

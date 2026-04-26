@@ -22,14 +22,14 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { TelegramClient } from "./lib/client.js";
-import { registerMessageTools } from "./tools/messages.js";
-import { registerMediaTools } from "./tools/media.js";
-import { registerChatTools } from "./tools/chat.js";
 import { registerBotTools } from "./tools/bot.js";
+import { registerChatTools } from "./tools/chat.js";
+import { registerMediaTools } from "./tools/media.js";
+import { registerMessageTools } from "./tools/messages.js";
 import { registerRawTool } from "./tools/raw.js";
 
 async function main(): Promise<void> {
-  const botToken = process.env["TELEGRAM_BOT_TOKEN"];
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
 
   if (!botToken) {
     console.error("Error: TELEGRAM_BOT_TOKEN environment variable is required");
@@ -38,10 +38,8 @@ async function main(): Promise<void> {
 
   const client = new TelegramClient({
     botToken,
-    apiBaseUrl: process.env["TELEGRAM_API_BASE_URL"],
-    timeoutMs: process.env["TELEGRAM_TIMEOUT_MS"]
-      ? parseInt(process.env["TELEGRAM_TIMEOUT_MS"], 10) || undefined
-      : undefined,
+    apiBaseUrl: process.env.TELEGRAM_API_BASE_URL,
+    timeoutMs: process.env.TELEGRAM_TIMEOUT_MS ? parseInt(process.env.TELEGRAM_TIMEOUT_MS, 10) || undefined : undefined,
   });
 
   const server = new McpServer({

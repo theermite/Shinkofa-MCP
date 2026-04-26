@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { YouTubeClient, YouTubeError } from "../src/lib/client.js";
 import { registerChannelTools } from "../src/tools/channels.js";
 
@@ -33,13 +33,23 @@ describe("Channel tools — callbacks", () => {
   it("should_update_channel_with_default_part", async () => {
     const cb = registeredTools.get("update_channel")!;
     await cb({ id: "ch1", snippet: { title: "New" } });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/channels", { id: "ch1", snippet: { title: "New" } }, { part: "snippet,brandingSettings" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/channels",
+      { id: "ch1", snippet: { title: "New" } },
+      { part: "snippet,brandingSettings" },
+    );
   });
 
   it("should_update_channel_with_custom_part", async () => {
     const cb = registeredTools.get("update_channel")!;
     await cb({ id: "ch1", part: "snippet", snippet: { title: "T" } });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/channels", { id: "ch1", snippet: { title: "T" } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/channels",
+      { id: "ch1", snippet: { title: "T" } },
+      { part: "snippet" },
+    );
   });
 });
 
@@ -53,13 +63,23 @@ describe("Playlist tools — callbacks", () => {
   it("should_create_playlist_with_default_part", async () => {
     const cb = registeredTools.get("create_playlist")!;
     await cb({ snippet: { title: "My Playlist" } });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/playlists", { snippet: { title: "My Playlist" } }, { part: "snippet,status" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/playlists",
+      { snippet: { title: "My Playlist" } },
+      { part: "snippet,status" },
+    );
   });
 
   it("should_update_playlist", async () => {
     const cb = registeredTools.get("update_playlist")!;
     await cb({ id: "pl1", snippet: { title: "Updated" } });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/playlists", { id: "pl1", snippet: { title: "Updated" } }, { part: "snippet,status" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/playlists",
+      { id: "pl1", snippet: { title: "Updated" } },
+      { part: "snippet,status" },
+    );
   });
 
   it("should_delete_playlist", async () => {
@@ -79,13 +99,23 @@ describe("PlaylistItem tools — callbacks", () => {
   it("should_add_to_playlist", async () => {
     const cb = registeredTools.get("add_to_playlist")!;
     await cb({ snippet: { playlistId: "pl1", resourceId: { kind: "youtube#video", videoId: "v1" } } });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/playlistItems", { snippet: { playlistId: "pl1", resourceId: { kind: "youtube#video", videoId: "v1" } } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/playlistItems",
+      { snippet: { playlistId: "pl1", resourceId: { kind: "youtube#video", videoId: "v1" } } },
+      { part: "snippet" },
+    );
   });
 
   it("should_update_playlist_item", async () => {
     const cb = registeredTools.get("update_playlist_item")!;
     await cb({ id: "pi1", snippet: { playlistId: "pl1", resourceId: { kind: "youtube#video" }, position: 0 } });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/playlistItems", { id: "pi1", snippet: { playlistId: "pl1", resourceId: { kind: "youtube#video" }, position: 0 } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/playlistItems",
+      { id: "pi1", snippet: { playlistId: "pl1", resourceId: { kind: "youtube#video" }, position: 0 } },
+      { part: "snippet" },
+    );
   });
 
   it("should_remove_from_playlist", async () => {

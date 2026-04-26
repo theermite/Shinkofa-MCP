@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { DockerError } from "../src/lib/client.js";
-import { withErrorHandler, toolResult, toolError } from "../src/lib/utils.js";
+import { toolError, toolResult, withErrorHandler } from "../src/lib/utils.js";
 
 describe("toolResult", () => {
   it("should format data as JSON text content", () => {
@@ -66,7 +66,9 @@ describe("withErrorHandler", () => {
 
   it("should rethrow unknown errors", async () => {
     await expect(
-      withErrorHandler(async () => { throw new RangeError("boom"); })
+      withErrorHandler(async () => {
+        throw new RangeError("boom");
+      }),
     ).rejects.toThrow("boom");
   });
 });

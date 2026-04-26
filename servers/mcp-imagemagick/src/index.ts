@@ -16,14 +16,14 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { ImageMagickRunner } from "./lib/runner.js";
+import { registerAdvancedTools } from "./tools/advanced.js";
 import { registerBasicTools } from "./tools/basic.js";
 import { registerEffectTools } from "./tools/effects.js";
-import { registerAdvancedTools } from "./tools/advanced.js";
 
 async function main(): Promise<void> {
   const runner = new ImageMagickRunner(
-    process.env["MAGICK_PATH"],
-    process.env["MAGICK_TIMEOUT_MS"] ? parseInt(process.env["MAGICK_TIMEOUT_MS"], 10) : undefined,
+    process.env.MAGICK_PATH,
+    process.env.MAGICK_TIMEOUT_MS ? parseInt(process.env.MAGICK_TIMEOUT_MS, 10) : undefined,
   );
 
   const server = new McpServer({ name: "@shinkofa/mcp-imagemagick", version: "1.0.0" });
@@ -36,4 +36,7 @@ async function main(): Promise<void> {
   await server.connect(transport);
 }
 
-main().catch((error) => { console.error("Fatal error:", error); process.exit(1); });
+main().catch((error) => {
+  console.error("Fatal error:", error);
+  process.exit(1);
+});

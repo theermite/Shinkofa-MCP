@@ -26,10 +26,10 @@ export interface StreamerbotConfig {
 
 export function createConfig(env: Record<string, string | undefined>): StreamerbotConfig {
   return {
-    host: env["STREAMERBOT_HOST"] ?? "127.0.0.1",
-    port: env["STREAMERBOT_PORT"] ?? "8080",
-    connectTimeoutMs: Number(env["STREAMERBOT_CONNECT_TIMEOUT_MS"]) || 5000,
-    requestTimeoutMs: Number(env["STREAMERBOT_REQUEST_TIMEOUT_MS"]) || 10000,
+    host: env.STREAMERBOT_HOST ?? "127.0.0.1",
+    port: env.STREAMERBOT_PORT ?? "8080",
+    connectTimeoutMs: Number(env.STREAMERBOT_CONNECT_TIMEOUT_MS) || 5000,
+    requestTimeoutMs: Number(env.STREAMERBOT_REQUEST_TIMEOUT_MS) || 10000,
   };
 }
 
@@ -95,10 +95,7 @@ export class StreamerbotClient {
     });
   }
 
-  async sendRequest(
-    request: string,
-    args: Record<string, unknown> = {},
-  ): Promise<Record<string, unknown>> {
+  async sendRequest(request: string, args: Record<string, unknown> = {}): Promise<Record<string, unknown>> {
     await this.connect();
 
     const id = `mcp-${++this.requestId}`;
@@ -111,7 +108,7 @@ export class StreamerbotClient {
       }, this.config.requestTimeoutMs);
 
       this.pending.set(id, { resolve, reject, timer });
-      this.ws!.send(JSON.stringify(payload));
+      this.ws?.send(JSON.stringify(payload));
     });
   }
 
@@ -125,7 +122,7 @@ export class StreamerbotClient {
   private handleMessage(data: WebSocket.RawData): void {
     try {
       const msg = JSON.parse(data.toString()) as Record<string, unknown>;
-      const id = msg["id"] as string | undefined;
+      const id = msg.id as string | undefined;
       if (id && this.pending.has(id)) {
         const req = this.pending.get(id)!;
         clearTimeout(req.timer);

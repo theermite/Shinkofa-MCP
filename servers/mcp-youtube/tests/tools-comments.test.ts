@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { YouTubeClient, YouTubeError } from "../src/lib/client.js";
 import { registerCommentTools } from "../src/tools/comments.js";
 
@@ -33,13 +33,23 @@ describe("Comment tools — callbacks", () => {
   it("should_reply_to_comment_with_default_part", async () => {
     const cb = registeredTools.get("reply_to_comment")!;
     await cb({ parentId: "c1", textOriginal: "Nice!" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/comments", { snippet: { parentId: "c1", textOriginal: "Nice!" } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/comments",
+      { snippet: { parentId: "c1", textOriginal: "Nice!" } },
+      { part: "snippet" },
+    );
   });
 
   it("should_update_comment_with_default_part", async () => {
     const cb = registeredTools.get("update_comment")!;
     await cb({ id: "c1", textOriginal: "Updated text" });
-    expect(callApiSpy).toHaveBeenCalledWith("PUT", "/comments", { id: "c1", snippet: { textOriginal: "Updated text" } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/comments",
+      { id: "c1", snippet: { textOriginal: "Updated text" } },
+      { part: "snippet" },
+    );
   });
 
   it("should_delete_comment", async () => {
@@ -51,7 +61,10 @@ describe("Comment tools — callbacks", () => {
   it("should_set_comment_moderation", async () => {
     const cb = registeredTools.get("set_comment_moderation")!;
     await cb({ id: "c1,c2", moderationStatus: "published" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/comments/setModerationStatus", undefined, { id: "c1,c2", moderationStatus: "published" });
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/comments/setModerationStatus", undefined, {
+      id: "c1,c2",
+      moderationStatus: "published",
+    });
   });
 
   it("should_list_comment_threads", async () => {
@@ -63,13 +76,23 @@ describe("Comment tools — callbacks", () => {
   it("should_post_comment_thread_with_videoId", async () => {
     const cb = registeredTools.get("post_comment_thread")!;
     await cb({ videoId: "v1", textOriginal: "Great video!" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/commentThreads", { snippet: { textOriginal: "Great video!", videoId: "v1" } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/commentThreads",
+      { snippet: { textOriginal: "Great video!", videoId: "v1" } },
+      { part: "snippet" },
+    );
   });
 
   it("should_post_comment_thread_with_channelId", async () => {
     const cb = registeredTools.get("post_comment_thread")!;
     await cb({ channelId: "ch1", textOriginal: "Nice channel!" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/commentThreads", { snippet: { textOriginal: "Nice channel!", channelId: "ch1" } }, { part: "snippet" });
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/commentThreads",
+      { snippet: { textOriginal: "Nice channel!", channelId: "ch1" } },
+      { part: "snippet" },
+    );
   });
 });
 

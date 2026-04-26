@@ -1,9 +1,9 @@
 /**
  * Global variable tools — get all globals, get single global.
  */
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { StreamerbotClient } from "../lib/client.js";
-import { GetGlobalsSchema, GetGlobalSchema } from "../lib/schemas.js";
+import { GetGlobalSchema, GetGlobalsSchema } from "../lib/schemas.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
 
 export function registerGlobalTools(server: McpServer, client: StreamerbotClient): void {

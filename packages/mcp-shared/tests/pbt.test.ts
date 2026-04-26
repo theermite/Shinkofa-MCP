@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest";
 import fc from "fast-check";
-import { createErrorHandler, toolError, toolResult } from "../src/index.js";
+import { describe, expect, it } from "vitest";
 import type { ToolResponse } from "../src/index.js";
+import { createErrorHandler, toolError, toolResult } from "../src/index.js";
 
 function isValidToolResponse(r: ToolResponse): boolean {
   return (
@@ -35,7 +35,10 @@ describe("toolResult — PBT", () => {
   it("should_roundtrip_json_objects", () => {
     fc.assert(
       fc.property(
-        fc.dictionary(fc.string({ minLength: 1 }), fc.oneof(fc.string(), fc.integer(), fc.boolean(), fc.constant(null))),
+        fc.dictionary(
+          fc.string({ minLength: 1 }),
+          fc.oneof(fc.string(), fc.integer(), fc.boolean(), fc.constant(null)),
+        ),
         (obj) => {
           const result = toolResult(obj);
           const parsed = JSON.parse(result.content[0].text);
@@ -85,7 +88,11 @@ describe("createErrorHandler — PBT", () => {
       fc.asyncProperty(
         fc.oneof(fc.string(), fc.integer(), fc.boolean(), fc.constant(null), fc.constant(undefined)),
         async (value) => {
-          await expect(handler(async () => { throw value; })).rejects.toBe(value);
+          await expect(
+            handler(async () => {
+              throw value;
+            }),
+          ).rejects.toBe(value);
         },
       ),
     );
@@ -95,7 +102,9 @@ describe("createErrorHandler — PBT", () => {
     const handler = createErrorHandler();
     await fc.assert(
       fc.asyncProperty(fc.string({ minLength: 1 }), async (msg) => {
-        const result = await handler(async () => { throw new TypeError(msg); });
+        const result = await handler(async () => {
+          throw new TypeError(msg);
+        });
         expect((result as ToolResponse).content[0].text).toBe(`Network error: ${msg}`);
         expect((result as ToolResponse).isError).toBe(true);
       }),
@@ -108,7 +117,9 @@ describe("createErrorHandler — PBT", () => {
         const handler = createErrorHandler(() => customMsg);
         const abortErr = new Error("x");
         abortErr.name = "AbortError";
-        const result = await handler(async () => { throw abortErr; });
+        const result = await handler(async () => {
+          throw abortErr;
+        });
         expect((result as ToolResponse).content[0].text).toBe(customMsg);
       }),
     );
@@ -120,7 +131,9 @@ describe("createErrorHandler — PBT", () => {
       fc.asyncProperty(fc.string({ minLength: 1 }), async (msg) => {
         const err = new Error(msg);
         err.name = "AbortError";
-        const result = await handler(async () => { throw err; });
+        const result = await handler(async () => {
+          throw err;
+        });
         expect((result as ToolResponse).content[0].text).toBe("Request timed out");
       }),
     );

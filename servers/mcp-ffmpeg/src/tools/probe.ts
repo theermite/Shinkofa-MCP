@@ -1,10 +1,10 @@
 /**
  * FFprobe tools — media analysis and metadata extraction.
  */
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { type ExecutorConfig, exec, validateInputFile } from "../lib/executor.js";
 import { ProbeSchema } from "../lib/schemas.js";
-import { exec, type ExecutorConfig, validateInputFile } from "../lib/executor.js";
-import { toolResult, toolError, withErrorHandler } from "../lib/utils.js";
+import { toolError, toolResult, withErrorHandler } from "../lib/utils.js";
 
 export function registerProbeTools(server: McpServer, config: ExecutorConfig): void {
   server.tool(
@@ -30,6 +30,6 @@ export function registerProbeTools(server: McpServer, config: ExecutorConfig): v
           return toolResult(result.stdout);
         }
       });
-    }
+    },
   );
 }

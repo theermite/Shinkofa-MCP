@@ -1,16 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { describe, expect, it } from "vitest";
 import { StripeClient } from "../src/lib/client.js";
-import { registerCustomerTools } from "../src/tools/customers.js";
-import { registerPaymentTools } from "../src/tools/payments.js";
-import { registerSubscriptionTools } from "../src/tools/subscriptions.js";
-import { registerInvoiceTools } from "../src/tools/invoices.js";
-import { registerCatalogTools } from "../src/tools/catalog.js";
-import { registerPromotionTools } from "../src/tools/promotions.js";
-import { registerCheckoutTools } from "../src/tools/checkout.js";
 import { registerBillingTools } from "../src/tools/billing.js";
+import { registerCatalogTools } from "../src/tools/catalog.js";
+import { registerCheckoutTools } from "../src/tools/checkout.js";
+import { registerCustomerTools } from "../src/tools/customers.js";
 import { registerFinanceTools } from "../src/tools/finance.js";
+import { registerInvoiceTools } from "../src/tools/invoices.js";
+import { registerPaymentTools } from "../src/tools/payments.js";
+import { registerPromotionTools } from "../src/tools/promotions.js";
 import { registerRawTool } from "../src/tools/raw.js";
+import { registerSubscriptionTools } from "../src/tools/subscriptions.js";
 
 function setup() {
   return {
@@ -40,62 +40,42 @@ describe("Tool registration — no conflicts", () => {
 describe("Tool registration — individual modules", () => {
   it("customers", () => {
     const s = setup();
-    expect(() =>
-      registerCustomerTools(s.server, s.client),
-    ).not.toThrow();
+    expect(() => registerCustomerTools(s.server, s.client)).not.toThrow();
   });
   it("payments", () => {
     const s = setup();
-    expect(() =>
-      registerPaymentTools(s.server, s.client),
-    ).not.toThrow();
+    expect(() => registerPaymentTools(s.server, s.client)).not.toThrow();
   });
   it("subscriptions", () => {
     const s = setup();
-    expect(() =>
-      registerSubscriptionTools(s.server, s.client),
-    ).not.toThrow();
+    expect(() => registerSubscriptionTools(s.server, s.client)).not.toThrow();
   });
   it("invoices", () => {
     const s = setup();
-    expect(() =>
-      registerInvoiceTools(s.server, s.client),
-    ).not.toThrow();
+    expect(() => registerInvoiceTools(s.server, s.client)).not.toThrow();
   });
   it("catalog", () => {
     const s = setup();
-    expect(() =>
-      registerCatalogTools(s.server, s.client),
-    ).not.toThrow();
+    expect(() => registerCatalogTools(s.server, s.client)).not.toThrow();
   });
   it("promotions", () => {
     const s = setup();
-    expect(() =>
-      registerPromotionTools(s.server, s.client),
-    ).not.toThrow();
+    expect(() => registerPromotionTools(s.server, s.client)).not.toThrow();
   });
   it("checkout", () => {
     const s = setup();
-    expect(() =>
-      registerCheckoutTools(s.server, s.client),
-    ).not.toThrow();
+    expect(() => registerCheckoutTools(s.server, s.client)).not.toThrow();
   });
   it("billing", () => {
     const s = setup();
-    expect(() =>
-      registerBillingTools(s.server, s.client),
-    ).not.toThrow();
+    expect(() => registerBillingTools(s.server, s.client)).not.toThrow();
   });
   it("finance", () => {
     const s = setup();
-    expect(() =>
-      registerFinanceTools(s.server, s.client),
-    ).not.toThrow();
+    expect(() => registerFinanceTools(s.server, s.client)).not.toThrow();
   });
   it("raw", () => {
     const s = setup();
-    expect(() =>
-      registerRawTool(s.server, s.client),
-    ).not.toThrow();
+    expect(() => registerRawTool(s.server, s.client)).not.toThrow();
   });
 });

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { fetchSpy } = vi.hoisted(() => ({ fetchSpy: vi.fn() }));
 
@@ -18,17 +18,21 @@ afterEach(() => {
 });
 
 function jsonResponse(data: unknown, status = 200) {
-  return Promise.resolve(new Response(JSON.stringify(data), {
-    status,
-    headers: { "content-type": "application/json" },
-  }));
+  return Promise.resolve(
+    new Response(JSON.stringify(data), {
+      status,
+      headers: { "content-type": "application/json" },
+    }),
+  );
 }
 
 function textResponse(text: string, status = 200) {
-  return Promise.resolve(new Response(text, {
-    status,
-    headers: { "content-type": "text/html" },
-  }));
+  return Promise.resolve(
+    new Response(text, {
+      status,
+      headers: { "content-type": "text/html" },
+    }),
+  );
 }
 
 describe("ObsidianClient — constructor", () => {
@@ -56,7 +60,7 @@ describe("ObsidianClient — callApi", () => {
     const [url, opts] = fetchSpy.mock.calls[0];
     expect(url).toBe("https://127.0.0.1:27124/");
     expect(opts.method).toBe("GET");
-    expect(opts.headers["Authorization"]).toBe("Bearer key123");
+    expect(opts.headers.Authorization).toBe("Bearer key123");
   });
 
   it("should_use_custom_baseUrl", async () => {
@@ -88,7 +92,7 @@ describe("ObsidianClient — callApi", () => {
     fetchSpy.mockReturnValue(jsonResponse({}));
     const client = new ObsidianClient({ apiKey: "k" });
     await client.callApi("GET", "/vault/note.md", undefined, "application/vnd.olrapi.note+json");
-    expect(fetchSpy.mock.calls[0][1].headers["Accept"]).toBe("application/vnd.olrapi.note+json");
+    expect(fetchSpy.mock.calls[0][1].headers.Accept).toBe("application/vnd.olrapi.note+json");
   });
 
   it("should_return_json_data", async () => {
@@ -138,11 +142,14 @@ describe("ObsidianClient — callApi", () => {
   });
 
   it("should_throw_AbortError_on_timeout", async () => {
-    fetchSpy.mockImplementation(() => new Promise((_, reject) => {
-      const err = new Error("aborted");
-      err.name = "AbortError";
-      reject(err);
-    }));
+    fetchSpy.mockImplementation(
+      () =>
+        new Promise((_, reject) => {
+          const err = new Error("aborted");
+          err.name = "AbortError";
+          reject(err);
+        }),
+    );
     const client = new ObsidianClient({ apiKey: "k", timeoutMs: 1 });
     await expect(client.callApi("GET", "/")).rejects.toThrow();
   });

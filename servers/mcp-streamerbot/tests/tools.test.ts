@@ -1,11 +1,11 @@
-import { describe, it, expect } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { describe, expect, it } from "vitest";
 import { createConfig, StreamerbotClient } from "../src/lib/client.js";
-import { registerInfoTools } from "../src/tools/info.js";
 import { registerActionTools } from "../src/tools/actions.js";
-import { registerEventTools } from "../src/tools/events.js";
 import { registerCreditTools } from "../src/tools/credits.js";
+import { registerEventTools } from "../src/tools/events.js";
 import { registerGlobalTools } from "../src/tools/globals.js";
+import { registerInfoTools } from "../src/tools/info.js";
 import { registerTriggerTools } from "../src/tools/triggers.js";
 
 const config = createConfig({});

@@ -1,4 +1,4 @@
-import { createErrorHandler, toolError, toolResult as jsonToolResult } from "@shinkofa/mcp-shared";
+import { createErrorHandler, toolResult as jsonToolResult, toolError } from "@shinkofa/mcp-shared";
 import { StreamerbotError } from "./client.js";
 
 export { toolError };

@@ -14,13 +14,13 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { GoogleCalendarClient } from "./lib/client.js";
-import { registerEventTools } from "./tools/events.js";
-import { registerCalendarTools } from "./tools/calendars.js";
 import { registerAclTools } from "./tools/acl.js";
+import { registerCalendarTools } from "./tools/calendars.js";
+import { registerEventTools } from "./tools/events.js";
 import { registerRawTool } from "./tools/raw.js";
 
 async function main(): Promise<void> {
-  const accessToken = process.env["GOOGLE_ACCESS_TOKEN"];
+  const accessToken = process.env.GOOGLE_ACCESS_TOKEN;
   if (!accessToken) {
     console.error("Error: GOOGLE_ACCESS_TOKEN environment variable is required");
     process.exit(1);
@@ -28,12 +28,12 @@ async function main(): Promise<void> {
 
   const client = new GoogleCalendarClient({
     accessToken,
-    refreshToken: process.env["GOOGLE_REFRESH_TOKEN"],
-    clientId: process.env["GOOGLE_CLIENT_ID"],
-    clientSecret: process.env["GOOGLE_CLIENT_SECRET"],
-    apiBaseUrl: process.env["GOOGLE_CALENDAR_API_BASE_URL"],
-    timeoutMs: process.env["GOOGLE_CALENDAR_TIMEOUT_MS"]
-      ? parseInt(process.env["GOOGLE_CALENDAR_TIMEOUT_MS"], 10)
+    refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    apiBaseUrl: process.env.GOOGLE_CALENDAR_API_BASE_URL,
+    timeoutMs: process.env.GOOGLE_CALENDAR_TIMEOUT_MS
+      ? parseInt(process.env.GOOGLE_CALENDAR_TIMEOUT_MS, 10)
       : undefined,
   });
 

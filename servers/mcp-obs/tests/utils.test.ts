@@ -1,33 +1,33 @@
-import { describe, it, expect } from "vitest";
-import { toolResult, toolError, withErrorHandler } from "../src/lib/utils.js";
+import { describe, expect, it } from "vitest";
 import { OBSError } from "../src/lib/client.js";
+import { toolError, toolResult, withErrorHandler } from "../src/lib/utils.js";
 
 describe("toolResult", () => {
   it("should_return_success_json_when_data_is_undefined", () => {
     const result = toolResult(undefined);
-    expect(result.content[0]!.text).toBe('{"status":"success"}');
+    expect(result.content[0]?.text).toBe('{"status":"success"}');
   });
 
   it("should_stringify_object_data", () => {
     const result = toolResult({ scenes: ["Main", "BRB"] });
-    expect(JSON.parse(result.content[0]!.text)).toEqual({ scenes: ["Main", "BRB"] });
+    expect(JSON.parse(result.content[0]?.text)).toEqual({ scenes: ["Main", "BRB"] });
   });
 
   it("should_return_string_data_as_is", () => {
     const result = toolResult("hello");
-    expect(result.content[0]!.text).toBe("hello");
+    expect(result.content[0]?.text).toBe("hello");
   });
 
   it("should_return_null_as_json", () => {
     const result = toolResult(null);
-    expect(result.content[0]!.text).toBe("null");
+    expect(result.content[0]?.text).toBe("null");
   });
 });
 
 describe("toolError", () => {
   it("should_return_error_with_isError_flag", () => {
     const result = toolError("OBS disconnected");
-    expect(result.content[0]!.text).toBe("OBS disconnected");
+    expect(result.content[0]?.text).toBe("OBS disconnected");
     expect(result.isError).toBe(true);
   });
 });
@@ -43,7 +43,7 @@ describe("withErrorHandler", () => {
       throw new OBSError("connection refused");
     });
     expect(result).toHaveProperty("isError", true);
-    expect(result.content[0]!.text).toContain("OBS error: connection refused");
+    expect(result.content[0]?.text).toContain("OBS error: connection refused");
   });
 
   it("should_catch_generic_Error_and_return_toolError", async () => {
@@ -51,7 +51,7 @@ describe("withErrorHandler", () => {
       throw new Error("generic failure");
     });
     expect(result).toHaveProperty("isError", true);
-    expect(result.content[0]!.text).toContain("Error: generic failure");
+    expect(result.content[0]?.text).toContain("Error: generic failure");
   });
 
   it("should_rethrow_non_Error_values", async () => {
@@ -69,7 +69,7 @@ describe("withErrorHandler", () => {
     const genResult = await withErrorHandler(async () => {
       throw new TypeError("bad type");
     });
-    expect(obsResult.content[0]!.text).toMatch(/^OBS error:/);
-    expect(genResult.content[0]!.text).toMatch(/^Error:/);
+    expect(obsResult.content[0]?.text).toMatch(/^OBS error:/);
+    expect(genResult.content[0]?.text).toMatch(/^Error:/);
   });
 });

@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { toolResult, toolError, withErrorHandler } from "../src/lib/utils.js";
+import { describe, expect, it } from "vitest";
 import { StripeError } from "../src/lib/client.js";
+import { toolError, toolResult, withErrorHandler } from "../src/lib/utils.js";
 
 describe("toolResult", () => {
   it("should_format_data_as_JSON_text", () => {
@@ -65,37 +65,19 @@ describe("withErrorHandler", () => {
 
   it("should_catch_StripeError_when_thrown", async () => {
     const result = await withErrorHandler(async () => {
-      throw new StripeError(
-        404,
-        "invalid_request_error",
-        "resource_missing",
-        "No such customer",
-      );
+      throw new StripeError(404, "invalid_request_error", "resource_missing", "No such customer");
     });
     expect(result).toHaveProperty("isError", true);
-    expect((result as { content: { text: string }[] }).content[0].text).toContain(
-      "Stripe error 404",
-    );
-    expect((result as { content: { text: string }[] }).content[0].text).toContain(
-      "resource_missing",
-    );
+    expect((result as { content: { text: string }[] }).content[0].text).toContain("Stripe error 404");
+    expect((result as { content: { text: string }[] }).content[0].text).toContain("resource_missing");
   });
 
   it("should_catch_StripeError_without_code", async () => {
     const result = await withErrorHandler(async () => {
-      throw new StripeError(
-        500,
-        "api_error",
-        undefined,
-        "Internal error",
-      );
+      throw new StripeError(500, "api_error", undefined, "Internal error");
     });
-    expect((result as { content: { text: string }[] }).content[0].text).toContain(
-      "api_error",
-    );
-    expect((result as { content: { text: string }[] }).content[0].text).not.toContain(
-      "undefined",
-    );
+    expect((result as { content: { text: string }[] }).content[0].text).toContain("api_error");
+    expect((result as { content: { text: string }[] }).content[0].text).not.toContain("undefined");
   });
 
   it("should_catch_AbortError_when_timeout", async () => {
@@ -105,9 +87,7 @@ describe("withErrorHandler", () => {
       throw err;
     });
     expect(result).toHaveProperty("isError", true);
-    expect((result as { content: { text: string }[] }).content[0].text).toBe(
-      "Request timed out",
-    );
+    expect((result as { content: { text: string }[] }).content[0].text).toBe("Request timed out");
   });
 
   it("should_catch_SyntaxError_when_non_JSON", async () => {
@@ -115,9 +95,7 @@ describe("withErrorHandler", () => {
       throw new SyntaxError("Unexpected token");
     });
     expect(result).toHaveProperty("isError", true);
-    expect((result as { content: { text: string }[] }).content[0].text).toContain(
-      "non-JSON",
-    );
+    expect((result as { content: { text: string }[] }).content[0].text).toContain("non-JSON");
   });
 
   it("should_catch_TypeError_when_network_error", async () => {
@@ -125,9 +103,7 @@ describe("withErrorHandler", () => {
       throw new TypeError("fetch failed");
     });
     expect(result).toHaveProperty("isError", true);
-    expect((result as { content: { text: string }[] }).content[0].text).toContain(
-      "Network error",
-    );
+    expect((result as { content: { text: string }[] }).content[0].text).toContain("Network error");
   });
 
   it("should_rethrow_unknown_errors", async () => {

@@ -24,9 +24,7 @@ export interface TelegramApiSuccess<T = unknown> {
   result: T;
 }
 
-export type TelegramApiResponse<T = unknown> =
-  | TelegramApiSuccess<T>
-  | TelegramApiError;
+export type TelegramApiResponse<T = unknown> = TelegramApiSuccess<T> | TelegramApiError;
 
 export class TelegramClient {
   private readonly baseUrl: string;
@@ -45,16 +43,11 @@ export class TelegramClient {
    * Call any Telegram Bot API method.
    * Handles JSON body for most methods, multipart for file uploads.
    */
-  async callApi<T = unknown>(
-    method: string,
-    params?: Record<string, unknown>
-  ): Promise<T> {
+  async callApi<T = unknown>(method: string, params?: Record<string, unknown>): Promise<T> {
     const url = `${this.baseUrl}/${method}`;
 
     const hasFileUpload = params
-      ? Object.values(params).some(
-          (v) => v instanceof Blob || v instanceof Buffer || v instanceof Uint8Array
-        )
+      ? Object.values(params).some((v) => v instanceof Blob || v instanceof Buffer || v instanceof Uint8Array)
       : false;
 
     let body: BodyInit | undefined;
@@ -74,9 +67,7 @@ export class TelegramClient {
       }
       body = formData;
     } else if (params) {
-      const cleaned = Object.fromEntries(
-        Object.entries(params).filter(([, v]) => v !== undefined && v !== null)
-      );
+      const cleaned = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined && v !== null));
       if (Object.keys(cleaned).length > 0) {
         body = JSON.stringify(cleaned);
         headers = { "Content-Type": "application/json" };
@@ -117,7 +108,7 @@ export class TelegramError extends Error {
   constructor(
     public readonly code: number,
     public readonly description: string,
-    public readonly parameters?: TelegramApiError["parameters"]
+    public readonly parameters?: TelegramApiError["parameters"],
   ) {
     super(`Telegram API error ${code}: ${description}`);
     this.name = "TelegramError";

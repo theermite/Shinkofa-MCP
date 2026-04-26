@@ -1,22 +1,38 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  SendMessageSchema, GetMessagesSchema, EditMessageSchema,
-  DeleteMessageSchema, BulkDeleteMessagesSchema,
-  GetChannelSchema, ModifyChannelSchema, CreateInviteSchema,
-  CreateThreadSchema, CreateThreadFromMessageSchema,
-  GetGuildSchema, ModifyGuildSchema, CreateGuildChannelSchema,
-  ModifyWelcomeScreenSchema, ModifyOnboardingSchema,
-  GetMemberSchema, ListMembersSchema, SearchMembersSchema,
-  ModifyMemberSchema, BanMemberSchema, BulkBanSchema,
-  CreateRoleSchema, ModifyRoleSchema, AssignRoleSchema,
-  CreateWebhookSchema, ExecuteWebhookSchema,
-  CreateCommandSchema, ModifyCommandSchema,
-  CreateInteractionResponseSchema, CreateFollowupSchema,
-  CreateEmojiSchema, ModifyEmojiSchema,
-  CreateEventSchema, ModifyEventSchema,
-  CreateAutoModRuleSchema, ModifyAutoModRuleSchema,
-  GetAuditLogSchema, GetInviteSchema,
+  AssignRoleSchema,
+  BanMemberSchema,
+  BulkBanSchema,
+  BulkDeleteMessagesSchema,
+  CreateAutoModRuleSchema,
+  CreateCommandSchema,
+  CreateEmojiSchema,
+  CreateEventSchema,
+  CreateFollowupSchema,
+  CreateGuildChannelSchema,
+  CreateInteractionResponseSchema,
+  CreateInviteSchema,
+  CreateRoleSchema,
+  CreateThreadFromMessageSchema,
+  CreateThreadSchema,
+  CreateWebhookSchema,
+  EditMessageSchema,
+  ExecuteWebhookSchema,
+  GetAuditLogSchema,
+  GetGuildSchema,
+  GetInviteSchema,
+  GetMessagesSchema,
+  ListMembersSchema,
+  ModifyChannelSchema,
+  ModifyEventSchema,
+  ModifyGuildSchema,
+  ModifyMemberSchema,
+  ModifyOnboardingSchema,
+  ModifyRoleSchema,
+  ModifyWelcomeScreenSchema,
   RawApiCallSchema,
+  SearchMembersSchema,
+  SendMessageSchema,
 } from "../src/lib/schemas.js";
 
 describe("Message schemas", () => {
@@ -80,7 +96,11 @@ describe("Channel schemas", () => {
   });
 
   it("should validate create_thread_from_message", () => {
-    const result = CreateThreadFromMessageSchema.safeParse({ channel_id: "123", message_id: "456", name: "Discussion" });
+    const result = CreateThreadFromMessageSchema.safeParse({
+      channel_id: "123",
+      message_id: "456",
+      name: "Discussion",
+    });
     expect(result.success).toBe(true);
   });
 });
@@ -141,7 +161,8 @@ describe("Member schemas", () => {
 
   it("should validate modify_member with timeout", () => {
     const result = ModifyMemberSchema.safeParse({
-      guild_id: "123", user_id: "456",
+      guild_id: "123",
+      user_id: "456",
       communication_disabled_until: "2026-03-15T00:00:00Z",
     });
     expect(result.success).toBe(true);
@@ -188,8 +209,10 @@ describe("Webhook schemas", () => {
 
   it("should validate execute_webhook", () => {
     const result = ExecuteWebhookSchema.safeParse({
-      webhook_id: "123", webhook_token: "abc",
-      content: "Hello from webhook!", wait: true,
+      webhook_id: "123",
+      webhook_token: "abc",
+      content: "Hello from webhook!",
+      wait: true,
     });
     expect(result.success).toBe(true);
   });
@@ -198,21 +221,29 @@ describe("Webhook schemas", () => {
 describe("Command schemas", () => {
   it("should validate create global command", () => {
     const result = CreateCommandSchema.safeParse({
-      application_id: "123", name: "ping", description: "Pong!", type: 1,
+      application_id: "123",
+      name: "ping",
+      description: "Pong!",
+      type: 1,
     });
     expect(result.success).toBe(true);
   });
 
   it("should validate create guild command", () => {
     const result = CreateCommandSchema.safeParse({
-      application_id: "123", guild_id: "456", name: "test", description: "Test command",
+      application_id: "123",
+      guild_id: "456",
+      name: "test",
+      description: "Test command",
     });
     expect(result.success).toBe(true);
   });
 
   it("should reject command name > 32 chars", () => {
     const result = CreateCommandSchema.safeParse({
-      application_id: "123", name: "a".repeat(33), description: "Too long",
+      application_id: "123",
+      name: "a".repeat(33),
+      description: "Too long",
     });
     expect(result.success).toBe(false);
   });
@@ -221,7 +252,9 @@ describe("Command schemas", () => {
 describe("Interaction schemas", () => {
   it("should validate interaction response", () => {
     const result = CreateInteractionResponseSchema.safeParse({
-      interaction_id: "123", interaction_token: "abc", type: 4,
+      interaction_id: "123",
+      interaction_token: "abc",
+      type: 4,
       data: { content: "Pong!" },
     });
     expect(result.success).toBe(true);
@@ -229,7 +262,9 @@ describe("Interaction schemas", () => {
 
   it("should validate followup", () => {
     const result = CreateFollowupSchema.safeParse({
-      application_id: "123", interaction_token: "abc", content: "Follow up!",
+      application_id: "123",
+      interaction_token: "abc",
+      content: "Follow up!",
     });
     expect(result.success).toBe(true);
   });
@@ -238,7 +273,9 @@ describe("Interaction schemas", () => {
 describe("Emoji schemas", () => {
   it("should validate create_emoji", () => {
     const result = CreateEmojiSchema.safeParse({
-      guild_id: "123", name: "pepe", image: "data:image/png;base64,iVBOR...",
+      guild_id: "123",
+      name: "pepe",
+      image: "data:image/png;base64,iVBOR...",
     });
     expect(result.success).toBe(true);
   });
@@ -252,8 +289,10 @@ describe("Emoji schemas", () => {
 describe("Event schemas", () => {
   it("should validate create external event", () => {
     const result = CreateEventSchema.safeParse({
-      guild_id: "123", name: "Training Session",
-      privacy_level: 2, entity_type: 3,
+      guild_id: "123",
+      name: "Training Session",
+      privacy_level: 2,
+      entity_type: 3,
       scheduled_start_time: "2026-03-20T18:00:00Z",
       scheduled_end_time: "2026-03-20T20:00:00Z",
       entity_metadata: { location: "Discord Voice" },
@@ -263,7 +302,9 @@ describe("Event schemas", () => {
 
   it("should validate modify event status", () => {
     const result = ModifyEventSchema.safeParse({
-      guild_id: "123", event_id: "456", status: 2,
+      guild_id: "123",
+      event_id: "456",
+      status: 2,
     });
     expect(result.success).toBe(true);
   });
@@ -272,7 +313,10 @@ describe("Event schemas", () => {
 describe("Auto Moderation schemas", () => {
   it("should validate create automod rule", () => {
     const result = CreateAutoModRuleSchema.safeParse({
-      guild_id: "123", name: "Block slurs", event_type: 1, trigger_type: 1,
+      guild_id: "123",
+      name: "Block slurs",
+      event_type: 1,
+      trigger_type: 1,
       trigger_metadata: { keyword_filter: ["badword"] },
       actions: [{ type: 1 }],
     });
@@ -293,14 +337,16 @@ describe("Misc schemas", () => {
 
   it("should validate raw_api_call", () => {
     const result = RawApiCallSchema.safeParse({
-      method: "GET", path: "/guilds/123/stickers",
+      method: "GET",
+      path: "/guilds/123/stickers",
     });
     expect(result.success).toBe(true);
   });
 
   it("should validate raw_api_call with body", () => {
     const result = RawApiCallSchema.safeParse({
-      method: "POST", path: "/guilds/123/stickers",
+      method: "POST",
+      path: "/guilds/123/stickers",
       body: { name: "sticker", tags: "tag" },
       reason: "Adding custom sticker",
     });

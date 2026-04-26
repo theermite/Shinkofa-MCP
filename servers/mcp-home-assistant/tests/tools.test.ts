@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { describe, expect, it } from "vitest";
 import { HAClient } from "../src/lib/client.js";
 import { registerEntityTools } from "../src/tools/entities.js";
 import { registerInfoTools } from "../src/tools/info.js";
@@ -22,9 +22,7 @@ function makeClient() {
 
 describe("registerEntityTools", () => {
   it("should_not_throw_when_registering_entity_tools", () => {
-    expect(() =>
-      registerEntityTools(makeServer(), makeClient()),
-    ).not.toThrow();
+    expect(() => registerEntityTools(makeServer(), makeClient())).not.toThrow();
   });
 
   it("should_register_exactly_7_entity_tools_when_called", () => {

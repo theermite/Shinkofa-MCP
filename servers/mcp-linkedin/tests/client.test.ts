@@ -1,12 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { LinkedInClient, LinkedInError } from "../src/lib/client.js";
 
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
 function mockResponse(data: object | string | null, status = 200) {
-  const text =
-    data === null ? "" : typeof data === "string" ? data : JSON.stringify(data);
+  const text = data === null ? "" : typeof data === "string" ? data : JSON.stringify(data);
   return {
     ok: status >= 200 && status < 300,
     status,
@@ -28,9 +27,7 @@ describe("LinkedInClient", () => {
   });
 
   it("should_throw_if_access_token_is_empty", () => {
-    expect(() => new LinkedInClient({ accessToken: "" })).toThrow(
-      "LINKEDIN_ACCESS_TOKEN is required",
-    );
+    expect(() => new LinkedInClient({ accessToken: "" })).toThrow("LINKEDIN_ACCESS_TOKEN is required");
   });
 
   it("should_send_bearer_authorization_header", async () => {
@@ -118,10 +115,7 @@ describe("LinkedInClient", () => {
   it("should_call_correct_url", async () => {
     mockFetch.mockResolvedValue(mockResponse({ ok: true }));
     await client.get("/rest/posts");
-    expect(mockFetch).toHaveBeenCalledWith(
-      "https://api.linkedin.com/rest/posts",
-      expect.anything(),
-    );
+    expect(mockFetch).toHaveBeenCalledWith("https://api.linkedin.com/rest/posts", expect.anything());
   });
 
   it("should_send_body_as_json_string", async () => {

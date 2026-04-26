@@ -23,17 +23,15 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { OllamaClient } from "./lib/client.js";
-import { registerModelTools } from "./tools/models.js";
-import { registerGenerationTools } from "./tools/generation.js";
 import { registerEmbeddingTools } from "./tools/embeddings.js";
+import { registerGenerationTools } from "./tools/generation.js";
+import { registerModelTools } from "./tools/models.js";
 import { registerRawTools } from "./tools/raw.js";
 
 async function main(): Promise<void> {
   const client = new OllamaClient({
-    baseUrl: process.env["OLLAMA_BASE_URL"],
-    timeoutMs: process.env["OLLAMA_TIMEOUT_MS"]
-      ? parseInt(process.env["OLLAMA_TIMEOUT_MS"], 10) || undefined
-      : undefined,
+    baseUrl: process.env.OLLAMA_BASE_URL,
+    timeoutMs: process.env.OLLAMA_TIMEOUT_MS ? parseInt(process.env.OLLAMA_TIMEOUT_MS, 10) || undefined : undefined,
   });
 
   const server = new McpServer({

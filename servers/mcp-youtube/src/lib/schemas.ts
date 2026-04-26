@@ -7,7 +7,12 @@ import { z } from "zod";
 
 export const YouTubeId = z.string().describe("YouTube resource ID");
 export const PageToken = z.string().optional().describe("Token for the next page of results");
-export const MaxResults = z.number().min(1).max(50).optional().describe("Maximum number of items to return (1-50, default 5)");
+export const MaxResults = z
+  .number()
+  .min(1)
+  .max(50)
+  .optional()
+  .describe("Maximum number of items to return (1-50, default 5)");
 
 const PartParam = (defaults: string) =>
   z.string().optional().describe(`Comma-separated resource parts (default: ${defaults})`);
@@ -45,11 +50,13 @@ export const VideoSnippetSchema = z.object({
 export const VideosInsertSchema = z.object({
   part: PartParam("snippet,status"),
   snippet: VideoSnippetSchema.optional(),
-  status: z.object({
-    privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
-    selfDeclaredMadeForKids: z.boolean().optional(),
-    publishAt: z.string().optional().describe("ISO 8601 datetime — schedules publish"),
-  }).optional(),
+  status: z
+    .object({
+      privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
+      selfDeclaredMadeForKids: z.boolean().optional(),
+      publishAt: z.string().optional().describe("ISO 8601 datetime — schedules publish"),
+    })
+    .optional(),
   recordingDetails: z.record(z.unknown()).optional(),
   stabilize: z.boolean().optional(),
 });
@@ -58,11 +65,13 @@ export const VideosUpdateSchema = z.object({
   id: YouTubeId.describe("Video ID to update"),
   part: PartParam("snippet,status"),
   snippet: VideoSnippetSchema.optional(),
-  status: z.object({
-    privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
-    selfDeclaredMadeForKids: z.boolean().optional(),
-    publishAt: z.string().optional(),
-  }).optional(),
+  status: z
+    .object({
+      privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
+      selfDeclaredMadeForKids: z.boolean().optional(),
+      publishAt: z.string().optional(),
+    })
+    .optional(),
   localizations: z.record(z.object({ title: z.string(), description: z.string() })).optional(),
 });
 
@@ -98,12 +107,14 @@ export const ChannelsListSchema = z.object({
 export const ChannelsUpdateSchema = z.object({
   id: YouTubeId.describe("Channel ID to update"),
   part: PartParam("snippet,brandingSettings"),
-  snippet: z.object({
-    title: z.string().optional(),
-    description: z.string().optional(),
-    defaultLanguage: z.string().optional(),
-    country: z.string().optional(),
-  }).optional(),
+  snippet: z
+    .object({
+      title: z.string().optional(),
+      description: z.string().optional(),
+      defaultLanguage: z.string().optional(),
+      country: z.string().optional(),
+    })
+    .optional(),
   brandingSettings: z.record(z.unknown()).optional(),
   localizations: z.record(z.unknown()).optional(),
   onBehalfOfContentOwner: z.string().optional(),
@@ -129,9 +140,11 @@ export const PlaylistsInsertSchema = z.object({
     tags: z.array(z.string()).optional(),
     defaultLanguage: z.string().optional(),
   }),
-  status: z.object({
-    privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
-  }).optional(),
+  status: z
+    .object({
+      privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
+    })
+    .optional(),
   onBehalfOfContentOwner: z.string().optional(),
   onBehalfOfContentOwnerChannel: z.string().optional(),
 });
@@ -139,15 +152,19 @@ export const PlaylistsInsertSchema = z.object({
 export const PlaylistsUpdateSchema = z.object({
   id: YouTubeId.describe("Playlist ID to update"),
   part: PartParam("snippet,status"),
-  snippet: z.object({
-    title: z.string().optional(),
-    description: z.string().optional(),
-    tags: z.array(z.string()).optional(),
-    defaultLanguage: z.string().optional(),
-  }).optional(),
-  status: z.object({
-    privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
-  }).optional(),
+  snippet: z
+    .object({
+      title: z.string().optional(),
+      description: z.string().optional(),
+      tags: z.array(z.string()).optional(),
+      defaultLanguage: z.string().optional(),
+    })
+    .optional(),
+  status: z
+    .object({
+      privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
+    })
+    .optional(),
   localizations: z.record(z.unknown()).optional(),
   onBehalfOfContentOwner: z.string().optional(),
 });
@@ -351,10 +368,12 @@ export const LiveBroadcastsInsertSchema = z.object({
     scheduledStartTime: z.string().describe("ISO 8601 datetime"),
     scheduledEndTime: z.string().optional().describe("ISO 8601 datetime"),
   }),
-  status: z.object({
-    privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
-    selfDeclaredMadeForKids: z.boolean().optional(),
-  }).optional(),
+  status: z
+    .object({
+      privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
+      selfDeclaredMadeForKids: z.boolean().optional(),
+    })
+    .optional(),
   contentDetails: z.record(z.unknown()).optional(),
   onBehalfOfContentOwner: z.string().optional(),
   onBehalfOfContentOwnerChannel: z.string().optional(),
@@ -363,16 +382,20 @@ export const LiveBroadcastsInsertSchema = z.object({
 export const LiveBroadcastsUpdateSchema = z.object({
   id: YouTubeId.describe("Broadcast ID to update"),
   part: PartParam("snippet,status,contentDetails"),
-  snippet: z.object({
-    title: z.string().optional(),
-    description: z.string().optional(),
-    scheduledStartTime: z.string().optional(),
-    scheduledEndTime: z.string().optional(),
-  }).optional(),
-  status: z.object({
-    privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
-    selfDeclaredMadeForKids: z.boolean().optional(),
-  }).optional(),
+  snippet: z
+    .object({
+      title: z.string().optional(),
+      description: z.string().optional(),
+      scheduledStartTime: z.string().optional(),
+      scheduledEndTime: z.string().optional(),
+    })
+    .optional(),
+  status: z
+    .object({
+      privacyStatus: z.enum(["public", "private", "unlisted"]).optional(),
+      selfDeclaredMadeForKids: z.boolean().optional(),
+    })
+    .optional(),
   contentDetails: z.record(z.unknown()).optional(),
   onBehalfOfContentOwner: z.string().optional(),
 });
@@ -416,11 +439,13 @@ export const LiveStreamsInsertSchema = z.object({
     title: z.string().describe("Stream title"),
     description: z.string().optional(),
   }),
-  cdn: z.object({
-    frameRate: z.enum(["30fps", "60fps", "variable"]).optional(),
-    ingestionType: z.enum(["dash", "rtmp", "webRTC"]).optional(),
-    resolution: z.enum(["1080p", "1440p", "2160p", "240p", "360p", "480p", "720p", "variable"]).optional(),
-  }).optional(),
+  cdn: z
+    .object({
+      frameRate: z.enum(["30fps", "60fps", "variable"]).optional(),
+      ingestionType: z.enum(["dash", "rtmp", "webRTC"]).optional(),
+      resolution: z.enum(["1080p", "1440p", "2160p", "240p", "360p", "480p", "720p", "variable"]).optional(),
+    })
+    .optional(),
   contentDetails: z.record(z.unknown()).optional(),
   onBehalfOfContentOwner: z.string().optional(),
   onBehalfOfContentOwnerChannel: z.string().optional(),
@@ -429,10 +454,12 @@ export const LiveStreamsInsertSchema = z.object({
 export const LiveStreamsUpdateSchema = z.object({
   id: YouTubeId.describe("Stream ID to update"),
   part: PartParam("snippet,cdn"),
-  snippet: z.object({
-    title: z.string().optional(),
-    description: z.string().optional(),
-  }).optional(),
+  snippet: z
+    .object({
+      title: z.string().optional(),
+      description: z.string().optional(),
+    })
+    .optional(),
   cdn: z.record(z.unknown()).optional(),
   contentDetails: z.record(z.unknown()).optional(),
   onBehalfOfContentOwner: z.string().optional(),
@@ -504,5 +531,8 @@ export const RawApiCallSchema = z.object({
   method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]).describe("HTTP method"),
   path: z.string().describe("API path (e.g. '/videoCategories')"),
   body: z.record(z.unknown()).optional().describe("JSON body for POST/PUT/PATCH"),
-  query: z.record(z.union([z.string(), z.number(), z.boolean()])).optional().describe("Query parameters"),
+  query: z
+    .record(z.union([z.string(), z.number(), z.boolean()]))
+    .optional()
+    .describe("Query parameters"),
 });

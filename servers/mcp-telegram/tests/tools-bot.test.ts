@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TelegramClient, TelegramError } from "../src/lib/client.js";
 import { registerBotTools } from "../src/tools/bot.js";
 
@@ -75,7 +75,14 @@ describe("Bot tools", () => {
 
   it("should_send_invoice", async () => {
     const cb = registeredTools.get("send_invoice")!;
-    const params = { chat_id: 123, title: "Premium", description: "Sub", payload: "p", currency: "EUR", prices: [{ label: "M", amount: 999 }] };
+    const params = {
+      chat_id: 123,
+      title: "Premium",
+      description: "Sub",
+      payload: "p",
+      currency: "EUR",
+      prices: [{ label: "M", amount: 999 }],
+    };
     await cb(params);
     expect(callApiSpy).toHaveBeenCalledWith("sendInvoice", params);
   });

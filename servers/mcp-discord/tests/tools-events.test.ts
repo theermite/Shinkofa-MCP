@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DiscordClient, DiscordError, DiscordRateLimitError } from "../src/lib/client.js";
 import { registerEventTools } from "../src/tools/events.js";
 
@@ -56,7 +56,9 @@ describe("get_scheduled_event", () => {
   it("should_call_GET_scheduled_event_with_id_when_fetching", async () => {
     const handler = registeredTools.get("get_scheduled_event")!;
     await handler({ guild_id: "g1", event_id: "ev1", with_user_count: false });
-    expect(callApiSpy).toHaveBeenCalledWith("GET", "/guilds/g1/scheduled-events/ev1", undefined, { with_user_count: false });
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/guilds/g1/scheduled-events/ev1", undefined, {
+      with_user_count: false,
+    });
   });
 });
 
@@ -64,7 +66,13 @@ describe("modify_scheduled_event", () => {
   it("should_call_PATCH_scheduled_event_with_body_and_reason_when_modifying", async () => {
     const handler = registeredTools.get("modify_scheduled_event")!;
     await handler({ guild_id: "g1", event_id: "ev1", name: "Updated Event", reason: "reschedule" });
-    expect(callApiSpy).toHaveBeenCalledWith("PATCH", "/guilds/g1/scheduled-events/ev1", { name: "Updated Event" }, undefined, "reschedule");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "PATCH",
+      "/guilds/g1/scheduled-events/ev1",
+      { name: "Updated Event" },
+      undefined,
+      "reschedule",
+    );
   });
 });
 
@@ -96,7 +104,13 @@ describe("error handling", () => {
   it("should_return_rate_limit_error_when_rate_limited", async () => {
     callApiSpy.mockRejectedValueOnce(new DiscordRateLimitError(5, false));
     const handler = registeredTools.get("create_scheduled_event")!;
-    const result = await handler({ guild_id: "g1", name: "x", privacy_level: 2, scheduled_start_time: "x", entity_type: 3 });
+    const result = await handler({
+      guild_id: "g1",
+      name: "x",
+      privacy_level: 2,
+      scheduled_start_time: "x",
+      entity_type: 3,
+    });
     expect(result.isError).toBe(true);
     expect(result.content[0].text).toContain("rate limit");
   });

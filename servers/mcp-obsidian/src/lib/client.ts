@@ -39,7 +39,7 @@ export class ObsidianClient {
       Authorization: `Bearer ${this.apiKey}`,
     };
 
-    if (accept) headers["Accept"] = accept;
+    if (accept) headers.Accept = accept;
 
     let fetchBody: string | undefined;
     if (body !== undefined && method !== "GET") {
@@ -57,7 +57,10 @@ export class ObsidianClient {
 
     try {
       const response = await undiciFetch(url, {
-        method, headers, body: fetchBody, signal: controller.signal,
+        method,
+        headers,
+        body: fetchBody,
+        signal: controller.signal,
         dispatcher: this.dispatcher,
       });
 
@@ -82,7 +85,10 @@ export class ObsidianClient {
 }
 
 export class ObsidianError extends Error {
-  constructor(public readonly status: number, public readonly description: string) {
+  constructor(
+    public readonly status: number,
+    public readonly description: string,
+  ) {
     super(`Obsidian API error ${status}: ${description}`);
     this.name = "ObsidianError";
   }

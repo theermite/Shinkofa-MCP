@@ -1,15 +1,15 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  ListArticlesSchema,
-  GetArticleSchema,
   CreateArticleSchema,
-  UpdateArticleSchema,
-  ListMyArticlesSchema,
-  ListCommentsSchema,
+  GetArticleSchema,
   GetCommentSchema,
   GetUserSchema,
-  ToggleReactionSchema,
+  ListArticlesSchema,
+  ListCommentsSchema,
+  ListMyArticlesSchema,
   RawApiCallSchema,
+  ToggleReactionSchema,
+  UpdateArticleSchema,
 } from "../src/lib/schemas.js";
 
 describe("ListArticlesSchema", () => {
@@ -18,9 +18,7 @@ describe("ListArticlesSchema", () => {
   });
 
   it("should_accept_tag_filter", () => {
-    expect(
-      ListArticlesSchema.safeParse({ tag: "javascript", page: 1 }).success,
-    ).toBe(true);
+    expect(ListArticlesSchema.safeParse({ tag: "javascript", page: 1 }).success).toBe(true);
   });
 });
 
@@ -59,15 +57,11 @@ describe("CreateArticleSchema", () => {
 
 describe("UpdateArticleSchema", () => {
   it("should_require_id", () => {
-    expect(
-      UpdateArticleSchema.safeParse({ title: "updated" }).success,
-    ).toBe(false);
+    expect(UpdateArticleSchema.safeParse({ title: "updated" }).success).toBe(false);
   });
 
   it("should_accept_id_with_fields", () => {
-    expect(
-      UpdateArticleSchema.safeParse({ id: 42, title: "updated" }).success,
-    ).toBe(true);
+    expect(UpdateArticleSchema.safeParse({ id: 42, title: "updated" }).success).toBe(true);
   });
 });
 
@@ -79,17 +73,13 @@ describe("GetArticleSchema", () => {
 
 describe("ListMyArticlesSchema", () => {
   it("should_accept_published_status", () => {
-    expect(
-      ListMyArticlesSchema.safeParse({ status: "published" }).success,
-    ).toBe(true);
+    expect(ListMyArticlesSchema.safeParse({ status: "published" }).success).toBe(true);
   });
 });
 
 describe("ListCommentsSchema", () => {
   it("should_accept_article_id", () => {
-    expect(
-      ListCommentsSchema.safeParse({ a_id: 42 }).success,
-    ).toBe(true);
+    expect(ListCommentsSchema.safeParse({ a_id: 42 }).success).toBe(true);
   });
 
   it("should_reject_missing_both_ids", () => {
@@ -131,14 +121,10 @@ describe("ToggleReactionSchema", () => {
 
 describe("RawApiCallSchema", () => {
   it("should_accept_get", () => {
-    expect(
-      RawApiCallSchema.safeParse({ method: "GET", path: "/api/tags" }).success,
-    ).toBe(true);
+    expect(RawApiCallSchema.safeParse({ method: "GET", path: "/api/tags" }).success).toBe(true);
   });
 
   it("should_reject_delete_method", () => {
-    expect(
-      RawApiCallSchema.safeParse({ method: "DELETE", path: "/api/x" }).success,
-    ).toBe(false);
+    expect(RawApiCallSchema.safeParse({ method: "DELETE", path: "/api/x" }).success).toBe(false);
   });
 });

@@ -21,10 +21,15 @@ export const ModifyChannelSchema = z.object({
   title: z.string().max(140).optional().describe("Stream title"),
   broadcaster_language: z.string().optional().describe("ISO 639-1 language code"),
   tags: z.array(z.string()).max(10).optional().describe("Stream tags (max 10, free-form)"),
-  content_classification_labels: z.array(z.object({
-    id: z.string(),
-    is_enabled: z.boolean(),
-  })).optional().describe("Content classification labels"),
+  content_classification_labels: z
+    .array(
+      z.object({
+        id: z.string(),
+        is_enabled: z.boolean(),
+      }),
+    )
+    .optional()
+    .describe("Content classification labels"),
   is_branded_content: z.boolean().optional(),
 });
 
@@ -347,7 +352,10 @@ export const GetPollsSchema = z.object({
 export const CreatePollSchema = z.object({
   broadcaster_id: BroadcasterId,
   title: z.string().min(1).max(60),
-  choices: z.array(z.object({ title: z.string().min(1).max(25) })).min(2).max(5),
+  choices: z
+    .array(z.object({ title: z.string().min(1).max(25) }))
+    .min(2)
+    .max(5),
   duration: z.number().min(15).max(1800).describe("Duration in seconds (15-1800)"),
   channel_points_voting_enabled: z.boolean().optional(),
   channel_points_per_vote: z.number().min(1).max(1000000).optional(),
@@ -371,7 +379,10 @@ export const GetPredictionsSchema = z.object({
 export const CreatePredictionSchema = z.object({
   broadcaster_id: BroadcasterId,
   title: z.string().min(1).max(45),
-  outcomes: z.array(z.object({ title: z.string().min(1).max(25) })).min(2).max(10),
+  outcomes: z
+    .array(z.object({ title: z.string().min(1).max(25) }))
+    .min(2)
+    .max(10),
   prediction_window: z.number().min(30).max(1800).describe("Seconds users can make predictions"),
 });
 
@@ -405,7 +416,10 @@ export const GetClipsSchema = z.object({
 
 export const GetScheduleSchema = z.object({
   broadcaster_id: BroadcasterId,
-  id: z.union([z.string(), z.array(z.string()).max(100)]).optional().describe("Segment IDs"),
+  id: z
+    .union([z.string(), z.array(z.string()).max(100)])
+    .optional()
+    .describe("Segment IDs"),
   start_time: z.string().optional().describe("RFC3339 timestamp"),
   first: z.number().min(1).max(25).optional(),
   after: OptionalCursor,
@@ -588,5 +602,8 @@ export const RawApiCallSchema = z.object({
   method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]).describe("HTTP method"),
   path: z.string().describe("API path (e.g. '/charity/campaigns')"),
   body: z.record(z.unknown()).optional().describe("JSON body"),
-  query: z.record(z.union([z.string(), z.array(z.string())])).optional().describe("Query parameters"),
+  query: z
+    .record(z.union([z.string(), z.array(z.string())]))
+    .optional()
+    .describe("Query parameters"),
 });

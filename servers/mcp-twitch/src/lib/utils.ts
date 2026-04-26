@@ -1,7 +1,7 @@
 import { createErrorHandler, toolError, toolResult } from "@shinkofa/mcp-shared";
 import { TwitchError, TwitchRateLimitError } from "./client.js";
 
-export { toolResult, toolError };
+export { toolError, toolResult };
 
 export const withErrorHandler = createErrorHandler((error) => {
   if (error instanceof TwitchRateLimitError) {

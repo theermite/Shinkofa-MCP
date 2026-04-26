@@ -1,48 +1,35 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StripeClient } from "../lib/client.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { StripeClient } from "../lib/client.js";
 import {
-  ListPaymentMethodsSchema,
-  GetPaymentMethodSchema,
   AttachPaymentMethodSchema,
-  DetachPaymentMethodSchema,
   CreatePortalSessionSchema,
+  DetachPaymentMethodSchema,
+  GetPaymentMethodSchema,
+  ListPaymentMethodsSchema,
 } from "../lib/schemas.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
 
-export function registerBillingTools(
-  server: McpServer,
-  client: StripeClient,
-): void {
+export function registerBillingTools(server: McpServer, client: StripeClient): void {
   server.tool(
     "list_payment_methods",
     "List payment methods for a customer",
     ListPaymentMethodsSchema.shape,
     async (p) =>
       withErrorHandler(async () =>
-        toolResult(
-          await client.callApi(
-            "GET",
-            "/payment_methods",
-            p as Record<string, unknown>,
-          ),
-        ),
+        toolResult(await client.callApi("GET", "/payment_methods", p as Record<string, unknown>)),
       ),
   );
 
-  server.tool(
-    "get_payment_method",
-    "Get a payment method",
-    GetPaymentMethodSchema.shape,
-    async (p) =>
-      withErrorHandler(async () =>
-        toolResult(
-          await client.callApi(
-            "GET",
-            `/payment_methods/${encodeURIComponent(p.payment_method_id)}`,
-            p.expand ? { expand: p.expand } : undefined,
-          ),
+  server.tool("get_payment_method", "Get a payment method", GetPaymentMethodSchema.shape, async (p) =>
+    withErrorHandler(async () =>
+      toolResult(
+        await client.callApi(
+          "GET",
+          `/payment_methods/${encodeURIComponent(p.payment_method_id)}`,
+          p.expand ? { expand: p.expand } : undefined,
         ),
       ),
+    ),
   );
 
   server.tool(
@@ -52,11 +39,9 @@ export function registerBillingTools(
     async (p) =>
       withErrorHandler(async () =>
         toolResult(
-          await client.callApi(
-            "POST",
-            `/payment_methods/${encodeURIComponent(p.payment_method_id)}/attach`,
-            { customer: p.customer },
-          ),
+          await client.callApi("POST", `/payment_methods/${encodeURIComponent(p.payment_method_id)}/attach`, {
+            customer: p.customer,
+          }),
         ),
       ),
   );
@@ -67,12 +52,7 @@ export function registerBillingTools(
     DetachPaymentMethodSchema.shape,
     async (p) =>
       withErrorHandler(async () =>
-        toolResult(
-          await client.callApi(
-            "POST",
-            `/payment_methods/${encodeURIComponent(p.payment_method_id)}/detach`,
-          ),
-        ),
+        toolResult(await client.callApi("POST", `/payment_methods/${encodeURIComponent(p.payment_method_id)}/detach`)),
       ),
   );
 
@@ -82,13 +62,7 @@ export function registerBillingTools(
     CreatePortalSessionSchema.shape,
     async (p) =>
       withErrorHandler(async () =>
-        toolResult(
-          await client.callApi(
-            "POST",
-            "/billing_portal/sessions",
-            p as Record<string, unknown>,
-          ),
-        ),
+        toolResult(await client.callApi("POST", "/billing_portal/sessions", p as Record<string, unknown>)),
       ),
   );
 }

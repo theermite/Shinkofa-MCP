@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DriveClient, DriveError } from "../src/lib/client.js";
 
 // ---------------------------------------------------------------------------
@@ -8,21 +8,15 @@ import { DriveClient, DriveError } from "../src/lib/client.js";
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
-function mockResponse(
-  data: unknown,
-  status = 200,
-  headers: Record<string, string> = {},
-) {
+function mockResponse(data: unknown, status = 200, headers: Record<string, string> = {}) {
   const h = new Headers({ "content-type": "application/json", ...headers });
-  const bodyText =
-    typeof data === "string" ? data : JSON.stringify(data);
+  const bodyText = typeof data === "string" ? data : JSON.stringify(data);
   return {
     ok: status >= 200 && status < 300,
     status,
     json: () => Promise.resolve(typeof data === "string" ? JSON.parse(data) : data),
     text: () => Promise.resolve(bodyText),
-    arrayBuffer: () =>
-      Promise.resolve(Buffer.from(bodyText).buffer),
+    arrayBuffer: () => Promise.resolve(Buffer.from(bodyText).buffer),
     headers: h,
   };
 }
@@ -41,9 +35,7 @@ beforeEach(() => {
 
 describe("DriveClient — constructor", () => {
   it("should_throw_when_accessToken_is_empty", () => {
-    expect(() => new DriveClient({ accessToken: "" })).toThrow(
-      "GOOGLE_ACCESS_TOKEN is required",
-    );
+    expect(() => new DriveClient({ accessToken: "" })).toThrow("GOOGLE_ACCESS_TOKEN is required");
   });
 
   it("should_construct_when_accessToken_is_valid", () => {
@@ -63,16 +55,12 @@ describe("DriveClient — constructor", () => {
 
 describe("DriveClient — callApi", () => {
   it("should_send_authorization_header_on_GET", async () => {
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ id: "abc" }),
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ id: "abc" }));
     const c = makeClient();
     await c.callApi("GET", "/files/abc");
     const [url, opts] = mockFetch.mock.calls[0] as [string, RequestInit];
     expect(url).toContain("/files/abc");
-    expect((opts.headers as Record<string, string>)["Authorization"]).toBe(
-      "Bearer tok-valid",
-    );
+    expect((opts.headers as Record<string, string>).Authorization).toBe("Bearer tok-valid");
   });
 
   it("should_send_json_body_on_POST", async () => {
@@ -81,9 +69,7 @@ describe("DriveClient — callApi", () => {
     await c.callApi("POST", "/files", { name: "test.txt" });
     const [, opts] = mockFetch.mock.calls[0] as [string, RequestInit];
     expect(opts.body).toBe(JSON.stringify({ name: "test.txt" }));
-    expect((opts.headers as Record<string, string>)["Content-Type"]).toBe(
-      "application/json",
-    );
+    expect((opts.headers as Record<string, string>)["Content-Type"]).toBe("application/json");
   });
 
   it("should_return_undefined_on_204_response", async () => {
@@ -94,9 +80,7 @@ describe("DriveClient — callApi", () => {
   });
 
   it("should_throw_DriveError_on_error_response", async () => {
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ error: { code: 403, message: "Forbidden" } }, 403),
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ error: { code: 403, message: "Forbidden" } }, 403));
     const c = makeClient();
     await expect(c.callApi("GET", "/files/abc")).rejects.toBeInstanceOf(DriveError);
   });
@@ -167,13 +151,22 @@ describe("DriveClient — downloadFile", () => {
   });
 
   it("should_retry_on_401_with_refresh_config", async () => {
-    const badResp = { ok: false, status: 401, text: () => Promise.resolve(""), arrayBuffer: () => Promise.resolve(Buffer.alloc(0).buffer), headers: new Headers({ "content-type": "text/plain" }) };
+    const badResp = {
+      ok: false,
+      status: 401,
+      text: () => Promise.resolve(""),
+      arrayBuffer: () => Promise.resolve(Buffer.alloc(0).buffer),
+      headers: new Headers({ "content-type": "text/plain" }),
+    };
     const tokenResp = { ok: true, status: 200, json: () => Promise.resolve({ access_token: "new-token" }) };
-    const goodResp = { ok: true, status: 200, text: () => Promise.resolve("content after refresh"), arrayBuffer: () => Promise.resolve(Buffer.alloc(0).buffer), headers: new Headers({ "content-type": "text/plain" }) };
-    mockFetch
-      .mockResolvedValueOnce(badResp)
-      .mockResolvedValueOnce(tokenResp)
-      .mockResolvedValueOnce(goodResp);
+    const goodResp = {
+      ok: true,
+      status: 200,
+      text: () => Promise.resolve("content after refresh"),
+      arrayBuffer: () => Promise.resolve(Buffer.alloc(0).buffer),
+      headers: new Headers({ "content-type": "text/plain" }),
+    };
+    mockFetch.mockResolvedValueOnce(badResp).mockResolvedValueOnce(tokenResp).mockResolvedValueOnce(goodResp);
     const c = makeClient({
       refreshToken: "rtoken",
       clientId: "cid",
@@ -184,7 +177,13 @@ describe("DriveClient — downloadFile", () => {
   });
 
   it("should_throw_DriveError_on_non_ok_download", async () => {
-    const resp = { ok: false, status: 404, text: () => Promise.resolve("Not Found"), arrayBuffer: () => Promise.resolve(Buffer.alloc(0).buffer), headers: new Headers({ "content-type": "text/plain" }) };
+    const resp = {
+      ok: false,
+      status: 404,
+      text: () => Promise.resolve("Not Found"),
+      arrayBuffer: () => Promise.resolve(Buffer.alloc(0).buffer),
+      headers: new Headers({ "content-type": "text/plain" }),
+    };
     mockFetch.mockResolvedValueOnce(resp);
     const c = makeClient();
     await expect(c.downloadFile("bad-id")).rejects.toBeInstanceOf(DriveError);
@@ -197,7 +196,12 @@ describe("DriveClient — downloadFile", () => {
 
 describe("DriveClient — exportFile", () => {
   it("should_return_text_on_success", async () => {
-    const resp = { ok: true, status: 200, text: () => Promise.resolve("# Markdown"), headers: new Headers({ "content-type": "text/markdown" }) };
+    const resp = {
+      ok: true,
+      status: 200,
+      text: () => Promise.resolve("# Markdown"),
+      headers: new Headers({ "content-type": "text/markdown" }),
+    };
     mockFetch.mockResolvedValueOnce(resp);
     const c = makeClient();
     const result = await c.exportFile("doc-1", "text/markdown");
@@ -208,10 +212,7 @@ describe("DriveClient — exportFile", () => {
     const badResp = { ok: false, status: 401, text: () => Promise.resolve(""), headers: new Headers() };
     const tokenResp = { ok: true, status: 200, json: () => Promise.resolve({ access_token: "new-tok" }) };
     const goodResp = { ok: true, status: 200, text: () => Promise.resolve("exported"), headers: new Headers() };
-    mockFetch
-      .mockResolvedValueOnce(badResp)
-      .mockResolvedValueOnce(tokenResp)
-      .mockResolvedValueOnce(goodResp);
+    mockFetch.mockResolvedValueOnce(badResp).mockResolvedValueOnce(tokenResp).mockResolvedValueOnce(goodResp);
     const c = makeClient({ refreshToken: "r", clientId: "c", clientSecret: "s" });
     const result = await c.exportFile("doc-1", "text/markdown");
     expect(result).toBe("exported");
@@ -263,10 +264,7 @@ describe("DriveClient — uploadFile", () => {
     const badResp = { ok: false, status: 401, json: () => Promise.reject(new SyntaxError("nojson")) };
     const tokenResp = { ok: true, status: 200, json: () => Promise.resolve({ access_token: "fresh" }) };
     const goodResp = { ok: true, status: 200, json: () => Promise.resolve({ id: "uploaded" }) };
-    mockFetch
-      .mockResolvedValueOnce(badResp)
-      .mockResolvedValueOnce(tokenResp)
-      .mockResolvedValueOnce(goodResp);
+    mockFetch.mockResolvedValueOnce(badResp).mockResolvedValueOnce(tokenResp).mockResolvedValueOnce(goodResp);
     const c = makeClient({ refreshToken: "r", clientId: "c", clientSecret: "s" });
     const result = await c.uploadFile({ name: "f.txt" }, "hi", "text/plain");
     expect((result as { id: string }).id).toBe("uploaded");
@@ -291,10 +289,7 @@ describe("DriveClient — updateFileContent", () => {
     const badResp = { ok: false, status: 401, json: () => Promise.reject(new SyntaxError("nojson")) };
     const tokenResp = { ok: true, status: 200, json: () => Promise.resolve({ access_token: "fresher" }) };
     const goodResp = { ok: true, status: 200, json: () => Promise.resolve({ id: "updated" }) };
-    mockFetch
-      .mockResolvedValueOnce(badResp)
-      .mockResolvedValueOnce(tokenResp)
-      .mockResolvedValueOnce(goodResp);
+    mockFetch.mockResolvedValueOnce(badResp).mockResolvedValueOnce(tokenResp).mockResolvedValueOnce(goodResp);
     const c = makeClient({ refreshToken: "r", clientId: "c", clientSecret: "s" });
     const result = await c.updateFileContent("f", {}, "data", "text/plain");
     expect((result as { id: string }).id).toBe("updated");
@@ -312,7 +307,7 @@ describe("DriveClient — token refresh", () => {
       .mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve({ access_token: "new-access" }) })
       .mockResolvedValueOnce(mockResponse({ id: "ok" }));
     const c = makeClient({ refreshToken: "r", clientId: "c", clientSecret: "s" });
-    const result = await c.callApi("GET", "/files/abc") as { id: string };
+    const result = (await c.callApi("GET", "/files/abc")) as { id: string };
     expect(result.id).toBe("ok");
     expect(mockFetch).toHaveBeenCalledTimes(3);
   });
@@ -320,15 +315,17 @@ describe("DriveClient — token refresh", () => {
   it("should_throw_DriveError_when_refresh_fails", async () => {
     mockFetch
       .mockResolvedValueOnce(mockResponse({ error: { code: 401, message: "Unauthorized" } }, 401))
-      .mockResolvedValueOnce({ ok: false, status: 400, json: () => Promise.resolve({ error: "invalid_grant", error_description: "Token expired" }) });
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: () => Promise.resolve({ error: "invalid_grant", error_description: "Token expired" }),
+      });
     const c = makeClient({ refreshToken: "r", clientId: "c", clientSecret: "s" });
     await expect(c.callApi("GET", "/files/abc")).rejects.toBeInstanceOf(DriveError);
   });
 
   it("should_throw_DriveError_when_no_refresh_config_on_401", async () => {
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ error: { code: 401, message: "Unauthorized" } }, 401),
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ error: { code: 401, message: "Unauthorized" } }, 401));
     // No refreshToken/clientId/clientSecret — canRefresh is false
     const c = makeClient();
     await expect(c.callApi("GET", "/files/abc")).rejects.toBeInstanceOf(DriveError);
@@ -352,7 +349,9 @@ describe("DriveClient — timeout", () => {
     // Simulate fetch never resolving within timeout by returning a signal-respecting promise
     mockFetch.mockImplementationOnce((_url: string, opts: RequestInit) => {
       return new Promise((_resolve, reject) => {
-        opts.signal?.addEventListener("abort", () => reject(Object.assign(new Error("The operation was aborted"), { name: "AbortError" })));
+        opts.signal?.addEventListener("abort", () =>
+          reject(Object.assign(new Error("The operation was aborted"), { name: "AbortError" })),
+        );
       });
     });
     const c = new DriveClient({ accessToken: "t", timeoutMs: 10 });

@@ -21,11 +21,7 @@ export interface ExecOptions {
  * Run a command WITHOUT a shell (execFile). Args are passed as array and
  * not interpreted by a shell — no injection surface.
  */
-export async function runCommand(
-  command: string,
-  args: string[],
-  options: ExecOptions = {},
-): Promise<ExecOutput> {
+export async function runCommand(command: string, args: string[], options: ExecOptions = {}): Promise<ExecOutput> {
   const timeout = options.timeoutMs ?? 30_000;
   const maxBuffer = options.maxBufferBytes ?? 10 * 1024 * 1024;
   const env = options.env ? { ...process.env, ...options.env } : process.env;

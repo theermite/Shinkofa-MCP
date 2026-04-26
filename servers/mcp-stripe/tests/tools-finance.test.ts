@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { StripeClient } from "../src/lib/client.js";
 import { registerFinanceTools } from "../src/tools/finance.js";
 
@@ -33,11 +33,7 @@ describe("Finance tools — balance", () => {
   it("should_list_balance_transactions", async () => {
     const cb = registeredTools.get("list_balance_transactions")!;
     await cb({ type: "charge", limit: 25 });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/balance_transactions",
-      { type: "charge", limit: 25 },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/balance_transactions", { type: "charge", limit: 25 });
   });
 });
 
@@ -57,20 +53,13 @@ describe("Finance tools — payouts", () => {
       payout_id: "po_123",
       expand: ["destination"],
     });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/payouts/po_123",
-      { expand: ["destination"] },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/payouts/po_123", { expand: ["destination"] });
   });
 
   it("should_cancel_payout", async () => {
     const cb = registeredTools.get("cancel_payout")!;
     await cb({ payout_id: "po_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/payouts/po_123/cancel",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/payouts/po_123/cancel");
   });
 });
 
@@ -78,11 +67,7 @@ describe("Finance tools — disputes", () => {
   it("should_get_dispute", async () => {
     const cb = registeredTools.get("get_dispute")!;
     await cb({ dispute_id: "dp_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/disputes/dp_123",
-      undefined,
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/disputes/dp_123", undefined);
   });
 
   it("should_update_dispute_with_evidence", async () => {
@@ -91,20 +76,15 @@ describe("Finance tools — disputes", () => {
       dispute_id: "dp_123",
       evidence: { customer_email_address: "jay@test.com" },
     });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/disputes/dp_123",
-      { evidence: { customer_email_address: "jay@test.com" } },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/disputes/dp_123", {
+      evidence: { customer_email_address: "jay@test.com" },
+    });
   });
 
   it("should_close_dispute", async () => {
     const cb = registeredTools.get("close_dispute")!;
     await cb({ dispute_id: "dp_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/disputes/dp_123/close",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/disputes/dp_123/close");
   });
 });
 
@@ -115,42 +95,28 @@ describe("Finance tools — webhooks", () => {
       url: "https://shinkofa.com/webhook",
       enabled_events: ["invoice.paid"],
     });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/webhook_endpoints",
-      {
-        url: "https://shinkofa.com/webhook",
-        enabled_events: ["invoice.paid"],
-      },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/webhook_endpoints", {
+      url: "https://shinkofa.com/webhook",
+      enabled_events: ["invoice.paid"],
+    });
   });
 
   it("should_get_webhook", async () => {
     const cb = registeredTools.get("get_webhook_endpoint")!;
     await cb({ webhook_id: "we_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/webhook_endpoints/we_123",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/webhook_endpoints/we_123");
   });
 
   it("should_update_webhook", async () => {
     const cb = registeredTools.get("update_webhook_endpoint")!;
     await cb({ webhook_id: "we_123", disabled: true });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "POST",
-      "/webhook_endpoints/we_123",
-      { disabled: true },
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("POST", "/webhook_endpoints/we_123", { disabled: true });
   });
 
   it("should_delete_webhook", async () => {
     const cb = registeredTools.get("delete_webhook_endpoint")!;
     await cb({ webhook_id: "we_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "DELETE",
-      "/webhook_endpoints/we_123",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("DELETE", "/webhook_endpoints/we_123");
   });
 });
 
@@ -158,10 +124,7 @@ describe("Finance tools — events", () => {
   it("should_get_event", async () => {
     const cb = registeredTools.get("get_event")!;
     await cb({ event_id: "evt_123" });
-    expect(callApiSpy).toHaveBeenCalledWith(
-      "GET",
-      "/events/evt_123",
-    );
+    expect(callApiSpy).toHaveBeenCalledWith("GET", "/events/evt_123");
   });
 
   it("should_list_events_with_type_filter", async () => {

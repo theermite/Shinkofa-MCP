@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GoogleCalendarClient, GoogleCalendarError } from "../src/lib/client.js";
 
 // ── Mock helpers ──────────────────────────────────────────────────────────────
@@ -97,7 +97,7 @@ describe("GoogleCalendarClient — callApi GET", () => {
     await client.callApi("GET", "/users/me/calendarList");
     expect(mockFetch).toHaveBeenCalledOnce();
     const [, options] = mockFetch.mock.calls[0];
-    expect(options.headers["Authorization"]).toBe("Bearer ya29.abc");
+    expect(options.headers.Authorization).toBe("Bearer ya29.abc");
     expect(options.method).toBe("GET");
   });
 
@@ -153,7 +153,11 @@ describe("GoogleCalendarClient — callApi POST", () => {
   it("should_filter_undefined_values_from_body", async () => {
     mockFetch.mockResolvedValueOnce(mockResponse({ id: "new-event" }));
     const client = new GoogleCalendarClient({ accessToken: "ya29.test" });
-    await client.callApi("POST", "/calendars/primary/events", { summary: "Test", description: undefined, location: null as unknown as undefined });
+    await client.callApi("POST", "/calendars/primary/events", {
+      summary: "Test",
+      description: undefined,
+      location: null as unknown as undefined,
+    });
     const [, options] = mockFetch.mock.calls[0];
     const body = JSON.parse(options.body as string);
     expect(Object.keys(body)).not.toContain("description");
@@ -246,7 +250,9 @@ describe("GoogleCalendarClient — token refresh", () => {
 
   it("should_throw_when_refresh_fails", async () => {
     mockFetch.mockResolvedValueOnce(mockResponse({ error: { code: 401, message: "Unauthorized" } }, 401));
-    mockFetch.mockResolvedValueOnce(mockResponse({ error: "invalid_grant", error_description: "Token has been expired or revoked." }));
+    mockFetch.mockResolvedValueOnce(
+      mockResponse({ error: "invalid_grant", error_description: "Token has been expired or revoked." }),
+    );
 
     const client = new GoogleCalendarClient({
       accessToken: "ya29.expired",

@@ -30,10 +30,7 @@ export class StripeClient {
    * Flatten nested objects into Stripe's form-encoded format.
    * e.g., { metadata: { key: "val" } } → "metadata[key]=val"
    */
-  flattenParams(
-    obj: Record<string, unknown>,
-    prefix = "",
-  ): [string, string][] {
+  flattenParams(obj: Record<string, unknown>, prefix = ""): [string, string][] {
     const pairs: [string, string][] = [];
 
     for (const [key, value] of Object.entries(obj)) {
@@ -44,23 +41,13 @@ export class StripeClient {
       if (Array.isArray(value)) {
         for (let i = 0; i < value.length; i++) {
           if (typeof value[i] === "object" && value[i] !== null) {
-            pairs.push(
-              ...this.flattenParams(
-                value[i] as Record<string, unknown>,
-                `${fullKey}[${i}]`,
-              ),
-            );
+            pairs.push(...this.flattenParams(value[i] as Record<string, unknown>, `${fullKey}[${i}]`));
           } else {
             pairs.push([`${fullKey}[${i}]`, String(value[i])]);
           }
         }
       } else if (typeof value === "object") {
-        pairs.push(
-          ...this.flattenParams(
-            value as Record<string, unknown>,
-            fullKey,
-          ),
-        );
+        pairs.push(...this.flattenParams(value as Record<string, unknown>, fullKey));
       } else {
         pairs.push([fullKey, String(value)]);
       }
@@ -88,11 +75,7 @@ export class StripeClient {
     let body: BodyInit | undefined;
 
     if (params) {
-      const cleaned = Object.fromEntries(
-        Object.entries(params).filter(
-          ([, v]) => v !== undefined && v !== null,
-        ),
-      );
+      const cleaned = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined && v !== null));
 
       if (method === "GET") {
         const searchParams = new URLSearchParams();
@@ -156,12 +139,7 @@ export class StripeClient {
           error?: { type?: string; code?: string; message?: string };
         }
       ).error;
-      throw new StripeError(
-        response.status,
-        err?.type ?? "api_error",
-        err?.code,
-        err?.message ?? response.statusText,
-      );
+      throw new StripeError(response.status, err?.type ?? "api_error", err?.code, err?.message ?? response.statusText);
     }
 
     return data as T;
@@ -178,11 +156,7 @@ export class StripeClient {
     path: string,
     params?: Record<string, unknown>,
   ): Promise<T> {
-    const { response, data } = await this.executeRequest(
-      method,
-      path,
-      params,
-    );
+    const { response, data } = await this.executeRequest(method, path, params);
     return this.handleResponse<T>(response, data);
   }
 }
@@ -194,9 +168,7 @@ export class StripeError extends Error {
     public readonly code: string | undefined,
     public readonly description: string,
   ) {
-    super(
-      `Stripe error ${httpStatus} (${type}${code ? `/${code}` : ""}): ${description}`,
-    );
+    super(`Stripe error ${httpStatus} (${type}${code ? `/${code}` : ""}): ${description}`);
     this.name = "StripeError";
   }
 }

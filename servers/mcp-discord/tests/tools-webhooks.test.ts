@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DiscordClient, DiscordError, DiscordRateLimitError } from "../src/lib/client.js";
 import { registerWebhookTools } from "../src/tools/webhooks.js";
 
@@ -27,7 +27,13 @@ describe("create_webhook", () => {
   it("should_call_POST_channel_webhooks_with_body_and_reason_when_creating", async () => {
     const handler = registeredTools.get("create_webhook")!;
     await handler({ channel_id: "ch1", name: "My Hook", reason: "automation" });
-    expect(callApiSpy).toHaveBeenCalledWith("POST", "/channels/ch1/webhooks", { name: "My Hook" }, undefined, "automation");
+    expect(callApiSpy).toHaveBeenCalledWith(
+      "POST",
+      "/channels/ch1/webhooks",
+      { name: "My Hook" },
+      undefined,
+      "automation",
+    );
   });
 });
 

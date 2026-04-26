@@ -1,11 +1,8 @@
 import os from "node:os";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import {
-  GetProcessSchema,
-  ListProcessesSchema,
-} from "../lib/schemas.js";
-import { SystemError, toolResult, withErrorHandler } from "../lib/utils.js";
 import { runCommand } from "../lib/executor.js";
+import { GetProcessSchema, ListProcessesSchema } from "../lib/schemas.js";
+import { SystemError, toolResult, withErrorHandler } from "../lib/utils.js";
 
 interface ProcessEntry {
   pid: number;
@@ -32,37 +29,25 @@ export function registerProcessTools(server: McpServer) {
       }),
   );
 
-  server.tool(
-    "get_process",
-    "Get details about a single process by PID",
-    GetProcessSchema.shape,
-    async (p) =>
-      withErrorHandler(async () => {
-        const procs = await listProcesses();
-        const proc = procs.find((x) => x.pid === p.pid);
-        if (!proc) {
-          throw new SystemError("ENOENT", `Process ${p.pid} not found`);
-        }
-        return toolResult(proc);
-      }),
+  server.tool("get_process", "Get details about a single process by PID", GetProcessSchema.shape, async (p) =>
+    withErrorHandler(async () => {
+      const procs = await listProcesses();
+      const proc = procs.find((x) => x.pid === p.pid);
+      if (!proc) {
+        throw new SystemError("ENOENT", `Process ${p.pid} not found`);
+      }
+      return toolResult(proc);
+    }),
   );
 }
 
 async function listProcesses(): Promise<ProcessEntry[]> {
   const isWin = os.platform() === "win32";
   if (isWin) {
-    const res = await runCommand(
-      "tasklist",
-      ["/FO", "CSV", "/NH"],
-      { timeoutMs: 10_000 },
-    );
+    const res = await runCommand("tasklist", ["/FO", "CSV", "/NH"], { timeoutMs: 10_000 });
     return parseTasklist(res.stdout);
   }
-  const res = await runCommand(
-    "ps",
-    ["-eo", "pid,pcpu,pmem,comm,user"],
-    { timeoutMs: 10_000 },
-  );
+  const res = await runCommand("ps", ["-eo", "pid,pcpu,pmem,comm,user"], { timeoutMs: 10_000 });
   return parsePs(res.stdout);
 }
 

@@ -25,11 +25,11 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { createConfig, StreamerbotClient } from "./lib/client.js";
-import { registerInfoTools } from "./tools/info.js";
 import { registerActionTools } from "./tools/actions.js";
-import { registerEventTools } from "./tools/events.js";
 import { registerCreditTools } from "./tools/credits.js";
+import { registerEventTools } from "./tools/events.js";
 import { registerGlobalTools } from "./tools/globals.js";
+import { registerInfoTools } from "./tools/info.js";
 import { registerTriggerTools } from "./tools/triggers.js";
 
 async function main(): Promise<void> {

@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { toolResult, toolError, withErrorHandler } from "../src/lib/utils.js";
+import { describe, expect, it } from "vitest";
 import { LinkedInError } from "../src/lib/client.js";
+import { toolError, toolResult, withErrorHandler } from "../src/lib/utils.js";
 
 describe("toolResult", () => {
   it("should_format_data_as_json", () => {
@@ -36,9 +36,7 @@ describe("withErrorHandler", () => {
     const r = await withErrorHandler(async () => {
       throw new LinkedInError(429, "Too many requests");
     });
-    expect(
-      (r as { content: { text: string }[] }).content[0].text,
-    ).toContain("rate limited");
+    expect((r as { content: { text: string }[] }).content[0].text).toContain("rate limited");
   });
 
   it("should_catch_AbortError", async () => {
@@ -47,9 +45,7 @@ describe("withErrorHandler", () => {
       e.name = "AbortError";
       throw e;
     });
-    expect(
-      (r as { content: { text: string }[] }).content[0].text,
-    ).toContain("timed out");
+    expect((r as { content: { text: string }[] }).content[0].text).toContain("timed out");
   });
 
   it("should_rethrow_unknown", async () => {

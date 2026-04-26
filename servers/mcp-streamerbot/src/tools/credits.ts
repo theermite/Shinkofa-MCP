@@ -1,7 +1,7 @@
 /**
  * Credits tools — get and clear stream credits.
  */
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { StreamerbotClient } from "../lib/client.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
 

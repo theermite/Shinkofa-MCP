@@ -1,65 +1,36 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { TailscaleClient } from "../lib/client.js";
-import {
-  ListDevicesSchema,
-  DeviceIdSchema,
-  AuthorizeDeviceSchema,
-  SetDeviceRoutesSchema,
-} from "../lib/schemas.js";
+import { AuthorizeDeviceSchema, DeviceIdSchema, ListDevicesSchema, SetDeviceRoutesSchema } from "../lib/schemas.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
 
-export function registerDeviceTools(
-  server: McpServer,
-  client: TailscaleClient,
-) {
-  server.tool(
-    "list_devices",
-    "List all devices in the tailnet",
-    ListDevicesSchema.shape,
-    async (p) =>
-      withErrorHandler(async () => {
-        const qs = p.fields ? `?fields=${p.fields}` : "";
-        const result = await client.get(client.tailnetPath(`/devices${qs}`));
-        return toolResult(result);
-      }),
+export function registerDeviceTools(server: McpServer, client: TailscaleClient) {
+  server.tool("list_devices", "List all devices in the tailnet", ListDevicesSchema.shape, async (p) =>
+    withErrorHandler(async () => {
+      const qs = p.fields ? `?fields=${p.fields}` : "";
+      const result = await client.get(client.tailnetPath(`/devices${qs}`));
+      return toolResult(result);
+    }),
   );
 
-  server.tool(
-    "get_device",
-    "Get details about a single device",
-    DeviceIdSchema.shape,
-    async (p) =>
-      withErrorHandler(async () => {
-        const result = await client.get(
-          `/api/v2/device/${encodeURIComponent(p.deviceId)}`,
-        );
-        return toolResult(result);
-      }),
+  server.tool("get_device", "Get details about a single device", DeviceIdSchema.shape, async (p) =>
+    withErrorHandler(async () => {
+      const result = await client.get(`/api/v2/device/${encodeURIComponent(p.deviceId)}`);
+      return toolResult(result);
+    }),
   );
 
-  server.tool(
-    "delete_device",
-    "Permanently remove a device from the tailnet",
-    DeviceIdSchema.shape,
-    async (p) =>
-      withErrorHandler(async () => {
-        await client.del(`/api/v2/device/${encodeURIComponent(p.deviceId)}`);
-        return toolResult(undefined);
-      }),
+  server.tool("delete_device", "Permanently remove a device from the tailnet", DeviceIdSchema.shape, async (p) =>
+    withErrorHandler(async () => {
+      await client.del(`/api/v2/device/${encodeURIComponent(p.deviceId)}`);
+      return toolResult(undefined);
+    }),
   );
 
-  server.tool(
-    "authorize_device",
-    "Authorize or deauthorize a device",
-    AuthorizeDeviceSchema.shape,
-    async (p) =>
-      withErrorHandler(async () => {
-        await client.post(
-          `/api/v2/device/${encodeURIComponent(p.deviceId)}/authorized`,
-          { authorized: p.authorized },
-        );
-        return toolResult(undefined);
-      }),
+  server.tool("authorize_device", "Authorize or deauthorize a device", AuthorizeDeviceSchema.shape, async (p) =>
+    withErrorHandler(async () => {
+      await client.post(`/api/v2/device/${encodeURIComponent(p.deviceId)}/authorized`, { authorized: p.authorized });
+      return toolResult(undefined);
+    }),
   );
 
   server.tool(
@@ -68,9 +39,7 @@ export function registerDeviceTools(
     DeviceIdSchema.shape,
     async (p) =>
       withErrorHandler(async () => {
-        await client.post(
-          `/api/v2/device/${encodeURIComponent(p.deviceId)}/expire`,
-        );
+        await client.post(`/api/v2/device/${encodeURIComponent(p.deviceId)}/expire`);
         return toolResult(undefined);
       }),
   );
@@ -81,9 +50,7 @@ export function registerDeviceTools(
     DeviceIdSchema.shape,
     async (p) =>
       withErrorHandler(async () => {
-        const result = await client.get(
-          `/api/v2/device/${encodeURIComponent(p.deviceId)}/routes`,
-        );
+        const result = await client.get(`/api/v2/device/${encodeURIComponent(p.deviceId)}/routes`);
         return toolResult(result);
       }),
   );
@@ -94,10 +61,9 @@ export function registerDeviceTools(
     SetDeviceRoutesSchema.shape,
     async (p) =>
       withErrorHandler(async () => {
-        const result = await client.post(
-          `/api/v2/device/${encodeURIComponent(p.deviceId)}/routes`,
-          { routes: p.routes },
-        );
+        const result = await client.post(`/api/v2/device/${encodeURIComponent(p.deviceId)}/routes`, {
+          routes: p.routes,
+        });
         return toolResult(result);
       }),
   );

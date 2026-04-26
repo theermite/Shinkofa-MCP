@@ -43,16 +43,22 @@ export const CreateEventSchema = z.object({
     date: z.string().optional(),
     timeZone: z.string().optional(),
   }),
-  attendees: z.array(z.object({
-    email: z.string(),
-    optional: z.boolean().optional(),
-    responseStatus: z.enum(["needsAction", "declined", "tentative", "accepted"]).optional(),
-  })).optional(),
+  attendees: z
+    .array(
+      z.object({
+        email: z.string(),
+        optional: z.boolean().optional(),
+        responseStatus: z.enum(["needsAction", "declined", "tentative", "accepted"]).optional(),
+      }),
+    )
+    .optional(),
   recurrence: z.array(z.string()).optional().describe("RRULE strings (e.g. 'RRULE:FREQ=WEEKLY;COUNT=10')"),
-  reminders: z.object({
-    useDefault: z.boolean().optional(),
-    overrides: z.array(z.object({ method: z.enum(["email", "popup"]), minutes: z.number() })).optional(),
-  }).optional(),
+  reminders: z
+    .object({
+      useDefault: z.boolean().optional(),
+      overrides: z.array(z.object({ method: z.enum(["email", "popup"]), minutes: z.number() })).optional(),
+    })
+    .optional(),
   colorId: z.string().optional().describe("Color ID (1-11)"),
   visibility: z.enum(["default", "public", "private", "confidential"]).optional(),
   status: z.enum(["confirmed", "tentative", "cancelled"]).optional(),
@@ -66,11 +72,22 @@ export const UpdateEventSchema = z.object({
   summary: z.string().optional(),
   description: z.string().optional(),
   location: z.string().optional(),
-  start: z.object({ dateTime: z.string().optional(), date: z.string().optional(), timeZone: z.string().optional() }).optional(),
-  end: z.object({ dateTime: z.string().optional(), date: z.string().optional(), timeZone: z.string().optional() }).optional(),
-  attendees: z.array(z.object({ email: z.string(), optional: z.boolean().optional(), responseStatus: z.string().optional() })).optional(),
+  start: z
+    .object({ dateTime: z.string().optional(), date: z.string().optional(), timeZone: z.string().optional() })
+    .optional(),
+  end: z
+    .object({ dateTime: z.string().optional(), date: z.string().optional(), timeZone: z.string().optional() })
+    .optional(),
+  attendees: z
+    .array(z.object({ email: z.string(), optional: z.boolean().optional(), responseStatus: z.string().optional() }))
+    .optional(),
   recurrence: z.array(z.string()).optional(),
-  reminders: z.object({ useDefault: z.boolean().optional(), overrides: z.array(z.object({ method: z.enum(["email", "popup"]), minutes: z.number() })).optional() }).optional(),
+  reminders: z
+    .object({
+      useDefault: z.boolean().optional(),
+      overrides: z.array(z.object({ method: z.enum(["email", "popup"]), minutes: z.number() })).optional(),
+    })
+    .optional(),
   colorId: z.string().optional(),
   visibility: z.enum(["default", "public", "private", "confidential"]).optional(),
   status: z.enum(["confirmed", "tentative", "cancelled"]).optional(),

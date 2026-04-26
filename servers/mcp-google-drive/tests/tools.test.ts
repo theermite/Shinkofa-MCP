@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { describe, expect, it, vi } from "vitest";
 import { DriveClient } from "../src/lib/client.js";
 import { registerFileTools } from "../src/tools/files.js";
-import { registerSharingTools } from "../src/tools/sharing.js";
 import { registerRawTool } from "../src/tools/raw.js";
+import { registerSharingTools } from "../src/tools/sharing.js";
 
 // ---------------------------------------------------------------------------
 // Helpers

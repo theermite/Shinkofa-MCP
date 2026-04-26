@@ -1,32 +1,32 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  ListEventsSchema,
-  GetEventSchema,
+  ClearCalendarSchema,
+  CreateAclRuleSchema,
+  CreateCalendarSchema,
   CreateEventSchema,
-  UpdateEventSchema,
+  DeleteAclRuleSchema,
+  DeleteCalendarListSchema,
+  DeleteCalendarSchema,
   DeleteEventSchema,
+  FreeBusyQuerySchema,
+  GetAclRuleSchema,
+  GetCalendarListEntrySchema,
+  GetCalendarSchema,
+  GetEventInstancesSchema,
+  GetEventSchema,
+  GetSettingSchema,
+  ImportEventSchema,
+  InsertCalendarListSchema,
+  ListAclSchema,
+  ListCalendarListSchema,
+  ListEventsSchema,
   MoveEventSchema,
   QuickAddEventSchema,
-  GetEventInstancesSchema,
-  ImportEventSchema,
-  GetCalendarSchema,
-  CreateCalendarSchema,
-  UpdateCalendarSchema,
-  DeleteCalendarSchema,
-  ClearCalendarSchema,
-  ListCalendarListSchema,
-  GetCalendarListEntrySchema,
-  InsertCalendarListSchema,
-  UpdateCalendarListSchema,
-  DeleteCalendarListSchema,
-  ListAclSchema,
-  GetAclRuleSchema,
-  CreateAclRuleSchema,
-  UpdateAclRuleSchema,
-  DeleteAclRuleSchema,
-  FreeBusyQuerySchema,
-  GetSettingSchema,
   RawApiCallSchema,
+  UpdateAclRuleSchema,
+  UpdateCalendarListSchema,
+  UpdateCalendarSchema,
+  UpdateEventSchema,
 } from "../src/lib/schemas.js";
 
 // ── ListEventsSchema ──────────────────────────────────────────────────────────
@@ -37,14 +37,16 @@ describe("ListEventsSchema", () => {
   });
 
   it("should_accept_full_time_range_with_options", () => {
-    expect(ListEventsSchema.safeParse({
-      calendarId: "primary",
-      timeMin: "2026-03-14T00:00:00Z",
-      timeMax: "2026-03-21T00:00:00Z",
-      singleEvents: true,
-      orderBy: "startTime",
-      maxResults: 50,
-    }).success).toBe(true);
+    expect(
+      ListEventsSchema.safeParse({
+        calendarId: "primary",
+        timeMin: "2026-03-14T00:00:00Z",
+        timeMax: "2026-03-21T00:00:00Z",
+        singleEvents: true,
+        orderBy: "startTime",
+        maxResults: 50,
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_showDeleted_flag", () => {
@@ -52,7 +54,9 @@ describe("ListEventsSchema", () => {
   });
 
   it("should_accept_updatedMin_field", () => {
-    expect(ListEventsSchema.safeParse({ calendarId: "primary", updatedMin: "2026-04-01T00:00:00Z" }).success).toBe(true);
+    expect(ListEventsSchema.safeParse({ calendarId: "primary", updatedMin: "2026-04-01T00:00:00Z" }).success).toBe(
+      true,
+    );
   });
 
   it("should_reject_maxResults_above_2500", () => {
@@ -80,7 +84,9 @@ describe("GetEventSchema", () => {
   });
 
   it("should_accept_optional_timeZone", () => {
-    expect(GetEventSchema.safeParse({ calendarId: "primary", eventId: "evt001", timeZone: "Europe/Madrid" }).success).toBe(true);
+    expect(
+      GetEventSchema.safeParse({ calendarId: "primary", eventId: "evt001", timeZone: "Europe/Madrid" }).success,
+    ).toBe(true);
   });
 
   it("should_reject_missing_eventId", () => {
@@ -92,83 +98,99 @@ describe("GetEventSchema", () => {
 
 describe("CreateEventSchema", () => {
   it("should_accept_timed_event", () => {
-    expect(CreateEventSchema.safeParse({
-      calendarId: "primary",
-      summary: "Training HoK",
-      start: { dateTime: "2026-03-20T18:00:00+02:00" },
-      end: { dateTime: "2026-03-20T20:00:00+02:00" },
-    }).success).toBe(true);
+    expect(
+      CreateEventSchema.safeParse({
+        calendarId: "primary",
+        summary: "Training HoK",
+        start: { dateTime: "2026-03-20T18:00:00+02:00" },
+        end: { dateTime: "2026-03-20T20:00:00+02:00" },
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_all_day_event", () => {
-    expect(CreateEventSchema.safeParse({
-      calendarId: "primary",
-      summary: "Day off",
-      start: { date: "2026-03-25" },
-      end: { date: "2026-03-26" },
-    }).success).toBe(true);
+    expect(
+      CreateEventSchema.safeParse({
+        calendarId: "primary",
+        summary: "Day off",
+        start: { date: "2026-03-25" },
+        end: { date: "2026-03-26" },
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_recurring_event_with_rrule", () => {
-    expect(CreateEventSchema.safeParse({
-      calendarId: "primary",
-      summary: "Weekly training",
-      start: { dateTime: "2026-03-20T18:00:00Z" },
-      end: { dateTime: "2026-03-20T19:00:00Z" },
-      recurrence: ["RRULE:FREQ=WEEKLY;COUNT=10"],
-    }).success).toBe(true);
+    expect(
+      CreateEventSchema.safeParse({
+        calendarId: "primary",
+        summary: "Weekly training",
+        start: { dateTime: "2026-03-20T18:00:00Z" },
+        end: { dateTime: "2026-03-20T19:00:00Z" },
+        recurrence: ["RRULE:FREQ=WEEKLY;COUNT=10"],
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_event_with_attendees", () => {
-    expect(CreateEventSchema.safeParse({
-      calendarId: "primary",
-      summary: "Team meeting",
-      start: { dateTime: "2026-03-20T10:00:00Z" },
-      end: { dateTime: "2026-03-20T11:00:00Z" },
-      attendees: [{ email: "ange@shinkofa.com" }],
-    }).success).toBe(true);
+    expect(
+      CreateEventSchema.safeParse({
+        calendarId: "primary",
+        summary: "Team meeting",
+        start: { dateTime: "2026-03-20T10:00:00Z" },
+        end: { dateTime: "2026-03-20T11:00:00Z" },
+        attendees: [{ email: "ange@shinkofa.com" }],
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_visibility_enum_values", () => {
     for (const visibility of ["default", "public", "private", "confidential"]) {
-      expect(CreateEventSchema.safeParse({
-        calendarId: "primary",
-        summary: "Event",
-        start: { date: "2026-04-01" },
-        end: { date: "2026-04-02" },
-        visibility,
-      }).success).toBe(true);
+      expect(
+        CreateEventSchema.safeParse({
+          calendarId: "primary",
+          summary: "Event",
+          start: { date: "2026-04-01" },
+          end: { date: "2026-04-02" },
+          visibility,
+        }).success,
+      ).toBe(true);
     }
   });
 
   it("should_accept_sendUpdates_enum_values", () => {
     for (const sendUpdates of ["all", "externalOnly", "none"]) {
-      expect(CreateEventSchema.safeParse({
-        calendarId: "primary",
-        summary: "Event",
-        start: { date: "2026-04-01" },
-        end: { date: "2026-04-02" },
-        sendUpdates,
-      }).success).toBe(true);
+      expect(
+        CreateEventSchema.safeParse({
+          calendarId: "primary",
+          summary: "Event",
+          start: { date: "2026-04-01" },
+          end: { date: "2026-04-02" },
+          sendUpdates,
+        }).success,
+      ).toBe(true);
     }
   });
 
   it("should_reject_invalid_visibility_value", () => {
-    expect(CreateEventSchema.safeParse({
-      calendarId: "primary",
-      summary: "Event",
-      start: { date: "2026-04-01" },
-      end: { date: "2026-04-02" },
-      visibility: "secret",
-    }).success).toBe(false);
+    expect(
+      CreateEventSchema.safeParse({
+        calendarId: "primary",
+        summary: "Event",
+        start: { date: "2026-04-01" },
+        end: { date: "2026-04-02" },
+        visibility: "secret",
+      }).success,
+    ).toBe(false);
   });
 
   it("should_reject_missing_summary", () => {
-    expect(CreateEventSchema.safeParse({
-      calendarId: "primary",
-      start: { date: "2026-04-01" },
-      end: { date: "2026-04-02" },
-    }).success).toBe(false);
+    expect(
+      CreateEventSchema.safeParse({
+        calendarId: "primary",
+        start: { date: "2026-04-01" },
+        end: { date: "2026-04-02" },
+      }).success,
+    ).toBe(false);
   });
 
   it("should_reject_missing_start_and_end", () => {
@@ -180,7 +202,9 @@ describe("CreateEventSchema", () => {
 
 describe("UpdateEventSchema", () => {
   it("should_accept_partial_update", () => {
-    expect(UpdateEventSchema.safeParse({ calendarId: "primary", eventId: "abc123", summary: "Updated title" }).success).toBe(true);
+    expect(
+      UpdateEventSchema.safeParse({ calendarId: "primary", eventId: "abc123", summary: "Updated title" }).success,
+    ).toBe(true);
   });
 
   it("should_accept_empty_update_with_required_fields_only", () => {
@@ -200,11 +224,15 @@ describe("DeleteEventSchema", () => {
   });
 
   it("should_accept_sendUpdates_option", () => {
-    expect(DeleteEventSchema.safeParse({ calendarId: "primary", eventId: "abc123", sendUpdates: "all" }).success).toBe(true);
+    expect(DeleteEventSchema.safeParse({ calendarId: "primary", eventId: "abc123", sendUpdates: "all" }).success).toBe(
+      true,
+    );
   });
 
   it("should_reject_invalid_sendUpdates_value", () => {
-    expect(DeleteEventSchema.safeParse({ calendarId: "primary", eventId: "abc123", sendUpdates: "maybe" }).success).toBe(false);
+    expect(
+      DeleteEventSchema.safeParse({ calendarId: "primary", eventId: "abc123", sendUpdates: "maybe" }).success,
+    ).toBe(false);
   });
 });
 
@@ -212,7 +240,9 @@ describe("DeleteEventSchema", () => {
 
 describe("MoveEventSchema", () => {
   it("should_accept_move_with_destination", () => {
-    expect(MoveEventSchema.safeParse({ calendarId: "primary", eventId: "abc", destination: "secondary_cal_id" }).success).toBe(true);
+    expect(
+      MoveEventSchema.safeParse({ calendarId: "primary", eventId: "abc", destination: "secondary_cal_id" }).success,
+    ).toBe(true);
   });
 
   it("should_reject_missing_destination", () => {
@@ -224,7 +254,10 @@ describe("MoveEventSchema", () => {
 
 describe("QuickAddEventSchema", () => {
   it("should_accept_quick_add_text", () => {
-    expect(QuickAddEventSchema.safeParse({ calendarId: "primary", text: "Stream Dofus Touch tomorrow 8pm for 3 hours" }).success).toBe(true);
+    expect(
+      QuickAddEventSchema.safeParse({ calendarId: "primary", text: "Stream Dofus Touch tomorrow 8pm for 3 hours" })
+        .success,
+    ).toBe(true);
   });
 
   it("should_reject_missing_text", () => {
@@ -236,27 +269,33 @@ describe("QuickAddEventSchema", () => {
 
 describe("GetEventInstancesSchema", () => {
   it("should_accept_required_calendarId_and_eventId", () => {
-    expect(GetEventInstancesSchema.safeParse({ calendarId: "primary", eventId: "recurring_evt_id" }).success).toBe(true);
+    expect(GetEventInstancesSchema.safeParse({ calendarId: "primary", eventId: "recurring_evt_id" }).success).toBe(
+      true,
+    );
   });
 
   it("should_accept_showDeleted_flag", () => {
-    expect(GetEventInstancesSchema.safeParse({
-      calendarId: "primary",
-      eventId: "recurring_evt_id",
-      showDeleted: true,
-    }).success).toBe(true);
+    expect(
+      GetEventInstancesSchema.safeParse({
+        calendarId: "primary",
+        eventId: "recurring_evt_id",
+        showDeleted: true,
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_full_optional_fields", () => {
-    expect(GetEventInstancesSchema.safeParse({
-      calendarId: "primary",
-      eventId: "recurring_evt_id",
-      timeMin: "2026-04-01T00:00:00Z",
-      timeMax: "2026-05-01T00:00:00Z",
-      maxResults: 10,
-      timeZone: "Europe/Madrid",
-      showDeleted: false,
-    }).success).toBe(true);
+    expect(
+      GetEventInstancesSchema.safeParse({
+        calendarId: "primary",
+        eventId: "recurring_evt_id",
+        timeMin: "2026-04-01T00:00:00Z",
+        timeMax: "2026-05-01T00:00:00Z",
+        maxResults: 10,
+        timeZone: "Europe/Madrid",
+        showDeleted: false,
+      }).success,
+    ).toBe(true);
   });
 
   it("should_reject_missing_eventId", () => {
@@ -264,7 +303,9 @@ describe("GetEventInstancesSchema", () => {
   });
 
   it("should_reject_maxResults_exceeding_2500", () => {
-    expect(GetEventInstancesSchema.safeParse({ calendarId: "primary", eventId: "evt", maxResults: 9999 }).success).toBe(false);
+    expect(GetEventInstancesSchema.safeParse({ calendarId: "primary", eventId: "evt", maxResults: 9999 }).success).toBe(
+      false,
+    );
   });
 });
 
@@ -272,43 +313,51 @@ describe("GetEventInstancesSchema", () => {
 
 describe("ImportEventSchema", () => {
   it("should_accept_required_fields", () => {
-    expect(ImportEventSchema.safeParse({
-      calendarId: "primary",
-      iCalUID: "uid-12345@example.com",
-      summary: "Imported event",
-      start: { dateTime: "2026-04-10T10:00:00Z" },
-      end: { dateTime: "2026-04-10T11:00:00Z" },
-    }).success).toBe(true);
+    expect(
+      ImportEventSchema.safeParse({
+        calendarId: "primary",
+        iCalUID: "uid-12345@example.com",
+        summary: "Imported event",
+        start: { dateTime: "2026-04-10T10:00:00Z" },
+        end: { dateTime: "2026-04-10T11:00:00Z" },
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_optional_description_and_location", () => {
-    expect(ImportEventSchema.safeParse({
-      calendarId: "primary",
-      iCalUID: "uid-abc@example.com",
-      summary: "Imported",
-      start: { date: "2026-04-10" },
-      end: { date: "2026-04-11" },
-      description: "From external calendar",
-      location: "Corumbela, Andalusia",
-    }).success).toBe(true);
+    expect(
+      ImportEventSchema.safeParse({
+        calendarId: "primary",
+        iCalUID: "uid-abc@example.com",
+        summary: "Imported",
+        start: { date: "2026-04-10" },
+        end: { date: "2026-04-11" },
+        description: "From external calendar",
+        location: "Corumbela, Andalusia",
+      }).success,
+    ).toBe(true);
   });
 
   it("should_reject_missing_iCalUID", () => {
-    expect(ImportEventSchema.safeParse({
-      calendarId: "primary",
-      summary: "Imported",
-      start: { date: "2026-04-10" },
-      end: { date: "2026-04-11" },
-    }).success).toBe(false);
+    expect(
+      ImportEventSchema.safeParse({
+        calendarId: "primary",
+        summary: "Imported",
+        start: { date: "2026-04-10" },
+        end: { date: "2026-04-11" },
+      }).success,
+    ).toBe(false);
   });
 
   it("should_reject_missing_summary", () => {
-    expect(ImportEventSchema.safeParse({
-      calendarId: "primary",
-      iCalUID: "uid-abc@example.com",
-      start: { date: "2026-04-10" },
-      end: { date: "2026-04-11" },
-    }).success).toBe(false);
+    expect(
+      ImportEventSchema.safeParse({
+        calendarId: "primary",
+        iCalUID: "uid-abc@example.com",
+        start: { date: "2026-04-10" },
+        end: { date: "2026-04-11" },
+      }).success,
+    ).toBe(false);
   });
 });
 
@@ -330,12 +379,14 @@ describe("CreateCalendarSchema", () => {
   });
 
   it("should_accept_full_fields", () => {
-    expect(CreateCalendarSchema.safeParse({
-      summary: "Esport Calendar",
-      description: "Jay's esport schedule",
-      location: "Europe",
-      timeZone: "Europe/Madrid",
-    }).success).toBe(true);
+    expect(
+      CreateCalendarSchema.safeParse({
+        summary: "Esport Calendar",
+        description: "Jay's esport schedule",
+        location: "Europe",
+        timeZone: "Europe/Madrid",
+      }).success,
+    ).toBe(true);
   });
 
   it("should_reject_missing_summary", () => {
@@ -419,14 +470,16 @@ describe("InsertCalendarListSchema", () => {
   });
 
   it("should_accept_full_fields", () => {
-    expect(InsertCalendarListSchema.safeParse({
-      id: "someone@gmail.com",
-      colorRgbFormat: true,
-      backgroundColor: "#ff0000",
-      foregroundColor: "#ffffff",
-      hidden: false,
-      defaultReminders: [{ method: "popup", minutes: 10 }],
-    }).success).toBe(true);
+    expect(
+      InsertCalendarListSchema.safeParse({
+        id: "someone@gmail.com",
+        colorRgbFormat: true,
+        backgroundColor: "#ff0000",
+        foregroundColor: "#ffffff",
+        hidden: false,
+        defaultReminders: [{ method: "popup", minutes: 10 }],
+      }).success,
+    ).toBe(true);
   });
 
   it("should_reject_missing_id", () => {
@@ -436,18 +489,22 @@ describe("InsertCalendarListSchema", () => {
 
 describe("UpdateCalendarListSchema", () => {
   it("should_accept_calendarId_with_optional_fields", () => {
-    expect(UpdateCalendarListSchema.safeParse({
-      calendarId: "primary",
-      backgroundColor: "#0000ff",
-      summaryOverride: "My Calendar",
-    }).success).toBe(true);
+    expect(
+      UpdateCalendarListSchema.safeParse({
+        calendarId: "primary",
+        backgroundColor: "#0000ff",
+        summaryOverride: "My Calendar",
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_defaultReminders_array", () => {
-    expect(UpdateCalendarListSchema.safeParse({
-      calendarId: "primary",
-      defaultReminders: [{ method: "email", minutes: 30 }],
-    }).success).toBe(true);
+    expect(
+      UpdateCalendarListSchema.safeParse({
+        calendarId: "primary",
+        defaultReminders: [{ method: "email", minutes: 30 }],
+      }).success,
+    ).toBe(true);
   });
 
   it("should_reject_missing_calendarId", () => {
@@ -455,10 +512,12 @@ describe("UpdateCalendarListSchema", () => {
   });
 
   it("should_reject_invalid_reminder_method", () => {
-    expect(UpdateCalendarListSchema.safeParse({
-      calendarId: "primary",
-      defaultReminders: [{ method: "sms", minutes: 10 }],
-    }).success).toBe(false);
+    expect(
+      UpdateCalendarListSchema.safeParse({
+        calendarId: "primary",
+        defaultReminders: [{ method: "sms", minutes: 10 }],
+      }).success,
+    ).toBe(false);
   });
 });
 
@@ -500,39 +559,47 @@ describe("GetAclRuleSchema", () => {
 
 describe("CreateAclRuleSchema", () => {
   it("should_accept_valid_rule", () => {
-    expect(CreateAclRuleSchema.safeParse({
-      calendarId: "primary",
-      role: "reader",
-      scope: { type: "user", value: "ange@shinkofa.com" },
-    }).success).toBe(true);
+    expect(
+      CreateAclRuleSchema.safeParse({
+        calendarId: "primary",
+        role: "reader",
+        scope: { type: "user", value: "ange@shinkofa.com" },
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_all_valid_roles", () => {
     for (const role of ["none", "freeBusyReader", "reader", "writer", "owner"]) {
-      expect(CreateAclRuleSchema.safeParse({
-        calendarId: "primary",
-        role,
-        scope: { type: "default" },
-      }).success).toBe(true);
+      expect(
+        CreateAclRuleSchema.safeParse({
+          calendarId: "primary",
+          role,
+          scope: { type: "default" },
+        }).success,
+      ).toBe(true);
     }
   });
 
   it("should_accept_all_valid_scope_types", () => {
     for (const type of ["default", "user", "group", "domain"]) {
-      expect(CreateAclRuleSchema.safeParse({
-        calendarId: "primary",
-        role: "reader",
-        scope: { type },
-      }).success).toBe(true);
+      expect(
+        CreateAclRuleSchema.safeParse({
+          calendarId: "primary",
+          role: "reader",
+          scope: { type },
+        }).success,
+      ).toBe(true);
     }
   });
 
   it("should_reject_invalid_role", () => {
-    expect(CreateAclRuleSchema.safeParse({
-      calendarId: "primary",
-      role: "admin",
-      scope: { type: "user" },
-    }).success).toBe(false);
+    expect(
+      CreateAclRuleSchema.safeParse({
+        calendarId: "primary",
+        role: "admin",
+        scope: { type: "user" },
+      }).success,
+    ).toBe(false);
   });
 
   it("should_reject_missing_scope", () => {
@@ -542,19 +609,23 @@ describe("CreateAclRuleSchema", () => {
 
 describe("UpdateAclRuleSchema", () => {
   it("should_accept_valid_update", () => {
-    expect(UpdateAclRuleSchema.safeParse({
-      calendarId: "primary",
-      ruleId: "user:ange@shinkofa.com",
-      role: "writer",
-    }).success).toBe(true);
+    expect(
+      UpdateAclRuleSchema.safeParse({
+        calendarId: "primary",
+        ruleId: "user:ange@shinkofa.com",
+        role: "writer",
+      }).success,
+    ).toBe(true);
   });
 
   it("should_reject_invalid_role", () => {
-    expect(UpdateAclRuleSchema.safeParse({
-      calendarId: "primary",
-      ruleId: "user:test@test.com",
-      role: "superadmin",
-    }).success).toBe(false);
+    expect(
+      UpdateAclRuleSchema.safeParse({
+        calendarId: "primary",
+        ruleId: "user:test@test.com",
+        role: "superadmin",
+      }).success,
+    ).toBe(false);
   });
 });
 
@@ -572,69 +643,85 @@ describe("DeleteAclRuleSchema", () => {
 
 describe("FreeBusyQuerySchema", () => {
   it("should_accept_minimal_required_fields", () => {
-    expect(FreeBusyQuerySchema.safeParse({
-      timeMin: "2026-03-14T00:00:00Z",
-      timeMax: "2026-03-15T00:00:00Z",
-      items: [{ id: "primary" }],
-    }).success).toBe(true);
+    expect(
+      FreeBusyQuerySchema.safeParse({
+        timeMin: "2026-03-14T00:00:00Z",
+        timeMax: "2026-03-15T00:00:00Z",
+        items: [{ id: "primary" }],
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_multiple_calendar_items", () => {
-    expect(FreeBusyQuerySchema.safeParse({
-      timeMin: "2026-04-01T00:00:00Z",
-      timeMax: "2026-04-02T00:00:00Z",
-      items: [{ id: "primary" }, { id: "other@gmail.com" }],
-    }).success).toBe(true);
+    expect(
+      FreeBusyQuerySchema.safeParse({
+        timeMin: "2026-04-01T00:00:00Z",
+        timeMax: "2026-04-02T00:00:00Z",
+        items: [{ id: "primary" }, { id: "other@gmail.com" }],
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_groupExpansionMax", () => {
-    expect(FreeBusyQuerySchema.safeParse({
-      timeMin: "2026-04-01T00:00:00Z",
-      timeMax: "2026-04-02T00:00:00Z",
-      items: [{ id: "primary" }],
-      groupExpansionMax: 50,
-    }).success).toBe(true);
+    expect(
+      FreeBusyQuerySchema.safeParse({
+        timeMin: "2026-04-01T00:00:00Z",
+        timeMax: "2026-04-02T00:00:00Z",
+        items: [{ id: "primary" }],
+        groupExpansionMax: 50,
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_calendarExpansionMax", () => {
-    expect(FreeBusyQuerySchema.safeParse({
-      timeMin: "2026-04-01T00:00:00Z",
-      timeMax: "2026-04-02T00:00:00Z",
-      items: [{ id: "primary" }],
-      calendarExpansionMax: 25,
-    }).success).toBe(true);
+    expect(
+      FreeBusyQuerySchema.safeParse({
+        timeMin: "2026-04-01T00:00:00Z",
+        timeMax: "2026-04-02T00:00:00Z",
+        items: [{ id: "primary" }],
+        calendarExpansionMax: 25,
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_optional_timeZone", () => {
-    expect(FreeBusyQuerySchema.safeParse({
-      timeMin: "2026-04-01T00:00:00Z",
-      timeMax: "2026-04-02T00:00:00Z",
-      items: [{ id: "primary" }],
-      timeZone: "Europe/Madrid",
-    }).success).toBe(true);
+    expect(
+      FreeBusyQuerySchema.safeParse({
+        timeMin: "2026-04-01T00:00:00Z",
+        timeMax: "2026-04-02T00:00:00Z",
+        items: [{ id: "primary" }],
+        timeZone: "Europe/Madrid",
+      }).success,
+    ).toBe(true);
   });
 
   it("should_reject_missing_timeMin", () => {
-    expect(FreeBusyQuerySchema.safeParse({
-      timeMax: "2026-04-02T00:00:00Z",
-      items: [{ id: "primary" }],
-    }).success).toBe(false);
+    expect(
+      FreeBusyQuerySchema.safeParse({
+        timeMax: "2026-04-02T00:00:00Z",
+        items: [{ id: "primary" }],
+      }).success,
+    ).toBe(false);
   });
 
   it("should_reject_missing_items", () => {
-    expect(FreeBusyQuerySchema.safeParse({
-      timeMin: "2026-04-01T00:00:00Z",
-      timeMax: "2026-04-02T00:00:00Z",
-    }).success).toBe(false);
+    expect(
+      FreeBusyQuerySchema.safeParse({
+        timeMin: "2026-04-01T00:00:00Z",
+        timeMax: "2026-04-02T00:00:00Z",
+      }).success,
+    ).toBe(false);
   });
 
   it("should_reject_non_integer_groupExpansionMax", () => {
-    expect(FreeBusyQuerySchema.safeParse({
-      timeMin: "2026-04-01T00:00:00Z",
-      timeMax: "2026-04-02T00:00:00Z",
-      items: [{ id: "primary" }],
-      groupExpansionMax: 5.5,
-    }).success).toBe(false);
+    expect(
+      FreeBusyQuerySchema.safeParse({
+        timeMin: "2026-04-01T00:00:00Z",
+        timeMax: "2026-04-02T00:00:00Z",
+        items: [{ id: "primary" }],
+        groupExpansionMax: 5.5,
+      }).success,
+    ).toBe(false);
   });
 });
 
@@ -659,11 +746,13 @@ describe("GetSettingSchema", () => {
 
 describe("RawApiCallSchema", () => {
   it("should_accept_POST_with_body", () => {
-    expect(RawApiCallSchema.safeParse({
-      method: "POST",
-      path: "/channels/stop",
-      body: { id: "ch123", resourceId: "res456" },
-    }).success).toBe(true);
+    expect(
+      RawApiCallSchema.safeParse({
+        method: "POST",
+        path: "/channels/stop",
+        body: { id: "ch123", resourceId: "res456" },
+      }).success,
+    ).toBe(true);
   });
 
   it("should_accept_GET_without_body", () => {
@@ -677,11 +766,13 @@ describe("RawApiCallSchema", () => {
   });
 
   it("should_accept_query_params", () => {
-    expect(RawApiCallSchema.safeParse({
-      method: "GET",
-      path: "/calendars/primary/events",
-      query: { singleEvents: "true", maxResults: "10" },
-    }).success).toBe(true);
+    expect(
+      RawApiCallSchema.safeParse({
+        method: "GET",
+        path: "/calendars/primary/events",
+        query: { singleEvents: "true", maxResults: "10" },
+      }).success,
+    ).toBe(true);
   });
 
   it("should_reject_invalid_method", () => {

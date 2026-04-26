@@ -1,19 +1,34 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { ImageMagickRunner } from "../lib/runner.js";
-import { IdentifySchema, ConvertSchema, ResizeSchema, CropSchema, RotateSchema, FlipSchema, ThumbnailSchema, StripMetadataSchema, OptimizeSchema } from "../lib/schemas.js";
-import { toolResult, toolError, withErrorHandler } from "../lib/utils.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { ImageMagickRunner } from "../lib/runner.js";
+import {
+  ConvertSchema,
+  CropSchema,
+  FlipSchema,
+  IdentifySchema,
+  OptimizeSchema,
+  ResizeSchema,
+  RotateSchema,
+  StripMetadataSchema,
+  ThumbnailSchema,
+} from "../lib/schemas.js";
+import { toolError, toolResult, withErrorHandler } from "../lib/utils.js";
 
 export function registerBasicTools(server: McpServer, runner: ImageMagickRunner): void {
-  server.tool("identify", "Get image info (dimensions, format, colorspace, metadata)", IdentifySchema.shape, async (p) => {
-    return withErrorHandler(async () => {
-      const args: string[] = [];
-      if (p.verbose) args.push("-verbose");
-      if (p.format) args.push("-format", p.format);
-      args.push(p.input);
-      const r = await runner.identify(args);
-      return r.exitCode === 0 ? toolResult({ info: r.stdout.trim() }) : toolError(r.stderr);
-    });
-  });
+  server.tool(
+    "identify",
+    "Get image info (dimensions, format, colorspace, metadata)",
+    IdentifySchema.shape,
+    async (p) => {
+      return withErrorHandler(async () => {
+        const args: string[] = [];
+        if (p.verbose) args.push("-verbose");
+        if (p.format) args.push("-format", p.format);
+        args.push(p.input);
+        const r = await runner.identify(args);
+        return r.exitCode === 0 ? toolResult({ info: r.stdout.trim() }) : toolError(r.stderr);
+      });
+    },
+  );
 
   server.tool("convert", "Convert an image (format, resize, quality)", ConvertSchema.shape, async (p) => {
     return withErrorHandler(async () => {
@@ -37,7 +52,8 @@ export function registerBasicTools(server: McpServer, runner: ImageMagickRunner)
       else if (p.fit === "cover") geom += "^";
       else if (p.fit === "outside") geom += "^";
       args.push("-resize", geom);
-      if (p.fit === "cover" || p.fit === "outside") args.push("-gravity", "Center", "-extent", `${p.width || ""}x${p.height || ""}`);
+      if (p.fit === "cover" || p.fit === "outside")
+        args.push("-gravity", "Center", "-extent", `${p.width || ""}x${p.height || ""}`);
       if (p.quality) args.push("-quality", String(p.quality));
       args.push(p.output);
       const r = await runner.convert(args);
@@ -79,7 +95,15 @@ export function registerBasicTools(server: McpServer, runner: ImageMagickRunner)
 
   server.tool("create_thumbnail", "Create a square thumbnail with center crop", ThumbnailSchema.shape, async (p) => {
     return withErrorHandler(async () => {
-      const args = [p.input, "-thumbnail", `${p.size}x${p.size}^`, "-gravity", "Center", "-extent", `${p.size}x${p.size}`];
+      const args = [
+        p.input,
+        "-thumbnail",
+        `${p.size}x${p.size}^`,
+        "-gravity",
+        "Center",
+        "-extent",
+        `${p.size}x${p.size}`,
+      ];
       if (p.quality) args.push("-quality", String(p.quality));
       args.push(p.output);
       const r = await runner.convert(args);

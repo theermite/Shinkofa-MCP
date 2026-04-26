@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { GmailClient, GmailError } from "../src/lib/client.js";
 
 // ── Fetch mock ────────────────────────────────────────────────────────────────
@@ -95,7 +95,7 @@ describe("GmailClient — callApi request building", () => {
     await client.callApi("GET", "/users/me/messages");
 
     const [, init] = mockFetch.mock.calls[0] as [string, RequestInit];
-    expect((init.headers as Record<string, string>)["Authorization"]).toBe("Bearer ya29.access");
+    expect((init.headers as Record<string, string>).Authorization).toBe("Bearer ya29.access");
     expect(init.method).toBe("GET");
   });
 
@@ -121,18 +121,14 @@ describe("GmailClient — callApi request building", () => {
 
   it("should throw GmailError on 4xx response with error body", async () => {
     const client = new GmailClient({ accessToken: "ya29.access" });
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ error: { code: 403, message: "Forbidden" } }, 403)
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ error: { code: 403, message: "Forbidden" } }, 403));
 
     await expect(client.callApi("GET", "/users/me/messages")).rejects.toThrow(GmailError);
   });
 
   it("should use error code from response body when available", async () => {
     const client = new GmailClient({ accessToken: "ya29.access" });
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ error: { code: 429, message: "Rate limit exceeded" } }, 429)
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ error: { code: 429, message: "Rate limit exceeded" } }, 429));
 
     await expect(client.callApi("GET", "/users/me/messages")).rejects.toMatchObject({
       code: 429,
@@ -142,9 +138,7 @@ describe("GmailClient — callApi request building", () => {
 
   it("should fall back to response.status when error body has no code", async () => {
     const client = new GmailClient({ accessToken: "ya29.access" });
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ error: { message: "Something went wrong" } }, 500)
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ error: { message: "Something went wrong" } }, 500));
 
     await expect(client.callApi("GET", "/users/me/messages")).rejects.toMatchObject({
       code: 500,
@@ -227,17 +221,11 @@ describe("GmailClient — token refresh", () => {
     });
 
     // First call returns 401 (expired token)
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ error: { code: 401, message: "Invalid Credentials" } }, 401)
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ error: { code: 401, message: "Invalid Credentials" } }, 401));
     // Token refresh returns new token
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ access_token: "ya29.new-token" })
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ access_token: "ya29.new-token" }));
     // Retry returns success
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ id: "msg1", snippet: "Hello" })
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ id: "msg1", snippet: "Hello" }));
 
     const result = await client.callApi("GET", "/users/me/messages/msg1");
     expect(result).toEqual({ id: "msg1", snippet: "Hello" });
@@ -252,27 +240,21 @@ describe("GmailClient — token refresh", () => {
       clientSecret: "client-secret",
     });
 
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ error: { code: 401, message: "Invalid Credentials" } }, 401)
-    );
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ access_token: "ya29.fresh" })
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ error: { code: 401, message: "Invalid Credentials" } }, 401));
+    mockFetch.mockResolvedValueOnce(mockResponse({ access_token: "ya29.fresh" }));
     mockFetch.mockResolvedValueOnce(mockResponse({ id: "msg1" }));
 
     await client.callApi("GET", "/users/me/messages/msg1");
 
     // Third call (retry) should use the new token
     const [, retryInit] = mockFetch.mock.calls[2] as [string, RequestInit];
-    expect((retryInit.headers as Record<string, string>)["Authorization"]).toBe("Bearer ya29.fresh");
+    expect((retryInit.headers as Record<string, string>).Authorization).toBe("Bearer ya29.fresh");
   });
 
   it("should not retry on 401 when no refresh config is present", async () => {
     const client = new GmailClient({ accessToken: "ya29.expired" });
 
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ error: { code: 401, message: "Invalid Credentials" } }, 401)
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ error: { code: 401, message: "Invalid Credentials" } }, 401));
 
     await expect(client.callApi("GET", "/users/me/messages")).rejects.toThrow(GmailError);
     expect(mockFetch).toHaveBeenCalledTimes(1);
@@ -286,12 +268,10 @@ describe("GmailClient — token refresh", () => {
       clientSecret: "client-secret",
     });
 
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ error: { code: 401, message: "Invalid Credentials" } }, 401)
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ error: { code: 401, message: "Invalid Credentials" } }, 401));
     // Refresh endpoint returns error
     mockFetch.mockResolvedValueOnce(
-      mockResponse({ error: "invalid_grant", error_description: "Token has been revoked" }, 400)
+      mockResponse({ error: "invalid_grant", error_description: "Token has been revoked" }, 400),
     );
 
     await expect(client.callApi("GET", "/users/me/messages")).rejects.toMatchObject({
@@ -308,9 +288,7 @@ describe("GmailClient — token refresh", () => {
       // clientId and clientSecret omitted
     });
 
-    mockFetch.mockResolvedValueOnce(
-      mockResponse({ error: { code: 401, message: "Invalid Credentials" } }, 401)
-    );
+    mockFetch.mockResolvedValueOnce(mockResponse({ error: { code: 401, message: "Invalid Credentials" } }, 401));
 
     await expect(client.callApi("GET", "/users/me/messages")).rejects.toThrow(GmailError);
     // Only 1 fetch call — no refresh attempted

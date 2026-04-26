@@ -3,10 +3,7 @@ import type { LinkedInClient } from "../lib/client.js";
 import { RawApiCallSchema } from "../lib/schemas.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
 
-export function registerRawTools(
-  server: McpServer,
-  client: LinkedInClient,
-) {
+export function registerRawTools(server: McpServer, client: LinkedInClient) {
   server.tool(
     "raw_api_call",
     "Execute a raw LinkedIn REST API call (escape hatch for unsupported endpoints)",
@@ -19,10 +16,7 @@ export function registerRawTools(
             return toolResult(data);
           }
           case "POST": {
-            const data = await client.post(
-              p.path,
-              p.body as Record<string, unknown>,
-            );
+            const data = await client.post(p.path, p.body as Record<string, unknown>);
             return toolResult(data);
           }
           case "DELETE": {
@@ -30,10 +24,7 @@ export function registerRawTools(
             return toolResult(undefined);
           }
           default: {
-            const data = await client.post(
-              p.path,
-              p.body as Record<string, unknown>,
-            );
+            const data = await client.post(p.path, p.body as Record<string, unknown>);
             return toolResult(data);
           }
         }

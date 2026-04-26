@@ -24,22 +24,22 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { DiscordClient } from "./lib/client.js";
-import { registerMessageTools } from "./tools/messages.js";
 import { registerChannelTools } from "./tools/channels.js";
-import { registerGuildTools } from "./tools/guilds.js";
-import { registerMemberTools } from "./tools/members.js";
-import { registerWebhookTools } from "./tools/webhooks.js";
 import { registerCommandTools } from "./tools/commands.js";
-import { registerInteractionTools } from "./tools/interactions.js";
-import { registerUserTools } from "./tools/users.js";
 import { registerEmojiTools } from "./tools/emojis.js";
 import { registerEventTools } from "./tools/events.js";
-import { registerModerationTools } from "./tools/moderation.js";
+import { registerGuildTools } from "./tools/guilds.js";
+import { registerInteractionTools } from "./tools/interactions.js";
 import { registerInviteTools } from "./tools/invites.js";
+import { registerMemberTools } from "./tools/members.js";
+import { registerMessageTools } from "./tools/messages.js";
+import { registerModerationTools } from "./tools/moderation.js";
 import { registerRawTool } from "./tools/raw.js";
+import { registerUserTools } from "./tools/users.js";
+import { registerWebhookTools } from "./tools/webhooks.js";
 
 async function main(): Promise<void> {
-  const botToken = process.env["DISCORD_BOT_TOKEN"];
+  const botToken = process.env.DISCORD_BOT_TOKEN;
 
   if (!botToken) {
     console.error("Error: DISCORD_BOT_TOKEN environment variable is required");
@@ -48,10 +48,8 @@ async function main(): Promise<void> {
 
   const client = new DiscordClient({
     botToken,
-    apiBaseUrl: process.env["DISCORD_API_BASE_URL"],
-    timeoutMs: process.env["DISCORD_TIMEOUT_MS"]
-      ? parseInt(process.env["DISCORD_TIMEOUT_MS"], 10) || undefined
-      : undefined,
+    apiBaseUrl: process.env.DISCORD_API_BASE_URL,
+    timeoutMs: process.env.DISCORD_TIMEOUT_MS ? parseInt(process.env.DISCORD_TIMEOUT_MS, 10) || undefined : undefined,
   });
 
   const server = new McpServer({

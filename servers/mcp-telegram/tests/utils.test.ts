@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { toolResult, toolError, withErrorHandler } from "../src/lib/utils.js";
+import { describe, expect, it } from "vitest";
 import { TelegramError } from "../src/lib/client.js";
+import { toolError, toolResult, withErrorHandler } from "../src/lib/utils.js";
 
 describe("toolResult", () => {
   it("should_format_data_as_json", () => {
@@ -79,8 +79,10 @@ describe("withErrorHandler", () => {
   });
 
   it("should_rethrow_unknown_errors", async () => {
-    await expect(withErrorHandler(async () => {
-      throw new RangeError("out of bounds");
-    })).rejects.toThrow("out of bounds");
+    await expect(
+      withErrorHandler(async () => {
+        throw new RangeError("out of bounds");
+      }),
+    ).rejects.toThrow("out of bounds");
   });
 });

@@ -1,14 +1,14 @@
-import { describe, it, expect } from "vitest";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { describe, expect, it } from "vitest";
 import { createConfig } from "../src/lib/executor.js";
-import { registerProbeTools } from "../src/tools/probe.js";
+import { registerAudioTools } from "../src/tools/audio.js";
+import { registerComposeTools } from "../src/tools/compose.js";
 import { registerConvertTools } from "../src/tools/convert.js";
 import { registerEditTools } from "../src/tools/edit.js";
-import { registerComposeTools } from "../src/tools/compose.js";
 import { registerExtractTools } from "../src/tools/extract.js";
-import { registerAudioTools } from "../src/tools/audio.js";
-import { registerStreamingTools } from "../src/tools/streaming.js";
+import { registerProbeTools } from "../src/tools/probe.js";
 import { registerRawTools } from "../src/tools/raw.js";
+import { registerStreamingTools } from "../src/tools/streaming.js";
 
 const config = createConfig({});
 

@@ -1,7 +1,7 @@
 /**
  * Streaming tools — stream, record, replay buffer, virtual camera.
  */
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { OBSClient } from "../lib/client.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
@@ -51,11 +51,16 @@ export function registerStreamingTools(server: McpServer, obs: OBSClient): void 
     return withErrorHandler(async () => toolResult(await obs.call("GetRecordDirectory")));
   });
 
-  server.tool("obs-set-record-directory", "Set recording output directory", {
-    recordDirectory: z.string(),
-  }, async (args) => {
-    return withErrorHandler(async () => toolResult(await obs.call("SetRecordDirectory", args)));
-  });
+  server.tool(
+    "obs-set-record-directory",
+    "Set recording output directory",
+    {
+      recordDirectory: z.string(),
+    },
+    async (args) => {
+      return withErrorHandler(async () => toolResult(await obs.call("SetRecordDirectory", args)));
+    },
+  );
 
   // ===== Replay Buffer =====
 

@@ -7,7 +7,7 @@ import { registerPostTools } from "./tools/posts.js";
 import { registerProfileTools } from "./tools/profile.js";
 import { registerRawTools } from "./tools/raw.js";
 
-const accessToken = process.env["LINKEDIN_ACCESS_TOKEN"];
+const accessToken = process.env.LINKEDIN_ACCESS_TOKEN;
 if (!accessToken) {
   console.error("LINKEDIN_ACCESS_TOKEN environment variable is required");
   process.exit(1);
@@ -15,10 +15,8 @@ if (!accessToken) {
 
 const client = new LinkedInClient({
   accessToken,
-  apiVersion: process.env["LINKEDIN_API_VERSION"],
-  timeoutMs: process.env["LINKEDIN_TIMEOUT_MS"]
-    ? Number(process.env["LINKEDIN_TIMEOUT_MS"])
-    : undefined,
+  apiVersion: process.env.LINKEDIN_API_VERSION,
+  timeoutMs: process.env.LINKEDIN_TIMEOUT_MS ? Number(process.env.LINKEDIN_TIMEOUT_MS) : undefined,
 });
 
 const server = new McpServer({

@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { toolResult, toolError, withErrorHandler } from "../src/lib/utils.js";
+import { describe, expect, it } from "vitest";
 import { N8nError } from "../src/lib/client.js";
+import { toolError, toolResult, withErrorHandler } from "../src/lib/utils.js";
 
 describe("toolResult", () => {
   it("should_serialize_data_when_given_object", () => {
@@ -39,28 +39,40 @@ describe("withErrorHandler", () => {
   });
 
   it("should_catch_N8nError_and_return_toolError", async () => {
-    const r = await withErrorHandler(() => { throw new N8nError(404, "Workflow not found"); });
+    const r = await withErrorHandler(() => {
+      throw new N8nError(404, "Workflow not found");
+    });
     expect(r).toEqual({ content: [{ type: "text", text: "n8n error 404: Workflow not found" }], isError: true });
   });
 
   it("should_catch_AbortError_and_return_timeout", async () => {
     const err = new Error("The operation was aborted");
     err.name = "AbortError";
-    const r = await withErrorHandler(() => { throw err; });
+    const r = await withErrorHandler(() => {
+      throw err;
+    });
     expect(r).toEqual({ content: [{ type: "text", text: "Request timed out" }], isError: true });
   });
 
   it("should_catch_TypeError_and_return_network_error", async () => {
-    const r = await withErrorHandler(() => { throw new TypeError("fetch failed"); });
+    const r = await withErrorHandler(() => {
+      throw new TypeError("fetch failed");
+    });
     expect(r).toEqual({ content: [{ type: "text", text: "Network error: fetch failed" }], isError: true });
   });
 
   it("should_catch_SyntaxError_and_return_non_json_error", async () => {
-    const r = await withErrorHandler(() => { throw new SyntaxError("Unexpected token"); });
+    const r = await withErrorHandler(() => {
+      throw new SyntaxError("Unexpected token");
+    });
     expect(r).toEqual({ content: [{ type: "text", text: "Invalid API response (non-JSON)" }], isError: true });
   });
 
   it("should_rethrow_unknown_errors", async () => {
-    await expect(withErrorHandler(() => { throw new RangeError("boom"); })).rejects.toThrow("boom");
+    await expect(
+      withErrorHandler(() => {
+        throw new RangeError("boom");
+      }),
+    ).rejects.toThrow("boom");
   });
 });

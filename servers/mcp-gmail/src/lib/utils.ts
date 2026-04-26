@@ -1,7 +1,7 @@
 import { createErrorHandler, toolError, toolResult } from "@shinkofa/mcp-shared";
 import { GmailError } from "./client.js";
 
-export { toolResult, toolError };
+export { toolError, toolResult };
 
 export const withErrorHandler = createErrorHandler((error) => {
   if (error instanceof GmailError) {
@@ -13,7 +13,18 @@ function sanitizeHeader(value: string): string {
   return value.replace(/[\r\n]/g, " ");
 }
 
-export function buildRawEmail(p: { to: string; subject: string; body: string; from?: string; cc?: string; bcc?: string; replyTo?: string; inReplyTo?: string; references?: string; isHtml?: boolean }): string {
+export function buildRawEmail(p: {
+  to: string;
+  subject: string;
+  body: string;
+  from?: string;
+  cc?: string;
+  bcc?: string;
+  replyTo?: string;
+  inReplyTo?: string;
+  references?: string;
+  isHtml?: boolean;
+}): string {
   const lines: string[] = [];
   if (p.from) lines.push(`From: ${sanitizeHeader(p.from)}`);
   lines.push(`To: ${sanitizeHeader(p.to)}`);

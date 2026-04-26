@@ -1,13 +1,13 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  PublishPostSchema,
-  UpdatePostSchema,
+  AddCommentSchema,
   CreateDraftSchema,
   CreateSeriesSchema,
-  AddCommentSchema,
-  RawGraphQLSchema,
   GetPostSchema,
   ListPostsSchema,
+  PublishPostSchema,
+  RawGraphQLSchema,
+  UpdatePostSchema,
 } from "../src/lib/schemas.js";
 
 describe("PublishPostSchema", () => {
@@ -49,9 +49,7 @@ describe("UpdatePostSchema", () => {
   });
 
   it("should_accept_id_with_fields", () => {
-    expect(
-      UpdatePostSchema.safeParse({ id: "p1", title: "up" }).success,
-    ).toBe(true);
+    expect(UpdatePostSchema.safeParse({ id: "p1", title: "up" }).success).toBe(true);
   });
 });
 
@@ -91,32 +89,23 @@ describe("AddCommentSchema", () => {
 
 describe("GetPostSchema", () => {
   it("should_accept_host_and_slug", () => {
-    expect(
-      GetPostSchema.safeParse({ host: "blog.test.com", slug: "my-post" })
-        .success,
-    ).toBe(true);
+    expect(GetPostSchema.safeParse({ host: "blog.test.com", slug: "my-post" }).success).toBe(true);
   });
 });
 
 describe("ListPostsSchema", () => {
   it("should_accept_host_only", () => {
-    expect(
-      ListPostsSchema.safeParse({ host: "blog.test.com" }).success,
-    ).toBe(true);
+    expect(ListPostsSchema.safeParse({ host: "blog.test.com" }).success).toBe(true);
   });
 
   it("should_reject_first_over_50", () => {
-    expect(
-      ListPostsSchema.safeParse({ host: "x", first: 100 }).success,
-    ).toBe(false);
+    expect(ListPostsSchema.safeParse({ host: "x", first: 100 }).success).toBe(false);
   });
 });
 
 describe("RawGraphQLSchema", () => {
   it("should_accept_query_string", () => {
-    expect(
-      RawGraphQLSchema.safeParse({ query: "query { me { id } }" }).success,
-    ).toBe(true);
+    expect(RawGraphQLSchema.safeParse({ query: "query { me { id } }" }).success).toBe(true);
   });
 
   it("should_accept_with_variables", () => {

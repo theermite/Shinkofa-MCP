@@ -1,32 +1,23 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StripeClient } from "../lib/client.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { StripeClient } from "../lib/client.js";
 import {
+  CancelSubscriptionSchema,
   CreateSubscriptionSchema,
-  UpdateSubscriptionSchema,
   GetSubscriptionSchema,
   ListSubscriptionsSchema,
-  CancelSubscriptionSchema,
   ResumeSubscriptionSchema,
+  UpdateSubscriptionSchema,
 } from "../lib/schemas.js";
 import { toolResult, withErrorHandler } from "../lib/utils.js";
 
-export function registerSubscriptionTools(
-  server: McpServer,
-  client: StripeClient,
-): void {
+export function registerSubscriptionTools(server: McpServer, client: StripeClient): void {
   server.tool(
     "create_subscription",
     "Create a subscription (Musha/Samurai/Sensei tiers)",
     CreateSubscriptionSchema.shape,
     async (p) =>
       withErrorHandler(async () =>
-        toolResult(
-          await client.callApi(
-            "POST",
-            "/subscriptions",
-            p as Record<string, unknown>,
-          ),
-        ),
+        toolResult(await client.callApi("POST", "/subscriptions", p as Record<string, unknown>)),
       ),
   );
 
@@ -38,78 +29,44 @@ export function registerSubscriptionTools(
       withErrorHandler(async () => {
         const { subscription_id, ...params } = p;
         return toolResult(
-          await client.callApi(
-            "POST",
-            `/subscriptions/${encodeURIComponent(subscription_id)}`,
-            params,
-          ),
+          await client.callApi("POST", `/subscriptions/${encodeURIComponent(subscription_id)}`, params),
         );
       }),
   );
 
-  server.tool(
-    "get_subscription",
-    "Get a subscription",
-    GetSubscriptionSchema.shape,
-    async (p) =>
-      withErrorHandler(async () =>
-        toolResult(
-          await client.callApi(
-            "GET",
-            `/subscriptions/${encodeURIComponent(p.subscription_id)}`,
-            p.expand ? { expand: p.expand } : undefined,
-          ),
+  server.tool("get_subscription", "Get a subscription", GetSubscriptionSchema.shape, async (p) =>
+    withErrorHandler(async () =>
+      toolResult(
+        await client.callApi(
+          "GET",
+          `/subscriptions/${encodeURIComponent(p.subscription_id)}`,
+          p.expand ? { expand: p.expand } : undefined,
         ),
       ),
+    ),
   );
 
-  server.tool(
-    "list_subscriptions",
-    "List subscriptions",
-    ListSubscriptionsSchema.shape,
-    async (p) =>
-      withErrorHandler(async () =>
-        toolResult(
-          await client.callApi(
-            "GET",
-            "/subscriptions",
-            p as Record<string, unknown>,
-          ),
-        ),
-      ),
+  server.tool("list_subscriptions", "List subscriptions", ListSubscriptionsSchema.shape, async (p) =>
+    withErrorHandler(async () =>
+      toolResult(await client.callApi("GET", "/subscriptions", p as Record<string, unknown>)),
+    ),
   );
 
-  server.tool(
-    "cancel_subscription",
-    "Cancel a subscription",
-    CancelSubscriptionSchema.shape,
-    async (p) =>
-      withErrorHandler(async () => {
-        const { subscription_id, ...params } = p;
-        return toolResult(
-          await client.callApi(
-            "DELETE",
-            `/subscriptions/${encodeURIComponent(subscription_id)}`,
-            params,
-          ),
-        );
-      }),
+  server.tool("cancel_subscription", "Cancel a subscription", CancelSubscriptionSchema.shape, async (p) =>
+    withErrorHandler(async () => {
+      const { subscription_id, ...params } = p;
+      return toolResult(
+        await client.callApi("DELETE", `/subscriptions/${encodeURIComponent(subscription_id)}`, params),
+      );
+    }),
   );
 
-  server.tool(
-    "resume_subscription",
-    "Resume a paused subscription",
-    ResumeSubscriptionSchema.shape,
-    async (p) =>
-      withErrorHandler(async () => {
-        const { subscription_id, ...params } = p;
-        return toolResult(
-          await client.callApi(
-            "POST",
-            `/subscriptions/${encodeURIComponent(subscription_id)}/resume`,
-            params,
-          ),
-        );
-      }),
+  server.tool("resume_subscription", "Resume a paused subscription", ResumeSubscriptionSchema.shape, async (p) =>
+    withErrorHandler(async () => {
+      const { subscription_id, ...params } = p;
+      return toolResult(
+        await client.callApi("POST", `/subscriptions/${encodeURIComponent(subscription_id)}/resume`, params),
+      );
+    }),
   );
 }
