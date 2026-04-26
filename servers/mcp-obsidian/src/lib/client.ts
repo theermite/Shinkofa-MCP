@@ -4,6 +4,8 @@
  * Default: https://127.0.0.1:27124
  */
 
+import { Agent, type Dispatcher, fetch as undiciFetch } from "undici";
+
 export interface ObsidianClientConfig {
   apiKey: string;
   baseUrl?: string;
@@ -15,14 +17,15 @@ export class ObsidianClient {
   private readonly apiKey: string;
   private readonly baseUrl: string;
   private readonly timeoutMs: number;
-  private readonly insecure: boolean;
+  private readonly dispatcher: Dispatcher | undefined;
 
   constructor(config: ObsidianClientConfig) {
     if (!config.apiKey) throw new Error("OBSIDIAN_API_KEY is required");
     this.apiKey = config.apiKey;
     this.baseUrl = config.baseUrl ?? "https://127.0.0.1:27124";
     this.timeoutMs = config.timeoutMs ?? 15_000;
-    this.insecure = config.insecure ?? false;
+    // Scoped TLS bypass — only affects this client's connections, not process-wide
+    this.dispatcher = config.insecure ? new Agent({ connect: { rejectUnauthorized: false } }) : undefined;
   }
 
   async callApi<T = unknown>(
@@ -38,7 +41,7 @@ export class ObsidianClient {
 
     if (accept) headers["Accept"] = accept;
 
-    let fetchBody: BodyInit | undefined;
+    let fetchBody: string | undefined;
     if (body !== undefined && method !== "GET") {
       if (typeof body === "string") {
         headers["Content-Type"] = "text/markdown";
@@ -53,8 +56,9 @@ export class ObsidianClient {
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
 
     try {
-      const response = await fetch(url, {
+      const response = await undiciFetch(url, {
         method, headers, body: fetchBody, signal: controller.signal,
+        dispatcher: this.dispatcher,
       });
 
       if (response.status === 204) return undefined as T;

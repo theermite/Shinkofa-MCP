@@ -1,11 +1,16 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+
+const { fetchSpy } = vi.hoisted(() => ({ fetchSpy: vi.fn() }));
+
+vi.mock("undici", () => ({
+  Agent: vi.fn().mockImplementation(() => ({})),
+  fetch: fetchSpy,
+}));
+
 import { ObsidianClient, ObsidianError } from "../src/lib/client.js";
 
-let fetchSpy: ReturnType<typeof vi.fn>;
-
 beforeEach(() => {
-  fetchSpy = vi.fn();
-  vi.stubGlobal("fetch", fetchSpy);
+  fetchSpy.mockReset();
 });
 
 afterEach(() => {

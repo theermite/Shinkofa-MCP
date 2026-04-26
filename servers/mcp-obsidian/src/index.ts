@@ -17,16 +17,11 @@ async function main(): Promise<void> {
   const apiKey = process.env["OBSIDIAN_API_KEY"];
   if (!apiKey) { console.error("Error: OBSIDIAN_API_KEY environment variable is required"); process.exit(1); }
 
-  const insecure = process.env["OBSIDIAN_INSECURE_TLS"] === "true";
-  if (insecure) {
-    process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-  }
-
   const client = new ObsidianClient({
     apiKey,
     baseUrl: process.env["OBSIDIAN_API_URL"],
     timeoutMs: process.env["OBSIDIAN_TIMEOUT_MS"] ? parseInt(process.env["OBSIDIAN_TIMEOUT_MS"], 10) || undefined : undefined,
-    insecure,
+    insecure: process.env["OBSIDIAN_INSECURE_TLS"] === "true",
   });
 
   const server = new McpServer({ name: "@shinkofa/mcp-obsidian", version: "1.0.0" });
