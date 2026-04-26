@@ -12,6 +12,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean",
     "test": "cross-env NODE_OPTIONS=--max-old-space-size=2048 vitest run",
+    "test:coverage": "cross-env NODE_OPTIONS=--max-old-space-size=2048 vitest run --coverage",
     "lint": "biome check src/",
     "type-check": "tsc --noEmit"
   },
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.13",
     "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "cross-env": "^7.0.3",
     "tsup": "^8.4.0",
     "typescript": "^5.7.0",
