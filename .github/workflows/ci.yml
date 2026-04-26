@@ -64,6 +64,7 @@ jobs:
           - mcp-obs
           - mcp-obsidian
           - mcp-ollama
+          - mcp-playwright
           - mcp-streamerbot
           - mcp-stripe
           - mcp-system
