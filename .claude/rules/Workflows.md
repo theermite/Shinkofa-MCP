@@ -37,7 +37,7 @@ Every time code is written or modified — whether via `/dev`, a simple request,
 - **Consult SKB first** — SKB (Shinkofa Knowledge Base) is our collective brain. Search it for ALL domains (vision, coaching, tech, marketing, gaming, neurodiversity) before web research, before any decision.
 - **Verify before claiming** — training data is months stale. Check SKB + web for versions, features, best practices, architecture patterns before any recommendation that influences a decision.
 - **3 Layers filter** — every decision passes: L3 (Shinkofa vision respected?) → L2 (serves visibility/revenue?) → L1 (doable now?). See `rules/Strategic-Context.md`.
-- **Research in 7 languages** — EN, FR, ZH, JA, KO, DE, RU for thorough coverage.
+- **Research in 7 languages** — EN, FR, ZH, JA, KO, DE, RU for thorough coverage. Queries MUST be written in native script (汉字, 漢字/仮名, 한글, кириллица, etc.) — never in romanization, pinyin, romaji, or transliteration. Full protocol: `Eichi-Shinkofa/docs/Research-Protocol.md`.
 - **Visibility-first** — everything is potentially sellable. SEO, GEO, copywriting from day one.
 - **Fix pre-existing errors** — if tests fail at session start, fix them. They are your responsibility.
 - **Write session reports** — mandatory after every session. Stored in `docs/Sessions/`.
