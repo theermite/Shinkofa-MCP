@@ -14,10 +14,10 @@ Every time code is written or modified — whether via `/dev`, a simple request,
 |---|------|------|------|-------------------|
 | 1 | **Context** | Check Blueprint/CDC if they exist. If neither exists → propose a plan before coding. | Before first line of code | + Simplified FMEA (3 failure modes) |
 | 2 | **Reformulate** | State what you understood, what you'll do, what you won't touch, files impacted. Wait for validation on non-trivial changes. | Before first line of code | + Impact analysis |
-| 3 | **TDG** | Write tests FIRST. They must fail (red) before implementation. Identify impacted tests before writing new ones (dependency-aware targeting). | Before implementation | + Bidirectional traceability + Defensive assertions (>=2/critical fn) |
+| 3 | **TDG** | Write tests FIRST — for ALL stacks in the project (TS: Vitest, Python: pytest, Elixir: ExUnit, Rust: cargo test). They must fail (red) before implementation. Identify impacted tests before writing new ones (dependency-aware targeting). | Before implementation | + Bidirectional traceability + Defensive assertions (>=2/critical fn) |
 | 4 | **Code** | Implement. Atomic commits. Backup tag every 3-4 commits. | Implementation | Unchanged |
 | 5 | **Lint** | Zero lint errors. Run linter after changes. | After code | Unchanged |
-| 6 | **Tests** | All tests pass — unit + integration + anti-regression. No "it should work." | After code | + MC/DC for complex critical conditions |
+| 6 | **Tests** | All tests pass — unit + integration + anti-regression. Run the actual test command (`npm run test`, `pytest`, `mix test`, `cargo test`). No "it should work." | After code | + MC/DC for complex critical conditions |
 | 7 | **Security** | No secrets, no injection, no weak patterns. Hooks catch most; verify the rest. | After code | + Automated PII detection |
 | 8 | **Verify** | Prove it works. Evidence over assertion. On UI: run dev server and test in browser. | Before reporting done | + Post-deploy verification |
 

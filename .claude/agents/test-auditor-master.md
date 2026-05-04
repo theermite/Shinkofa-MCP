@@ -145,6 +145,41 @@ Verify the ratio of test types is healthy:
 - `*.unit.test.*` or `tests/unit/` → unit
 - `*.integration.test.*` or `tests/integration/` → integration
 - `*.e2e.test.*` or `tests/e2e/` or `playwright/` → E2E
+- Elixir: `test/**/*_test.exs` → unit/integration (ExUnit)
+- Rust: `#[test]` in `src/` → unit, `tests/` directory → integration
+
+### 11b. Stack-Specific Test Quality Checks
+
+#### Elixir/ExUnit
+
+- [ ] Tests use `ExUnit.Case` with explicit `async: true/false` (`async: true` unsafe with shared DB state)
+- [ ] Integration tests use `Ecto.Sandbox` for DB isolation
+- [ ] Assertions use `assert`, `refute`, `assert_raise` (not `expect`)
+- [ ] No cross-test state pollution (fixtures properly isolated)
+- [ ] StreamData used for property-based testing on critical paths
+- [ ] Coverage measured: `mix test --cover` >= threshold
+
+**Detection**:
+```bash
+grep -rn "test \"" test/ --include="*.exs" | wc -l  # Count tests
+grep -rn "assert\|refute" test/ --include="*.exs" | wc -l  # Count assertions
+```
+
+#### Rust/cargo test
+
+- [ ] All test functions marked with `#[test]`
+- [ ] No `#[ignore]` without documented reason in comment
+- [ ] Property-based tests use `proptest!` macro (not ad-hoc loops)
+- [ ] No bare `.unwrap()` in test assertions — use `assert!`, `assert_eq!`
+- [ ] Coverage measured: `cargo tarpaulin` >= threshold
+
+**Detection**:
+```bash
+cargo test -- --list 2>&1 | grep "test" | wc -l  # Count tests
+grep -rn "#\[ignore\]" src/ tests/  # Find ignored tests
+```
+
+**Verdict**: If Elixir modules lack ExUnit tests or Rust modules lack cargo tests → **BLOCKING**.
 
 If pyramid is inverted (more E2E than unit) → **WARNING: ice cream cone anti-pattern**.
 
