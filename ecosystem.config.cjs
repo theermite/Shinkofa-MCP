@@ -1,8 +1,26 @@
 // PM2 ecosystem config for Streamable HTTP deployment
 // Usage: pm2 start ecosystem.config.cjs
-// Requires: MCP_AUTH_TOKEN set in environment or .env.prod
+// Requires: MCP_AUTH_TOKEN in env or .env.prod
+// API credentials loaded from ~/apps/Shinkofa-Infra/.env.prod
 
-const TOKEN = process.env.MCP_AUTH_TOKEN || "CHANGE_ME";
+const { readFileSync } = require("node:fs");
+const { homedir } = require("node:os");
+const path = require("node:path");
+
+// Load .env.prod into a dict
+const envProd = {};
+try {
+	const content = readFileSync(
+		path.join(homedir(), "apps/Shinkofa-Infra/.env.prod"),
+		"utf-8",
+	);
+	for (const line of content.split("\n")) {
+		const match = line.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/);
+		if (match) envProd[match[1]] = match[2];
+	}
+} catch {}
+
+const TOKEN = envProd.MCP_AUTH_TOKEN || process.env.MCP_AUTH_TOKEN || "CHANGE_ME";
 
 const servers = [
 	{ name: "mcp-stripe", port: 9001 },
@@ -34,10 +52,10 @@ module.exports = {
 	apps: servers.map((srv) => ({
 		name: srv.name,
 		cwd: `./servers/${srv.name}`,
-		script: "src/index.ts",
-		interpreter: "node",
-		interpreter_args: "--import tsx",
+		script: "npx",
+		args: "tsx src/index.ts",
 		env: {
+			...envProd,
 			MCP_TRANSPORT: "http",
 			MCP_HTTP_PORT: String(srv.port),
 			MCP_AUTH_TOKEN: TOKEN,
