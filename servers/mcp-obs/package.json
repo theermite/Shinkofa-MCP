@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "@shinkofa/mcp-shared": "^1.1.1",
+    "@shinkofa/mcp-shared": "^1.1.2",
     "obs-websocket-js": "^5.0.0",
     "zod": "^3.24.0"
   },
