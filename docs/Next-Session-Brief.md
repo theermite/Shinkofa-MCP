@@ -1,8 +1,10 @@
 # Brief — Prochaine session Shinkofa-MCP
 
-**Cree** : 2026-04-26
+**Cree** : 2026-04-26 | **Mis a jour** : 2026-05-05
 **Auteur** : Takumi (handoff post-compaction)
 **Contexte** : Jay a demande un audit du pattern MCP avant de construire mcp-playwright. Audit fait, 4 BLOCKING identifies. On corrige les fondations AVANT le nouveau serveur.
+
+> **NEW (2026-05-05)** : Mission supplementaire — ajouter le transport Streamable HTTP a tous les serveurs pour acces reseau depuis Kobo. Voir `docs/Brief-Streamable-HTTP-Upgrade.md` pour le brief complet. A faire APRES les fixes B1-B4 ci-dessous (la transport factory va dans mcp-shared qui doit exister d'abord).
 
 ---
 
