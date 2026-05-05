@@ -1,13 +1,67 @@
 # MCP Servers — Plan & Suivi
 
 > Source de verite pour tous les MCP Shinkofa : existants, planifies, progression.
-> Derniere mise a jour : 2026-04-13.
+> Derniere mise a jour : 2026-05-06.
 
 ---
 
-## Production (22 MCPs — 739 tools, 2 048 tests)
+## Transport — Dual Mode (stdio + Streamable HTTP)
 
-Tous : TypeScript, withErrorHandler, Zod, Vitest, build tsup, zero type errors.
+Depuis v1.1.0 de `@shinkofa/mcp-shared`, tous les serveurs supportent le **dual transport** :
+
+| Mode | Env Var | Usage |
+|------|---------|-------|
+| **stdio** (defaut) | `MCP_TRANSPORT=stdio` ou absent | Claude Code, usage local |
+| **Streamable HTTP** | `MCP_TRANSPORT=http` | Acces reseau (Kobo, Koshin, Tailscale) |
+
+### Configuration HTTP
+
+```bash
+# Variables requises pour le mode HTTP
+MCP_TRANSPORT=http
+MCP_AUTH_TOKEN=<token-secret>     # Obligatoire — rejet 401 sans token valide
+MCP_HTTP_PORT=9001                # Optionnel — 0 = port auto
+```
+
+### Utilisation depuis un client HTTP
+
+```bash
+# Exemple : appel a mcp-system en HTTP
+curl -X POST http://127.0.0.1:9004/mcp \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $MCP_AUTH_TOKEN" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
+```
+
+### Port Registry (deploiement Tower)
+
+| Server | Port | Server | Port |
+|--------|------|--------|------|
+| mcp-stripe | 9001 | mcp-ffmpeg | 9002 |
+| mcp-playwright | 9003 | mcp-system | 9004 |
+| mcp-obsidian | 9005 | mcp-tailscale | 9006 |
+| mcp-docker | 9007 | mcp-discord | 9008 |
+| mcp-telegram | 9009 | mcp-gmail | 9010 |
+| mcp-obs | 9011 | mcp-youtube | 9012 |
+| mcp-twitch | 9013 | mcp-n8n | 9014 |
+| mcp-ollama | 9015 | mcp-google-calendar | 9016 |
+| mcp-google-drive | 9017 | mcp-linkedin | 9018 |
+| mcp-devto | 9019 | mcp-hashnode | 9020 |
+| mcp-imagemagick | 9021 | mcp-home-assistant | 9022 |
+| mcp-streamerbot | 9023 | — | — |
+
+### Securite
+
+- Token auth obligatoire sur HTTP (401 sans token valide)
+- Endpoint unique `/mcp` (404 sur tout autre path)
+- Mode stateless (pas de session ID)
+- Acces prevu via Tailscale uniquement (reseau prive)
+
+---
+
+## Production (23 MCPs — 753+ tools, 2 200+ tests)
+
+Tous : TypeScript, withErrorHandler, Zod, Vitest, build tsup, zero type errors, dual transport.
 
 | MCP | Tools | Tests | Sert a |
 |-----|------:|------:|--------|
@@ -33,6 +87,7 @@ Tous : TypeScript, withErrorHandler, Zod, Vitest, build tsup, zero type errors.
 | mcp-linkedin | 7 | 51 | Pipeline contenu |
 | mcp-tailscale | 16 | 81 | Koshin, reseau |
 | mcp-system | 14 | 64 | Koshin, infra locale |
+| mcp-playwright | 20 | 150 | Scraping JS, Boken |
 
 ---
 
@@ -118,7 +173,9 @@ Chaque MCP doit respecter :
 | Composant | Technologie |
 |-----------|-------------|
 | Language | TypeScript (ESM) |
-| MCP SDK | `@modelcontextprotocol/sdk` |
+| MCP SDK | `@modelcontextprotocol/sdk` ^1.29.0 |
+| Shared | `@shinkofa/mcp-shared` ^1.1.1 (Verdaccio) |
+| Transport | Dual stdio + Streamable HTTP |
 | Validation | Zod |
 | Build | tsup |
 | Tests | Vitest |

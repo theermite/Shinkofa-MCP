@@ -41,6 +41,13 @@ jobs:
       - name: Coverage
         working-directory: packages/mcp-shared
         run: npm run test:coverage
+      - name: Transport tests (HTTP mode)
+        working-directory: packages/mcp-shared
+        env:
+          MCP_TRANSPORT: http
+          MCP_AUTH_TOKEN: ci-test-token
+          MCP_HTTP_PORT: "0"
+        run: npx vitest run tests/transport.test.ts
 
   servers:
     name: ${{ matrix.server }}

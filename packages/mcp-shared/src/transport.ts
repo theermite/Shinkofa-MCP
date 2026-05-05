@@ -38,8 +38,11 @@ export async function connectTransport(
 		);
 		const { createServer } = await import("node:http");
 
+		const { randomUUID } = await import("node:crypto");
+		const stateless = process.env.MCP_HTTP_STATELESS === "true";
+
 		const mcpTransport = new StreamableHTTPServerTransport({
-			sessionIdGenerator: undefined,
+			sessionIdGenerator: stateless ? undefined : () => randomUUID(),
 		});
 
 		const httpServer = createServer(async (req, res) => {
