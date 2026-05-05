@@ -1,3 +1,5 @@
+export { connectTransport, type TransportResult } from "./transport.js";
+
 export interface ToolResponse {
   [key: string]: unknown;
   content: Array<{ type: "text"; text: string }>;
