@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { YouTubeClient } from "./lib/client.js";
 import { registerChannelTools } from "./tools/channels.js";
 import { registerCommentTools } from "./tools/comments.js";
@@ -23,7 +23,7 @@ async function main(): Promise<void> {
   registerSearchTools(server, client);
   registerLiveTools(server, client);
   registerRawTool(server, client);
-  await server.connect(new StdioServerTransport());
+  await connectTransport(server);
 }
 main().catch((e) => {
   console.error("Fatal:", e);

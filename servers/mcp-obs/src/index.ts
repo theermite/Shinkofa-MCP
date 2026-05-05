@@ -21,7 +21,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { createConfig, OBSClient } from "./lib/client.js";
 import { registerFilterTools } from "./tools/filters.js";
 import { registerGeneralTools } from "./tools/general.js";
@@ -46,8 +46,7 @@ async function main(): Promise<void> {
   registerStreamingTools(server, obs);
   registerTransitionTools(server, obs);
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await connectTransport(server);
 }
 
 main().catch((error) => {

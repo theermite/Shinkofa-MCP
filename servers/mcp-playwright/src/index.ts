@@ -16,7 +16,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { BrowserManager } from "./lib/browser.js";
 import { registerContentTools } from "./tools/content.js";
 import { registerInteractionTools } from "./tools/interaction.js";
@@ -43,8 +43,7 @@ async function main(): Promise<void> {
   registerQueryTools(server, browser);
   registerSessionTools(server, browser);
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await connectTransport(server);
 
   process.on("SIGINT", async () => {
     await browser.close();

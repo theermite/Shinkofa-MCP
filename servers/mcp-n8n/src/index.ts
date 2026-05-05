@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { N8nClient } from "./lib/client.js";
 import { registerResourceTools } from "./tools/resources.js";
 import { registerWorkflowTools } from "./tools/workflows.js";
@@ -20,7 +20,7 @@ async function main(): Promise<void> {
   const server = new McpServer({ name: "@shinkofa/mcp-n8n", version: "1.0.0" });
   registerWorkflowTools(server, client);
   registerResourceTools(server, client);
-  await server.connect(new StdioServerTransport());
+  await connectTransport(server);
 }
 main().catch((e) => {
   console.error("Fatal:", e);

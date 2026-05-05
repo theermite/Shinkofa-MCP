@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { HAClient } from "./lib/client.js";
 import { registerEntityTools } from "./tools/entities.js";
 import { registerInfoTools } from "./tools/info.js";
@@ -20,7 +20,7 @@ async function main(): Promise<void> {
   const server = new McpServer({ name: "@shinkofa/mcp-home-assistant", version: "1.0.0" });
   registerEntityTools(server, client);
   registerInfoTools(server, client);
-  await server.connect(new StdioServerTransport());
+  await connectTransport(server);
 }
 main().catch((e) => {
   console.error("Fatal:", e);

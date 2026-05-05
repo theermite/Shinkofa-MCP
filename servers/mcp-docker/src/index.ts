@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { DockerClient } from "./lib/client.js";
 import { registerContainerTools } from "./tools/containers.js";
 import { registerImageTools } from "./tools/images.js";
@@ -18,7 +18,7 @@ async function main(): Promise<void> {
   registerImageTools(server, client);
   registerResourceTools(server, client);
   registerSystemTools(server, client);
-  await server.connect(new StdioServerTransport());
+  await connectTransport(server);
 }
 main().catch((e) => {
   console.error("Fatal:", e);

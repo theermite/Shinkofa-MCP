@@ -20,7 +20,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { TelegramClient } from "./lib/client.js";
 import { registerBotTools } from "./tools/bot.js";
 import { registerChatTools } from "./tools/chat.js";
@@ -55,8 +55,7 @@ async function main(): Promise<void> {
   registerRawTool(server, client);
 
   // Connect via stdio transport
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await connectTransport(server);
 }
 
 main().catch((error) => {

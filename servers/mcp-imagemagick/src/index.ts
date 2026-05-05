@@ -14,7 +14,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { ImageMagickRunner } from "./lib/runner.js";
 import { registerAdvancedTools } from "./tools/advanced.js";
 import { registerBasicTools } from "./tools/basic.js";
@@ -32,8 +32,7 @@ async function main(): Promise<void> {
   registerEffectTools(server, runner);
   registerAdvancedTools(server, runner);
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await connectTransport(server);
 }
 
 main().catch((error) => {

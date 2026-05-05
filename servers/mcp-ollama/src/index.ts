@@ -21,7 +21,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { OllamaClient } from "./lib/client.js";
 import { registerEmbeddingTools } from "./tools/embeddings.js";
 import { registerGenerationTools } from "./tools/generation.js";
@@ -44,8 +44,7 @@ async function main(): Promise<void> {
   registerEmbeddingTools(server, client);
   registerRawTools(server, client);
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await connectTransport(server);
 }
 
 main().catch((error) => {

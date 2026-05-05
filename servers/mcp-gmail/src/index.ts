@@ -11,7 +11,7 @@
  *   GOOGLE_CLIENT_SECRET=xxx
  */
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { GmailClient } from "./lib/client.js";
 import { registerDraftTools } from "./tools/drafts.js";
 import { registerLabelTools } from "./tools/labels.js";
@@ -45,8 +45,7 @@ async function main(): Promise<void> {
   registerThreadTools(server, client);
   registerMiscTools(server, client);
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await connectTransport(server);
 }
 
 main().catch((error) => {

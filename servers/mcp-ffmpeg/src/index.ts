@@ -21,7 +21,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { checkBinaryExists, createConfig } from "./lib/executor.js";
 import { registerAudioTools } from "./tools/audio.js";
 import { registerComposeTools } from "./tools/compose.js";
@@ -63,8 +63,7 @@ async function main(): Promise<void> {
   registerRawTools(server, config);
 
   // Connect via stdio transport
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await connectTransport(server);
 }
 
 main().catch((error) => {

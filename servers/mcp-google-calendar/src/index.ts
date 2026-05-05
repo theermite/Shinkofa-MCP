@@ -12,7 +12,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { GoogleCalendarClient } from "./lib/client.js";
 import { registerAclTools } from "./tools/acl.js";
 import { registerCalendarTools } from "./tools/calendars.js";
@@ -47,8 +47,7 @@ async function main(): Promise<void> {
   registerAclTools(server, client);
   registerRawTool(server, client);
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await connectTransport(server);
 }
 
 main().catch((error) => {

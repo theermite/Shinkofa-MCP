@@ -21,7 +21,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { HashnodeClient } from "./lib/client.js";
 import { registerCommunityTools } from "./tools/community.js";
 import { registerDraftTools } from "./tools/drafts.js";
@@ -52,8 +52,7 @@ async function main(): Promise<void> {
   registerCommunityTools(server, client);
   registerRawTools(server, client);
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await connectTransport(server);
 }
 
 main().catch((error) => {

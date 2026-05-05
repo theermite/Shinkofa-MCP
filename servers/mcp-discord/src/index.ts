@@ -22,7 +22,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { DiscordClient } from "./lib/client.js";
 import { registerChannelTools } from "./tools/channels.js";
 import { registerCommandTools } from "./tools/commands.js";
@@ -73,8 +73,7 @@ async function main(): Promise<void> {
   registerRawTool(server, client);
 
   // Connect via stdio transport
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await connectTransport(server);
 }
 
 main().catch((error) => {

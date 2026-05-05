@@ -23,7 +23,7 @@
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { createConfig, StreamerbotClient } from "./lib/client.js";
 import { registerActionTools } from "./tools/actions.js";
 import { registerCreditTools } from "./tools/credits.js";
@@ -48,8 +48,7 @@ async function main(): Promise<void> {
   registerGlobalTools(server, client);
   registerTriggerTools(server, client);
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  await connectTransport(server);
 }
 
 main().catch((error) => {
