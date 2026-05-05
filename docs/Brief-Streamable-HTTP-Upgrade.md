@@ -130,13 +130,14 @@ Research conducted across EN, FR, ZH, JA, DE sources. Key findings:
 
 ## Acceptance Criteria
 
-- [ ] All 22 servers support `MCP_TRANSPORT=http`
-- [ ] All 22 servers still work with stdio (default, backward compat)
-- [ ] Bearer token auth enforced on HTTP transport
-- [ ] 2,048+ tests still pass
-- [ ] CI tests both transports
-- [ ] `docs/MCP-SERVERS.md` updated with HTTP usage
-- [ ] Tower deployment config ready (systemd or pm2)
+- [x] All 23 servers support `MCP_TRANSPORT=http` (2026-05-06)
+- [x] All 23 servers still work with stdio (default, backward compat)
+- [x] Bearer token auth enforced on HTTP transport
+- [x] 2,200+ tests still pass
+- [x] CI tests both transports (transport test step in mcp-shared job)
+- [x] `docs/MCP-SERVERS.md` updated with HTTP usage
+- [x] Tower deployment config ready (ecosystem.config.cjs — PM2)
+- [x] `docs/Usage-Guide.md` — full integration guide for all projects
 
 ## Relation to Previous Brief
 
