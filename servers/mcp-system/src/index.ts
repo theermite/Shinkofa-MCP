@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectTransport } from "@shinkofa/mcp-shared";
 import { isExecAllowed } from "./lib/utils.js";
 import { registerExecTools } from "./tools/exec.js";
 import { registerInfoTools } from "./tools/info.js";
@@ -24,5 +24,4 @@ if (isExecAllowed()) {
   console.error("[mcp-system] exec tools disabled (set MCP_SYSTEM_ALLOW_EXEC=true to enable)");
 }
 
-const transport = new StdioServerTransport();
-await server.connect(transport);
+await connectTransport(server);
