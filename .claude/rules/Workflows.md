@@ -54,6 +54,7 @@ Every time code is written or modified — whether via `/dev`, a simple request,
 - **Rebuild over Fix** — when a module has had 3+ sessions of corrections without lasting resolution, evaluate rebuild vs continued patching. Rebuilding on solid foundations (Lego Library + methodology) is often faster and more reliable than incremental fixes on unstable code. See `rules/Quality.md` for criteria.
 - **Kill fast = REJECTED** — never kill the WHY (L3 vision). If something doesn't resonate, adapt the HOW (presentation, UX, communication). The product's destiny is shaped by how it is presented. See `rules/Strategic-Context.md`.
 - **Feedback Widget = architectural necessity** — every public platform MUST include a Feedback Widget (2 clicks max, automatic context capture, zero PII). Promoted from checklist item (WF-035) to architectural requirement. With fault isolation, bugs don't cascade but remain invisible without user reporting.
+- **Dignity-first (BLOCKING)** — chaque écran de collecte, chaque copy, chaque CTA, chaque message d'erreur, chaque notification, chaque flow de vente et de départ passe le test : "Est-ce qu'on respecte l'intelligence de cette personne ?" Voir `rules/Dignity.md`.
 
 ## Context Awareness Protocol (BLOCKING)
 

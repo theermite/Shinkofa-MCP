@@ -109,6 +109,7 @@ Elixir AND Rust are complementary, not alternatives:
 | Monozukuri (ものづくり) | Art of making — quality as identity | GoRin philosophy |
 | SQuBOK | Software Quality Body of Knowledge — Japanese holistic quality framework | Quality reference framework |
 | Devil's Advocate Protocol (formerly Ipcha Mistabra, איפכא מסתברא) | "What if the opposite is true?" — challenge every assertion | Attacker stories |
+| Dignity (尊厳) | Respecter l'intelligence de celui qui ne sait pas encore — l'utilisateur n'est jamais le produit | Foundational posture (BLOCKING) |
 
 ## Naming Registry
 

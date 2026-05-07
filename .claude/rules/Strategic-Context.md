@@ -32,6 +32,7 @@ The next concrete action that serves Layer 2, taking into account current energy
 - **Energy management**: Low energy = reduce scope, quick wins. Never push through.
 - **Modularity**: Each tool must work standalone before becoming part of the ecosystem.
 - **SKB = our brain**: Consult SKB (Shinkofa Knowledge Base) systematically — it contains the deep knowledge (coaching, neurodiversity, gaming, marketing, vision). Not just for tech.
+- **Dignity**: Respecter l'intelligence de celui qui ne sait pas encore. L'utilisateur n'est jamais le produit, l'ignorance n'est pas la stupidité, le consentement est informé pas manipulé. BLOCKING. Voir `rules/Dignity.md`.
 
 ## D12 — Build For Me First (2026-04-09)
 

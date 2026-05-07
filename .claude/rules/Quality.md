@@ -133,7 +133,7 @@ Full protocol: `mnk/06-Quality.md`.
 
 Takumi proposes classification per module. Jay decides.
 
-## 4 Human Quality Gates (BLOCKING on public platforms)
+## 5 Human Quality Gates (BLOCKING on public platforms)
 
 | Gate | Key Metric | Threshold |
 |------|-----------|-----------|
@@ -141,8 +141,9 @@ Takumi proposes classification per module. Jay decides.
 | Sensory Comfort | prefers-reduced-motion coverage | 100% (BLOCKING) |
 | Error Resilience | Auto-save on forms > 3 fields | Required (BLOCKING) |
 | Adaptation | Preference persistence between sessions | Required (BLOCKING) |
+| Dignity | Données sans impact visible sur UX utilisateur + dark patterns + ton condescendant | 0 (BLOCKING) |
 
-Full framework (HECQ, design by neurotype): `mnk/15-Human-Quality.md`.
+Full framework (HECQ, design by neurotype): `mnk/15-Human-Quality.md`. Tests de conformité détaillés : `rules/Dignity.md`.
 
 ### Test Runtime Hygiene (BLOCKING)
 
