@@ -46,6 +46,7 @@ const servers = [
 	{ name: "mcp-imagemagick", port: 9021 },
 	{ name: "mcp-home-assistant", port: 9022 },
 	{ name: "mcp-streamerbot", port: 9023 },
+	{ name: "mcp-searxng", port: 9024 },
 ];
 
 module.exports = {
