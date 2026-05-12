@@ -19,19 +19,25 @@ import { SearxngClient } from "./lib/client.js";
 import { registerSearchTools } from "./tools/search.js";
 
 async function main(): Promise<void> {
+  // Shared upstream client — stateless HTTP wrapper around SearXNG, safe to reuse across sessions.
   const client = new SearxngClient({
     baseUrl: process.env.SEARXNG_BASE_URL,
     timeoutMs: process.env.SEARXNG_TIMEOUT_MS ? parseInt(process.env.SEARXNG_TIMEOUT_MS, 10) || undefined : undefined,
   });
 
-  const server = new McpServer({
-    name: "@shinkofa/mcp-searxng",
-    version: "1.0.0",
-  });
+  // Factory: a new McpServer instance per MCP session. The SDK refuses to connect
+  // the same Server to more than one transport ("Already connected to a transport"),
+  // so stateful Streamable HTTP mode requires building a fresh server per session.
+  const serverFactory = () => {
+    const server = new McpServer({
+      name: "@shinkofa/mcp-searxng",
+      version: "1.0.0",
+    });
+    registerSearchTools(server, client);
+    return server;
+  };
 
-  registerSearchTools(server, client);
-
-  await connectTransport(server);
+  await connectTransport(serverFactory);
 }
 
 main().catch((error) => {
