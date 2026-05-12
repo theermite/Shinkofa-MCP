@@ -1,4 +1,8 @@
-export { connectTransport, type TransportResult } from "./transport.js";
+export {
+	connectTransport,
+	type TransportResult,
+	type ConnectableFactory,
+} from "./transport.js";
 
 export interface ToolResponse {
   [key: string]: unknown;

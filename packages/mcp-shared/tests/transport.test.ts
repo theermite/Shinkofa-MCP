@@ -52,12 +52,38 @@ describe("connectTransport", () => {
 
 		expect(result.transport).toBe("http");
 		expect(result.port).toBeGreaterThan(0);
-		expect(mockServer.connect).toHaveBeenCalledOnce();
+		// Stateful per-session mode: server.connect() is only invoked on the first
+		// initialize request, not at HTTP startup. Just verify the server is listening.
 
 		// Cleanup
 		if (result.httpServer) {
 			result.httpServer.close();
 		}
+	});
+
+	it("should_connect_server_eagerly_in_stateless_http_mode", async () => {
+		process.env.MCP_TRANSPORT = "http";
+		process.env.MCP_AUTH_TOKEN = "test-secret-token";
+		process.env.MCP_HTTP_PORT = "0";
+		process.env.MCP_HTTP_STATELESS = "true";
+
+		try {
+			const { connectTransport } = await import("../src/transport.js");
+			const result = await connectTransport(mockServer as any);
+			expect(mockServer.connect).toHaveBeenCalledOnce();
+			result.httpServer?.close();
+		} finally {
+			delete process.env.MCP_HTTP_STATELESS;
+		}
+	});
+
+	it("should_accept_a_factory_function_as_argument", async () => {
+		process.env.MCP_TRANSPORT = "stdio";
+		const factory = vi.fn().mockResolvedValue(mockServer);
+		const { connectTransport } = await import("../src/transport.js");
+		await connectTransport(factory);
+		expect(factory).toHaveBeenCalledOnce();
+		expect(mockServer.connect).toHaveBeenCalledOnce();
 	});
 
 	it("should_reject_requests_without_valid_bearer_token", async () => {
