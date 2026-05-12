@@ -66,5 +66,6 @@ module.exports = {
 		autorestart: true,
 		watch: false,
 		instances: 1,
+		exec_mode: "fork",
 	})),
 };
